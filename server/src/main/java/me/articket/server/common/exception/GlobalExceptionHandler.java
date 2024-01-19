@@ -33,9 +33,4 @@ public class GlobalExceptionHandler {
         data.put("message", "Param 형식 잘못됨");
         return new ResponseEntity<>(new FailResponse<>(data), HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handle(Exception ex) {
-        return new ResponseEntity<>(new ErrorResponse("Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 }
