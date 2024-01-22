@@ -13,13 +13,16 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
+    // 엔티티의 기본 키를 나타내는 어노테이션
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 엔티티가 생성된 일시를 나타내는 어노테이션
     @CreatedDate
     private LocalDateTime createdDate;
 
+    // 엔티티가 마지막으로 수정된 일시를 나타내는 어노테이션
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 }
