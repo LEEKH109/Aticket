@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ChatlogRes {
 
+    private Long chatlogId;
+
     private String nickname;
 
     private String profileUrl;
@@ -21,6 +23,7 @@ public class ChatlogRes {
 
     public static ChatlogRes of(Chatlog chatlog) {
         ChatlogRes chatlogRes = new ChatlogRes();
+        chatlogRes.chatlogId = chatlog.getId();
         chatlogRes.nickname = chatlog.getUser().getNickname();
         chatlogRes.profileUrl = chatlog.getUser().getProfileUrl();
         chatlogRes.content = chatlog.getContent();
