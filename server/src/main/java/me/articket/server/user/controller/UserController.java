@@ -1,14 +1,15 @@
 package me.articket.server.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.common.response.SuccessResponse;
+import me.articket.server.user.data.OAuthToken;
 import me.articket.server.user.data.UserRes;
 import me.articket.server.user.service.UserService;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -17,11 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final String GRANT_TYPE = "authorization_code";
-    private final String CLIENT_ID = "ec017b3c3544785a04f17e5ecdd5ae0f";
-    private final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/kakao";
-    private final String CLIENT_SECRET = "79ObYX7OHUar61GFiJaLzpNT9JeihXoY";
-    private final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
+
 
 
     private final UserService userService;
@@ -34,26 +31,15 @@ public class UserController {
     }
 
     @GetMapping("/login/oauth2/code/kakao")
-    public String getAccessTokenJsonData(String code) { // Data를 리턴해주는 컨트롤러 함수
+    public String getAccessTokenJsonData(@RequestParam String code) throws JsonProcessingException { // Data를 리턴해주는 컨트롤러 함수
         //return code;
-        RestTemplate restTemplate = new RestTemplate();
+        String OAuthTokenData = userService.getTokenbyCode(code);
+//        return OAuthTokenData;
+        ObjectMapper objectMapper = new ObjectMapper();
+        OAuthToken oauthToken = objectMapper.readValue(OAuthTokenData, OAuthToken.class);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity request = new HttpEntity(headers);
+        String userinfo = userService.getUserInfoByToken(oauthToken.getAccess_token());
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(TOKEN_URL)
-                .queryParam("grant_type", GRANT_TYPE)
-                .queryParam("client_id", CLIENT_ID)
-                .queryParam("redirect_uri", REDIRECT_URI)
-                .queryParam("code", code)
-                .queryParam("client_secret", CLIENT_SECRET);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                uriComponentsBuilder.toUriString(),
-                HttpMethod.POST,
-                request,
-                String.class
-        );
-        return responseEntity.getBody();
+        return userinfo;
     }
 }
