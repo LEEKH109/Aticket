@@ -8,17 +8,13 @@ const DialButton = ({ handleClickCategory, selectedCategory }) => {
   const categories = ["전체", "연극", "전시", "뮤지컬"];
 
   const handleClickEvent = () => {
-    if (open) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
+    setOpen(!open);
   };
 
   const handleCategory = (category) => {
     handleClickCategory(category);
   };
-
+  
   return (
     <>
       <Button variant="contained" onClick={handleClickEvent}>
