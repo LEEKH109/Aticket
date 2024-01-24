@@ -6,18 +6,38 @@ import SelectDateTimePage from "./pages/SelectDateTimePage";
 import MyPage from "./pages/MyPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
+import ChatListPage from "./pages/ChatListPage";
+import UserPage from "./pages/UserPage";
+import Layout from "./pages/Layout";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ShortsPage />,
+      element: <Layout />,
       errorElement: <ErrorPage />,
-    },
-    {
-      path: "/select",
-      element: <SelectDateTimePage />,
-      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: "/",
+          element: <ShortsPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/chat",
+          element: <ChatListPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/user",
+          element: <UserPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/select",
+          element: <SelectDateTimePage />,
+          errorElement: <ErrorPage />,
+        },
+      ],
     },
     {
       path: "/mypage",
