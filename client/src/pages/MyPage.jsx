@@ -4,10 +4,11 @@ import DialButton from "../components/DialButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import { Link } from "react-router-dom";
-
+import KakaoLogin from "../components/KakaoLogin";
 
 const MyPage = () => {
-  const loginStart = ()=>{
+  const loginStart = () => {
+    
     console.log("login start");
   }
 
@@ -19,11 +20,7 @@ const MyPage = () => {
           <br />
           서비스입니다.
         </h1>
-        <img
-          src=".\..\public\img\kakao_login_medium_wide.png"
-          className="m-auto block cursor-pointer"
-          onClick={loginStart}
-        ></img>
+        <KakaoLogin/>
       </div>
     </>
   );
