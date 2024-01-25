@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/Footer";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
 import ChatListPage from "./pages/ChatListPage";
 import UserPage from "./pages/UserPage";
 import Layout from "./pages/Layout";
+import DetailPage from "./pages/DetailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -33,6 +33,11 @@ function App() {
         {
           path: "/select",
           element: <SelectDateTimePage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/art",
+          element: <DetailPage />,
           errorElement: <ErrorPage />,
         },
       ],
