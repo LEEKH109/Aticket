@@ -1,10 +1,11 @@
 package me.articket.server.art.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import me.articket.server.art.data.ArtCategory;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.common.util.StringListStringConverter;
 import org.apache.logging.log4j.util.Strings;
@@ -19,6 +20,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Art extends BaseEntity {
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Setter
+    private ArtCategory category;
 
     @Column(nullable = false)
     private String title;

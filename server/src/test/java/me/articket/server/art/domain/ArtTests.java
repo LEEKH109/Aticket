@@ -2,6 +2,7 @@ package me.articket.server.art.domain;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import me.articket.server.art.data.ArtCategory;
 import me.articket.server.art.repository.ArtRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -35,5 +36,19 @@ public class ArtTests {
         entityManager.refresh(art);
 
         Assertions.assertEquals(List.of("actor1", "actor2", "actor3"), art.getActors());
+    }
+
+    @Test
+    void categorySerializeTest() {
+        Art art = new Art();
+        art.setTitle("test title 2");
+        art.setPosterUrl("test poster url 2");
+        art.setCategory(ArtCategory.MUSICAL);
+
+        art = artRepository.save(art);
+        art.setCategory(ArtCategory.SHOW);
+        entityManager.refresh(art);
+
+        Assertions.assertEquals(ArtCategory.MUSICAL, art.getCategory());
     }
 }
