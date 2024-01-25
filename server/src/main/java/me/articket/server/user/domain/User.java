@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.articket.server.common.entity.BaseEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +34,7 @@ public class User extends BaseEntity {
 
     // 사용자 생년월일을 저장하는 필드
     @Column(nullable = false)
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     // 사용자 닉네임을 저장하는 필드
     @Column(nullable = false)
@@ -44,12 +45,13 @@ public class User extends BaseEntity {
     private String profileUrl;
 
     // 카카오에서 받아온 사용자 정보로 필드 값을 설정하는 메서드
-    public boolean setKakaoUserInfo(String kakaoId, String name, String email, LocalDateTime birthday, String kakaoNickname) {
+    public boolean setKakaoUserInfo(String kakaoId, String name, String email, LocalDate birthday, String kakaoNickname, String profileUrl) {
         this.kakaoId = kakaoId;
         this.name = name;
         this.email = email;
         this.birthday = birthday;
         this.nickname = filterKakaoNickname(kakaoNickname);
+        this.profileUrl = profileUrl;
         return true;
     }
 
