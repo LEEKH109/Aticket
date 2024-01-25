@@ -1,29 +1,23 @@
-import { useEffect, useState } from "react";
-import { Button } from "@mui/base";
-import DialButton from "../components/DialButton";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import StarIcon from "@mui/icons-material/Star";
-import { Link } from "react-router-dom";
-import KakaoLogin from "../components/KakaoLogin";
-
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../components/LoginContext";
 const MyPage = () => {
-  const loginStart = () => {
-    
-    console.log("login start");
-  }
-
-  return (
-    <>
-      <div className="h-[calc(100%_-_64px)] relative text-center">
-        <h1 className="text-4xl pt-20 mb-8 font-extrabold text-white">
-          로그인이 필요한
-          <br />
-          서비스입니다.
-        </h1>
-        <KakaoLogin/>
-      </div>
-    </>
-  );
-};
+    const navigate = useNavigate();
+    const { setLogin } = useContext(LoginContext);
+    const logout = () => {
+        localStorage.removeItem("id");
+        localStorage.removeItem("token");
+        setLogin(false);
+        navigate("/");
+    }
+    return(
+        <>
+            <div className="h-[calc(100%_-_64px)] flex-col align-middle content-center justify-center items-center bg-slate-100 text-center">
+                <p>로그인 되있어용</p>
+                <button onClick={logout}>로그아웃?</button>
+            </div>
+        </>
+    )
+}
 
 export default MyPage;

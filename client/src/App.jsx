@@ -1,13 +1,15 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
 import Footer from "./components/Footer";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
+import LoginPage from "./pages/LoginPage";
 import MyPage from "./pages/MyPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
 import ChatListPage from "./pages/ChatListPage";
 import UserPage from "./pages/UserPage";
+import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
 
 function App() {
@@ -37,23 +39,33 @@ function App() {
           element: <SelectDateTimePage />,
           errorElement: <ErrorPage />,
         },
+        {
+          path: "/loginpage",
+          element: <LoginPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/mypage",
+          element: <MyPage />,
+          errorElement: <ErrorPage />,
+        }
+        ,
+        {
+          path: "/login/oauth2/code/kakao",
+          element: <LoginLoad />,
+          errorElement: <ErrorPage />,
+        },
       ],
     },
-    {
-      path: "/mypage",
-      element: <MyPage/>,
-      errorElement: <ErrorPage/>
-    }
   ]);
 
   return (
     <>
-      <IsLoginProvider>
-        <div className="relative mx-auto w-[412px] bg-slate-900 h-[100vh]">
+      <div className="relative mx-auto w-[412px] bg-slate-900 h-[100vh]">
+        <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
-          <Footer />
-        </div>
-      </IsLoginProvider>
+        </IsLoginProvider>
+      </div>
     </>
   );
 }
