@@ -8,9 +8,10 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.kakaoId = :kakaoId")
-    List<User> findUserByKakaoId(String kakaoId);
+    Optional<User> findUserByKakaoId(String kakaoId);
 
 }
