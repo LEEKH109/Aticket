@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
+
 
     private final UserService userService;
 
@@ -22,4 +24,6 @@ public class UserController {
     public SuccessResponse<UserRes> getUser(@PathVariable Long id) {
         return new SuccessResponse<>(userService.getUser(id));
     }
+
+
 }

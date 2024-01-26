@@ -6,6 +6,29 @@ import org.junit.jupiter.api.Test;
 public class UserTests {
 
     @Test
+    public void filterNickname() {
+        User user = new User();
+
+        Assertions.assertEquals("32 41", user.filterKakaoNickname("  !32 41   ")); // 앞뒤, 공백, 특수문자 확인
+
+        Assertions.assertEquals("하 좌 야", user.filterKakaoNickname("   하 좌 야           ")); // 앞뒤, 한글 체크
+
+        Assertions.assertEquals("ㅁㅁㅁㅁ", user.filterKakaoNickname("ㅁㅁㅁㅁ")); // 한글 자음체크
+
+        Assertions.assertEquals("ㅏㅗㅜㅢ ㅟㅙㅘ", user.filterKakaoNickname("ㅏㅗㅜㅢ ㅟㅙㅘ")); //한글 모음체크
+
+        Assertions.assertEquals("user", user.filterKakaoNickname("  !   !  ").substring(0, 4)); // 특수문자 지운 후 남은공백 체크
+
+        Assertions.assertEquals("진 짜ㅋㅋ", user.filterKakaoNickname(" 馬 진 짜ㅋㅋ 五 ")); //한자 체크
+
+        Assertions.assertEquals("umbrella", user.filterKakaoNickname("    |!umbrella!|      ")); //영어 특수문자 체크
+
+        Assertions.assertEquals("user", user.filterKakaoNickname("           ").substring(0, 4)); //2글자 미만시 기본 닉네임 체크
+
+        Assertions.assertEquals("강1s지2d헌3a짱", user.filterKakaoNickname("강1s지2d헌3a짱4f")); //10글자 이상시 앞의 10글자만 자르기 체크
+    }
+
+    @Test
     public void setNicknameTrim() {
         User user = new User();
         String defaultNickname = user.getNickname();
