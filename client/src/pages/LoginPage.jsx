@@ -2,9 +2,9 @@ import KakaoOAuth from "../components/OAuth";
 const MyPage = () => {
   return (
     <>
-      <div className="h-[calc(100%_-_64px)] flex-col align-middle justify-items-center justify-center text-center bg-zinc-100">
-        <div className="h-10 p-10 m-auto">
-        <img src="/img/logo.png"/>
+      <div className="h-[calc(100%_-_64px)] flex flex-col align-middle justify-items-center justify-center text-center bg-zinc-100">
+        <div className="m-auto mt-0 mb-0">
+        <img className="w-64" src="/img/logo.png"/>
         </div>
         <p className="mt-10"/>
         <h1 className="text-4xl leading-10 mb-8 font-extrabold p-10">
