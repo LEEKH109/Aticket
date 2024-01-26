@@ -1,10 +1,10 @@
-package me.articket.server.user.controller;
+package me.articket.server.login.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import me.articket.server.user.data.OAuthToken;
-import me.articket.server.user.service.LoginService;
+import me.articket.server.login.data.OAuthToken;
+import me.articket.server.login.service.LoginService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

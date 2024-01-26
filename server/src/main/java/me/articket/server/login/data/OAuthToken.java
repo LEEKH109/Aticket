@@ -1,4 +1,4 @@
-package me.articket.server.user.data;
+package me.articket.server.login.data;
 
 import lombok.Data;
 

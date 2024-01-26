@@ -1,4 +1,4 @@
-package me.articket.server.user.service;
+package me.articket.server.login.service;
 
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
