@@ -3,15 +3,19 @@ import Shorts from "../components/Shorts";
 
 const ITEM_WIDTH = 412;
 const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
-// const ITEM_HEIGHT = 639;
 
 const Carousel = ({ shortList }) => {
-  const carouselItemsRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [transY, setTransY] = useState(0);
+  const [startTime, setStartTime] = useState(new Date());
+  const carouselItemsRef = useRef(null);
+  const positionYRef = useRef(0);
+  const maxLen = useRef(0);
 
-  // 범위 안의 값을 반환하는 함수
+  const isTouchScreen =
+    typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
   const inRange = (value, min, max) => {
     if (value < min) {
       return min;
@@ -24,56 +28,112 @@ const Carousel = ({ shortList }) => {
     return value;
   };
 
-  // 마우스를 눌렀을 때 실행될 함수
   const handleMouseDown = (clickEvent) => {
     clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
 
     setIsDragging(true);
-
-    const handleMouseMove = (moveEvent) => {
-      // 클릭 시작점의 y좌표에서 움직인 위치의 y좌표를 빼면 총 움직인 거리가 됨
-      // deltaY가 음수라면 위에서 아래로 드래그, 양수면 아래에서 위로 드래그
-      const deltaY = clickEvent.pageY - moveEvent.pageY;
-
-      // 드래그 도중 영역을 벗어나면 드래그 취소
-      if (moveEvent.clientY > ITEM_HEIGHT || moveEvent.clientY < 0) {
-        window.removeEventListener("mousemove", handleMouseMove);
-        setTransY(0);
-        setIsDragging(false);
-        return;
-      }
-
-      // 한 번의 드래그로 화면 이상을 가지 못하도록 값 수정
-      setTransY(inRange(deltaY, -ITEM_HEIGHT, ITEM_HEIGHT));
-    };
-
-    // 사용자가 드래그를 마치고 마우스를 뗄 때
-    const handleMouseUp = (moveEvent) => {
-      const deltaY = clickEvent.pageY - moveEvent.pageY;
-
-      // 사용자가 끝까지 움직이지 않아도 carousel이 이동하기 위해 리스트의 인덱스 조정
-      if (deltaY < -150) {
-        setCurrentIndex(inRange(currentIndex - 1, 0, shortList.length - 1));
-      }
-      if (deltaY > 150) {
-        setCurrentIndex(inRange(currentIndex + 1, 0, shortList.length - 1));
-      }
-
-      // 드래그가 끝났으므로 이동 거리는 0으로 리셋ㄴ
-      setTransY(0);
-      setIsDragging(false);
-
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    positionYRef.current = clickEvent.pageY;
 
     window.addEventListener("mousemove", handleMouseMove);
     carouselItems?.addEventListener("mouseup", handleMouseUp, { once: true });
   };
 
+  const handleMouseMove = (moveEvent) => {
+    const deltaY = positionYRef.current - moveEvent.pageY;
+
+    if (moveEvent.clientY > ITEM_HEIGHT || moveEvent.clientY < 0) {
+      window.removeEventListener("mousemove", handleMouseMove);
+      setTransY(0);
+      setIsDragging(false);
+      return;
+    }
+
+    setTransY(inRange(deltaY, -ITEM_HEIGHT, ITEM_HEIGHT));
+  };
+
+  const handleMouseUp = (moveEvent) => {
+    const deltaY = positionYRef.current - moveEvent.pageY;
+    let nextIndex = currentIndex;
+
+    if (deltaY < -150) {
+      nextIndex = inRange(currentIndex - 1, 0, maxLen - 1);
+      setCurrentIndex(nextIndex);
+    }
+    if (deltaY > 150) {
+      nextIndex = inRange(currentIndex + 1, 0, maxLen - 1);
+      setCurrentIndex(inRange(nextIndex));
+    }
+
+    setTransY(0);
+    setIsDragging(false);
+
+    if (currentIndex !== nextIndex) {
+      console.log(currentIndex, "번 쇼츠 ", (new Date() - startTime) / 1000, "초 봤음");
+      setStartTime(new Date());
+    }
+
+    window.removeEventListener("mousemove", handleMouseMove);
+  };
+
+  const handleTouchStart = (touchEvent) => {
+    const carouselItems = carouselItemsRef.current;
+    positionYRef.current = touchEvent.touches[0].pageY;
+
+    setIsDragging(true);
+    window.addEventListener("touchmove", handleTouchMove);
+    carouselItems?.addEventListener("touchend", handleTouchEnd, { once: true });
+  };
+
+  const handleTouchMove = (moveEvent) => {
+    const move = moveEvent.touches[0];
+    const deltaY = positionYRef.current - move.pageY;
+
+    if (move.clientY > ITEM_HEIGHT || move.clientY < 0) {
+      window.removeEventListener("touchmove", handleTouchMove);
+      setTransY(0);
+      setIsDragging(false);
+      return;
+    }
+
+    setTransY(inRange(deltaY, -ITEM_HEIGHT, ITEM_HEIGHT));
+  };
+
+  const handleTouchEnd = (moveEvent) => {
+    const move = moveEvent.changedTouches[0];
+    const deltaY = positionYRef.current - move.pageY;
+
+    if (deltaY < -150) {
+      setCurrentIndex(inRange(currentIndex - 1, 0, maxLen - 1));
+    }
+    if (deltaY > 150) {
+      setCurrentIndex(inRange(currentIndex + 1, 0, maxLen - 1));
+    }
+
+    setTransY(0);
+    setIsDragging(false);
+
+    window.removeEventListener("touchmove", handleTouchMove);
+  };
+
+  useEffect(() => {
+    maxLen.current = shortList.length;
+  }, [shortList.length]);
+
+  useEffect(() => {
+    setStartTime(new Date());
+  }, [currentIndex]);
+
   useEffect(() => {
     const carouselItems = carouselItemsRef.current;
 
+    if (isTouchScreen) {
+      carouselItems?.addEventListener("touchstart", handleTouchStart);
+
+      return () => {
+        carouselItems?.removeEventListener("touchstart", handleTouchStart);
+      };
+    }
     carouselItems?.addEventListener("mousedown", handleMouseDown);
 
     return () => {
@@ -81,7 +141,6 @@ const Carousel = ({ shortList }) => {
     };
   }, [isDragging]);
 
-  // 드래그 동안에도 carousel은 움직여야 함
   useEffect(() => {
     if (carouselItemsRef.current)
       carouselItemsRef.current.style.transform = `translateY(${-(currentIndex * ITEM_HEIGHT + transY)}px)`;
