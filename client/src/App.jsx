@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
-import Footer from "./components/Footer";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import LoginPage from "./pages/LoginPage";
 import MyPage from "./pages/MyPage";
@@ -11,6 +10,7 @@ import ChatListPage from "./pages/ChatListPage";
 import UserPage from "./pages/UserPage";
 import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
+import DetailPage from "./pages/DetailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -55,6 +55,11 @@ function App() {
           element: <LoginLoad />,
           errorElement: <ErrorPage />,
         },
+        {
+          path: "/art",
+          element: <DetailPage />,
+          errorElement: <ErrorPage />,
+        }
       ],
     },
   ]);
