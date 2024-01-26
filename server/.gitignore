@@ -4,7 +4,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/resources/application-secret.*
+**/resources/application-API-KEY.properties
+**/resources/application-CLIENT-SECRET.properties
 
 ### STS ###
 .apt_generated
