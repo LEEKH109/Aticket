@@ -28,12 +28,12 @@ public class LoginService {
 
     private final String GRANT_TYPE = "authorization_code";
 
-    @Value("${spring.datasource.client-id}")
+    @Value("${kakao-api-key}")
     private String CLIENT_ID;
 
     private final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/kakao";
 
-    @Value("${spring.datasource.client-secret}")
+    @Value("${kakao-client-secret}")
     private String CLIENT_SECRET;
 
     private final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
