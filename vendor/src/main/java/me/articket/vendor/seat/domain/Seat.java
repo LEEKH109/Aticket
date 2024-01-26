@@ -1,4 +1,4 @@
-package me.articket.vendor.timetable.domain;
+package me.articket.vendor.seat.domain;
 
 import lombok.Getter;
 import lombok.Setter;

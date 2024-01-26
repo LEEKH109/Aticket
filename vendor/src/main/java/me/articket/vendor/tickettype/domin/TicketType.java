@@ -1,4 +1,4 @@
-package me.articket.vendor.timetable.domain;
+package me.articket.vendor.tickettype.domin;
 
 import lombok.Getter;
 import lombok.Setter;
