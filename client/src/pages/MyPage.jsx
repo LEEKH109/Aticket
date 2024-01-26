@@ -4,6 +4,7 @@ import { LoginContext } from "../components/LoginContext";
 const MyPage = () => {
     const navigate = useNavigate();
     const { setLogin } = useContext(LoginContext);
+    const userName = localStorage.getItem("name");
     const logout = () => {
         localStorage.removeItem("id");
         localStorage.removeItem("token");
@@ -13,8 +14,8 @@ const MyPage = () => {
     return(
         <>
             <div className="h-[calc(100%_-_64px)] flex-col align-middle content-center justify-center items-center bg-slate-100 text-center">
-                <p>로그인 되있어용</p>
-                <button onClick={logout}>로그아웃?</button>
+                <p>{userName}님 반갑습니다.</p>
+                <button onClick={logout}>로그아웃</button>
             </div>
         </>
     )

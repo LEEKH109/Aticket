@@ -31,7 +31,7 @@ public class LoginService {
     @Value("${spring.datasource.client-id}")
     private String CLIENT_ID;
 
-    private final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/kakao";
+    private final String REDIRECT_URI = "http://localhost:5173/login/oauth2/code/kakao";
 
     @Value("${spring.datasource.client-secret}")
     private String CLIENT_SECRET;
@@ -55,7 +55,6 @@ public class LoginService {
         params.add("client_id", CLIENT_ID);
         params.add("redirect_uri", REDIRECT_URI);
         params.add("code", code);
-
         // 요청하기 위해 헤더(Header)와 데이터(Body)를 합친다.
         // kakaoTokenRequest는 데이터(Body)와 헤더(Header)를 Entity가 된다.
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
