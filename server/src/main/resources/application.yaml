@@ -9,4 +9,6 @@ spring:
       ddl-auto: update
 
   profiles:
-    include: secret
+    include:
+      API-KEY, 
+      CLIENT-SECRET
