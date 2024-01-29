@@ -11,6 +11,8 @@ public enum ErrorCode {
     USER_NOT_FOUND_ERROR(404, "USR001", "존재하지 않는 사용자입니다."),
 
     ART_NOT_FOUND_ERROR(404, "ART001", "존재하지 않는 공연입니다."),
+
+    SHORTS_NOT_FOUND_ERROR(404, "SHR001", "존재하지 않는 숏폼입니다."),
     ;
 
     private final int status;
