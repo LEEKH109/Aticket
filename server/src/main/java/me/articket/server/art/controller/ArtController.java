@@ -1,12 +1,10 @@
 package me.articket.server.art.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.articket.server.art.data.AddArtReq;
 import me.articket.server.art.data.ArtInfoRes;
 import me.articket.server.art.service.ArtService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/art")
@@ -18,5 +16,10 @@ public class ArtController {
     @GetMapping("/{id}")
     public ArtInfoRes getArtInfo(@PathVariable Long id) {
         return artService.getArtInfo(id);
+    }
+
+    @PutMapping("/add")
+    public ArtInfoRes addArt(@RequestBody AddArtReq req) {
+        return artService.addArt(req);
     }
 }
