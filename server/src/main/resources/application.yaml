@@ -11,7 +11,3 @@ spring:
   profiles:
     include:
       secret
-
-
-jwt:
-  secret: 4oCYbGVhLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtbmZ0LXNwcmluZy1ib290LWp3dC10dXRvcmlhbOKAmQo=
