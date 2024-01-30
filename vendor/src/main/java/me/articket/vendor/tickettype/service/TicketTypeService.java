@@ -2,7 +2,6 @@ package me.articket.vendor.tickettype.service;
 
 import lombok.RequiredArgsConstructor;
 import me.articket.vendor.tickettype.data.TicketTotalDtoRes;
-import me.articket.vendor.tickettype.data.TicketTypeDtoRes;
 import me.articket.vendor.tickettype.repository.TicketTyperRepository;
 import me.articket.vendor.timetable.data.TimetableDetailDtoRes;
 import me.articket.vendor.timetable.repository.TimetableRepository;
@@ -18,7 +17,7 @@ public class TicketTypeService {
 
     public TicketTotalDtoRes getTicketForTimetable(int timetableId){
         TimetableDetailDtoRes timetableDetail = timetableRepository.findTimetableDetailsByTimetableId(timetableId);
-        List<TicketTypeDtoRes> ticketType = ticketTyperRepository.findTicketTypesByTimetableId(timetableId);
+        List<TicketTotalDtoRes.TicketTypeDtoRes> ticketType = ticketTyperRepository.findTicketTypesByTimetableId(timetableId);
 
         TicketTotalDtoRes response = new TicketTotalDtoRes();
         response.setArtId(timetableDetail.getArtId());

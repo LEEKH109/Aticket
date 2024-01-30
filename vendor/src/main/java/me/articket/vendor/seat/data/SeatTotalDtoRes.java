@@ -14,4 +14,15 @@ public class SeatTotalDtoRes {
     private String category;
     private String date;
     private List<SeatDtoRes> seatInfo;
+
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class SeatDtoRes{
+        private Integer timetableId;
+        private String seatNumber;
+        private String status;
+        private String type;
+        private Integer price;
+    }
 }

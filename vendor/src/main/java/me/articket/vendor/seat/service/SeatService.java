@@ -1,7 +1,6 @@
 package me.articket.vendor.seat.service;
 
 import lombok.RequiredArgsConstructor;
-import me.articket.vendor.seat.data.SeatDtoRes;
 import me.articket.vendor.seat.data.SeatTotalDtoRes;
 import me.articket.vendor.seat.repository.SeatRepository;
 import me.articket.vendor.timetable.data.TimetableDetailDtoRes;
@@ -18,7 +17,7 @@ public class SeatService {
 
     public SeatTotalDtoRes getSeatForTimetable(int timetableId){
         TimetableDetailDtoRes timetableDetail = timetableRepository.findTimetableDetailsByTimetableId(timetableId);
-        List<SeatDtoRes> seats = seatRepository.findSeatByTimetableId(timetableId);
+        List<SeatTotalDtoRes.SeatDtoRes> seats = seatRepository.findSeatByTimetableId(timetableId);
 
         SeatTotalDtoRes response = new SeatTotalDtoRes();
         response.setArtId(timetableDetail.getArtId());

@@ -14,4 +14,13 @@ public class TicketTotalDtoRes {
     private String category;
     private String date;
     private List<TicketTypeDtoRes>ticketTypes;
+
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class TicketTypeDtoRes {
+        private int ticketId;
+        private String name;
+        private int price;
+    }
 }
