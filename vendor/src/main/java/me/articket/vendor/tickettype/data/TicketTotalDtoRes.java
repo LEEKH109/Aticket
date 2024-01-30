@@ -19,8 +19,8 @@ public class TicketTotalDtoRes {
     @Getter
     @Setter
     public static class TicketTypeDtoRes {
-        private int ticketId;
-        private String name;
+        private int ticketTypeId;
+        private String userType;
         private int price;
     }
 }

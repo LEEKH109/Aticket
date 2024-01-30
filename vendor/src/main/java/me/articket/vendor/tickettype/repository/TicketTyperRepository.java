@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TicketTyperRepository {
-    @Select("SELECT tickettype_id as ticketId, user_type as name, price " +
-            "FROM tickettype " +
+    @Select("SELECT ticket_type_id, user_type, price " +
+            "FROM ticket_type " +
             "WHERE timetable_id = #{timetableId}")
     List<TicketTotalDtoRes.TicketTypeDtoRes> findTicketTypesByTimetableId(int timetableId);
 }

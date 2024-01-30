@@ -24,19 +24,19 @@ INSERT INTO timetable (art_id, category_id, date, start_time, end_time, status) 
                                                                                     (5, 2, '2023-03-28', '13:00:00', '15:00:00', 0),
                                                                                     (6, 2, '2023-03-28', '13:00:00', '15:00:00', 0);
 
-INSERT INTO tickettype (timetable_id, user_type, price) VALUES
-                                                            (1, '청소년', 12000),
-                                                            (1, '성인', 15000),
-                                                            (1, '유아', 3000),
-                                                            (2, '청소년', 12000),
-                                                            (2, '성인', 15000),
-                                                            (2, '유아', 3000),
-                                                            (3, '청소년', 12000),
-                                                            (3, '성인', 15000),
-                                                            (3, '유아', 3000),
-                                                            (4, '청소년', 9000),
-                                                            (4, '성인', 12000),
-                                                            (4, '유아', 1000);
+INSERT INTO ticket_type (timetable_id, user_type, price) VALUES
+                                                             (1, '청소년', 12000),
+                                                             (1, '성인', 15000),
+                                                             (1, '유아', 3000),
+                                                             (2, '청소년', 12000),
+                                                             (2, '성인', 15000),
+                                                             (2, '유아', 3000),
+                                                             (3, '청소년', 12000),
+                                                             (3, '성인', 15000),
+                                                             (3, '유아', 3000),
+                                                             (4, '청소년', 9000),
+                                                             (4, '성인', 12000),
+                                                             (4, '유아', 1000);
 
 INSERT INTO seat (timetable_id, seat_number, status, type, price) VALUES
                                                                       (6, 'A1', '예약가능', 'R석', 50000),
@@ -78,8 +78,8 @@ SELECT timetable_id as timetableId, seat_number as seatNumber, status, type, pri
 FROM seat
 WHERE timetable_id = 6;
 
-SELECT tickettype_id as ticketId, user_type as name, price
-FROM tickettype
+SELECT ticket_type_id as ticketId, user_type as name, price
+FROM ticket_type
 WHERE timetable_id = 1;
 
 SELECT t.art_id, c.name as category, t.date

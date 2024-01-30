@@ -25,12 +25,12 @@ CREATE TABLE IF NOT EXISTS `timetable` (
                                            PRIMARY KEY (`timetable_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `tickettype` (
-                                            `tickettype_id` int NOT NULL AUTO_INCREMENT,
-                                            `timetable_id` int NOT NULL,
-                                            `user_type` ENUM('청소년', '성인', '유아') NOT NULL,
-                                            `price` int NOT NULL,
-                                            PRIMARY KEY (`tickettype_id`)
+CREATE TABLE IF NOT EXISTS `ticket_type` (
+                                             `ticket_type_id` int NOT NULL AUTO_INCREMENT,
+                                             `timetable_id` int NOT NULL,
+                                             `user_type` ENUM('청소년', '성인', '유아') NOT NULL,
+                                             `price` int NOT NULL,
+                                             PRIMARY KEY (`ticket_type_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `seat` (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `billing_detail` (
                                                 `billing_detail_id` int NOT NULL AUTO_INCREMENT,
                                                 `billing_id` int NOT NULL,
                                                 `timetable_id` int NOT NULL,
-                                                `tickettype_id` int NULL,
+                                                `ticket_type_id` int NULL,
                                                 `seat_timetable_id` int NULL,
                                                 `seat_number` varchar(30) NULL,
                                                 `count` int NOT NULL DEFAULT 1 COMMENT '티켓 종류일 때 사용',
@@ -74,7 +74,7 @@ ALTER TABLE `timetable`
     ADD FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`),
     ADD FOREIGN KEY (`category_id`) REFERENCES `art` (`category_id`);
 
-ALTER TABLE `tickettype`
+ALTER TABLE `ticket_type`
     ADD FOREIGN KEY (`timetable_id`) REFERENCES `timetable` (`timetable_id`);
 
 ALTER TABLE `seat`
@@ -85,6 +85,6 @@ ALTER TABLE `billing`
 
 ALTER TABLE `billing_detail`
     ADD FOREIGN KEY (`billing_id`) REFERENCES `billing` (`billing_id`),
-    ADD FOREIGN KEY (`timetable_id`) REFERENCES `tickettype` (`timetable_id`),
-    ADD FOREIGN KEY (`tickettype_id`) REFERENCES `tickettype` (`tickettype_id`),
+    ADD FOREIGN KEY (`timetable_id`) REFERENCES `ticket_type` (`timetable_id`),
+    ADD FOREIGN KEY (`ticket_type_id`) REFERENCES `ticket_type` (`ticket_type_id`),
     ADD FOREIGN KEY (`seat_timetable_id`, `seat_number`) REFERENCES `seat` (`timetable_id`, `seat_number`);
