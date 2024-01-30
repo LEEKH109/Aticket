@@ -14,8 +14,8 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
 
-    public LikeStateRes getLikeState(Long shorts_id, Long user_id) {
-        Optional<Like> optionalLike = likeRepository.findTopByShorts_IdAndUser_IdOrderByCreatedDateDesc(shorts_id, user_id);
+    public LikeStateRes getLikeState(Long shortsId, Long userId) {
+        Optional<Like> optionalLike = likeRepository.findTopByShorts_IdAndUser_IdOrderByCreatedDateDesc(shortsId, userId);
         boolean like = optionalLike.map(Like::getLike).orElse(false);
         return LikeStateRes.of(like);
     }
