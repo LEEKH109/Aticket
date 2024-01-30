@@ -13,9 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TimetableService {
     private final TimetableRepository timetableRepository;
-    public Timetable selectTimetable(int artId){
-        return timetableRepository.selectTimetable(artId);
-    }
     public List<TimetableDtoRes> getTimetableByArtId(int artId) {
         return timetableRepository.findTimetableByArtId(artId);
     }

@@ -2,7 +2,7 @@ package me.articket.vendor.tickettype.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Select;
 import me.articket.vendor.tickettype.data.TicketTypeDtoRes;
 
 import java.util.List;

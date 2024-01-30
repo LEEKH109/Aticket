@@ -11,9 +11,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TimetableRepository {
-    @Select("SELECT * FROM timetable WHERE art_id = #{artId}")
-    Timetable selectTimetable(int artId);
-
     @Select("SELECT date " +
             "FROM timetable " +
             "WHERE art_id = #{artId} " +

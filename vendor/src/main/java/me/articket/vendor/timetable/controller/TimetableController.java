@@ -1,6 +1,8 @@
 package me.articket.vendor.timetable.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.articket.vendor.seat.data.SeatTotalDtoRes;
+import me.articket.vendor.seat.service.SeatService;
 import me.articket.vendor.tickettype.data.TicketTotalDtoRes;
 import me.articket.vendor.tickettype.service.TicketTypeService;
 import me.articket.vendor.timetable.data.TimetableDtoRes;
@@ -21,6 +23,7 @@ import java.util.List;
 public class TimetableController {
     private final TimetableService timetableService;
     private final TicketTypeService ticketTypeService;
+    private final SeatService seatService;
     @GetMapping("/{artId}")
     public ResponseEntity<List<TimetableDtoRes>> getTimetableByArtId(@PathVariable("artId") int artId) {
         List<TimetableDtoRes> timetable = timetableService.getTimetableByArtId(artId);
@@ -37,5 +40,11 @@ public class TimetableController {
     public ResponseEntity<TicketTotalDtoRes> getTicketsForTimetable(@PathVariable("timetableId") int timetableId){
         TicketTotalDtoRes tickets = ticketTypeService.getTicketForTimetable(timetableId);
         return ResponseEntity.ok(tickets);
+    }
+
+    @GetMapping("/{timetableId}/seats")
+    public ResponseEntity<SeatTotalDtoRes> getSeatsForTimetable(@PathVariable("timetableId") int timetableId){
+        SeatTotalDtoRes seats = seatService.getSeatForTimetable(timetableId);
+        return ResponseEntity.ok(seats);
     }
 }
