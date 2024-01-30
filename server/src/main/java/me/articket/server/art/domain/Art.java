@@ -18,8 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Art extends BaseEntity {
 
+    @Column(nullable = false)
+    @Setter
+    private Integer vendorArtId;
+
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     @Setter
     private ArtCategory category;
 
@@ -35,7 +39,7 @@ public class Art extends BaseEntity {
     private LocalDateTime endDate;
 
     @Convert(converter = StringListStringConverter.class)
-    @Column
+    @Column(nullable = false)
     private List<String> actors = new ArrayList<>();
 
     @Column
@@ -46,12 +50,13 @@ public class Art extends BaseEntity {
     private String posterUrl;
 
     @Convert(converter = StringListStringConverter.class)
-    @Column
+    @Column(nullable = false)
     private List<String> infoUrls = new ArrayList<>();
 
     @Builder
-    public Art(Long id, ArtCategory category, String title, LocalDateTime startDate, LocalDateTime endDate, List<String> actors, Integer rate, String posterUrl, List<String> infoUrls) {
+    public Art(Long id, Integer vendorArtId, ArtCategory category, String title, LocalDateTime startDate, LocalDateTime endDate, List<String> actors, Integer rate, String posterUrl, List<String> infoUrls) {
         this.id = id;
+        this.vendorArtId = vendorArtId;
         this.category = category;
         this.title = title;
         this.startDate = startDate;
