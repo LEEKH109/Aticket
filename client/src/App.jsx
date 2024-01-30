@@ -3,7 +3,6 @@ import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import LoginPage from "./pages/LoginPage";
-import MyPage from "./pages/MyPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
 import ChatListPage from "./pages/ChatListPage";
@@ -11,6 +10,8 @@ import UserPage from "./pages/UserPage";
 import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
+import CollectionList from "./components/CollectionList";
+import BookHistoryList from "./components/BookHistoryList";
 
 function App() {
   const router = createBrowserRouter([
@@ -33,6 +34,18 @@ function App() {
           path: "/user",
           element: <UserPage />,
           errorElement: <ErrorPage />,
+          children: [
+            {
+              path: "collection",
+              element: <CollectionList />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "bookhistory",
+              element: <BookHistoryList />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
         {
           path: "/select",
@@ -45,12 +58,6 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "/mypage",
-          element: <MyPage />,
-          errorElement: <ErrorPage />,
-        }
-        ,
-        {
           path: "/login/oauth2/code/kakao",
           element: <LoginLoad />,
           errorElement: <ErrorPage />,
@@ -59,14 +66,14 @@ function App() {
           path: "/art",
           element: <DetailPage />,
           errorElement: <ErrorPage />,
-        }
+        },
       ],
     },
   ]);
 
   return (
     <>
-      <div className="relative mx-auto w-[412px] bg-slate-900 h-[100vh]">
+      <div className="relative mx-auto max-w-[412px] h-[100vh]">
         <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </IsLoginProvider>
