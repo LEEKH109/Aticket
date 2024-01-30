@@ -1,9 +1,9 @@
 package me.articket.server.login.service;
 
-import com.nimbusds.jose.shaded.gson.JsonElement;
-import com.nimbusds.jose.shaded.gson.JsonObject;
-import com.nimbusds.jose.shaded.gson.JsonParser;
+import com.nimbusds.jose.shaded.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import me.articket.server.login.data.KakaoOAuthTokenRes;
+import me.articket.server.login.data.KakaoUserInfoRes;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,17 +27,17 @@ public class LoginService {
 
     private final String GRANT_TYPE = "authorization_code";
 
-    @Value("${kakao-api-key}")
+    @Value("${spring.security.oauth2.provider.kakao.client-id}")
     private String CLIENT_ID;
 
     private final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/kakao";
 
-    @Value("${kakao-client-secret}")
+    @Value("${spring.security.oauth2.provider.kakao.client-secret}")
     private String CLIENT_SECRET;
 
     private final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
 
-    public String getTokenbyCode(String code) {
+    public KakaoOAuthTokenRes getTokenbyCode(String code) {
 
         // POST 방식으로 key=value 데이터를 요청 (카카오쪽으로)
         // 이 때 필요한 라이브러리가 RestTemplate, 얘를 쓰면 http 요청을 편하게 할 수 있다.
@@ -67,10 +66,15 @@ public class LoginService {
                 kakaoTokenRequest, // 요청할 때 보낼 데이터
                 String.class // 요청 시 반환되는 데이터 타입
         );
-        return response.getBody();
+        System.out.println(response.getBody());
+
+        Gson gson = new Gson();
+
+        return gson.fromJson(response.getBody(), KakaoOAuthTokenRes.class);
+
     }
 
-    public String getUserInfoByToken(String token) {
+    public KakaoUserInfoRes getUserInfoByToken(String token) {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -79,49 +83,36 @@ public class LoginService {
 
         HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(headers);
 
-        ResponseEntity<String> res = rt.exchange(
+        ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
                 req,
                 String.class
         );
 
-        return res.getBody();
+        Gson gson = new Gson();
+
+        return gson.fromJson(response.getBody(), KakaoUserInfoRes.class);
+
     }
 
-    public String RegistrationCheck(String userinfo) {
-
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(userinfo);
-
-        JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-        JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-
-        String loginuserkakaoId = element.getAsJsonObject().get("id").getAsString();
-
-        String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-        String birthyearday = kakao_account.getAsJsonObject().get("birthyear").getAsString() + kakao_account.getAsJsonObject().get("birthday").getAsString();
-        String profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
+    public User RegistrationCheck(KakaoUserInfoRes userinfo) {
+        boolean isRegist = false;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate birthday = LocalDate.parse(birthyearday, formatter);
+        LocalDate birthday = LocalDate.parse(userinfo.getKakao_account().getBirthyear() + userinfo.getKakao_account().getBirthday(), formatter);
 
-        if (userRepository.findUserByKakaoId(loginuserkakaoId).isEmpty()) {
-
-            String name = kakao_account.getAsJsonObject().get("name").getAsString();
-            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+        if (userRepository.findByKakaoId(userinfo.getId()) == null) {
             User newuser = new User();
-            newuser.setKakaoUserInfo(loginuserkakaoId, name, email, birthday, nickname, profile_image);
+            newuser.setKakaoUserInfo(
+                    userinfo.getId(),
+                    userinfo.getKakao_account().getName(),
+                    userinfo.getKakao_account().getEmail(),
+                    birthday,
+                    userinfo.getKakao_account().getProfile().getNickname(),
+                    userinfo.getKakao_account().getProfile().getProfile_image_url());
             userRepository.save(newuser);
         }
 
-
-
-        JsonObject json = new JsonObject();
-        json.addProperty("nickname", nickname);
-        json.addProperty("birthday", String.valueOf(birthday));
-        json.addProperty("profile_image", profile_image);
-
-        return json.toString();
-
+        return userRepository.findByKakaoId(userinfo.getId());
     }
 }
