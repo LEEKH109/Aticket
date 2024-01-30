@@ -32,6 +32,4 @@ public class UserService {
         // UserRes 클래스의 정적 팩토리 메서드를 사용하여 UserRes 객체를 생성하여 반환
         return UserRes.of(user);
     }
-
-
 }

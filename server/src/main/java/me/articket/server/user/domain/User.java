@@ -1,15 +1,15 @@
 package me.articket.server.user.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.articket.server.common.entity.BaseEntity;
+import me.articket.server.user.data.UserRole;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +22,7 @@ public class User extends BaseEntity {
 
     // 카카오 ID를 저장하는 필드
     @Column(nullable = false)
-    private String kakaoId;
+    private Long kakaoId;
 
     // 사용자의 실명을 저장하는 필드
     @Column(nullable = false)
@@ -44,8 +44,18 @@ public class User extends BaseEntity {
     @Column
     private String profileUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.ROLE_USER;
+
+    public Collection<String> getRoles() {
+        Collection<String> roles = new ArrayList<>();
+        roles.add(role.getValue());
+        return roles;
+    }
+
     // 카카오에서 받아온 사용자 정보로 필드 값을 설정하는 메서드
-    public boolean setKakaoUserInfo(String kakaoId, String name, String email, LocalDate birthday, String kakaoNickname, String profileUrl) {
+    public boolean setKakaoUserInfo(Long kakaoId, String name, String email, LocalDate birthday, String kakaoNickname, String profileUrl) {
         this.kakaoId = kakaoId;
         this.name = name;
         this.email = email;

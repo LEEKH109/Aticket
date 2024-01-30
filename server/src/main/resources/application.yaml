@@ -10,5 +10,4 @@ spring:
 
   profiles:
     include:
-      API-KEY, 
-      CLIENT-SECRET
+      secret
