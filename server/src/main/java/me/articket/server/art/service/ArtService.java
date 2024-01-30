@@ -21,8 +21,7 @@ public class ArtService {
     @Transactional(readOnly = true)
     public ArtInfoRes getArtInfo(Long id) {
         Optional<Art> optionalArt = artRepository.findById(id);
-        optionalArt.orElseThrow(() -> new CustomException(ErrorCode.ART_NOT_FOUND_ERROR));
-        Art art = optionalArt.get();
+        Art art = optionalArt.orElseThrow(() -> new CustomException(ErrorCode.ART_NOT_FOUND_ERROR));
         return ArtInfoRes.of(art);
     }
 

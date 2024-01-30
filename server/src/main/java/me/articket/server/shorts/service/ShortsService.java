@@ -18,8 +18,7 @@ public class ShortsService {
 
     public ShortsInfoRes getShortsInfo(Long id) {
         Optional<Shorts> optionalShorts = shortsRepository.findById(id);
-        optionalShorts.orElseThrow(() -> new CustomException(ErrorCode.SHORTS_NOT_FOUND_ERROR));
-        Shorts shorts = optionalShorts.get();
+        Shorts shorts = optionalShorts.orElseThrow(() -> new CustomException(ErrorCode.SHORTS_NOT_FOUND_ERROR));
         return ShortsInfoRes.of(shorts);
     }
 }
