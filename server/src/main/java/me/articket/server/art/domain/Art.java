@@ -1,10 +1,7 @@
 package me.articket.server.art.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import me.articket.server.art.data.ArtCategory;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.common.util.StringListStringConverter;
@@ -51,6 +48,19 @@ public class Art extends BaseEntity {
     @Convert(converter = StringListStringConverter.class)
     @Column
     private List<String> infoUrls = new ArrayList<>();
+
+    @Builder
+    public Art(Long id, ArtCategory category, String title, LocalDateTime startDate, LocalDateTime endDate, List<String> actors, Integer rate, String posterUrl, List<String> infoUrls) {
+        this.id = id;
+        this.category = category;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.actors = actors;
+        this.rate = rate;
+        this.posterUrl = posterUrl;
+        this.infoUrls = infoUrls;
+    }
 
     public boolean setTitle(String title) {
         if (Strings.isBlank(title)) {
