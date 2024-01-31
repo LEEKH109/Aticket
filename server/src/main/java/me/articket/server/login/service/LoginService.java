@@ -66,7 +66,6 @@ public class LoginService {
                 kakaoTokenRequest, // 요청할 때 보낼 데이터
                 String.class // 요청 시 반환되는 데이터 타입
         );
-        System.out.println(response.getBody());
 
         Gson gson = new Gson();
 
@@ -97,7 +96,6 @@ public class LoginService {
     }
 
     public User RegistrationCheck(KakaoUserInfoRes userinfo) {
-        boolean isRegist = false;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate birthday = LocalDate.parse(userinfo.getKakao_account().getBirthyear() + userinfo.getKakao_account().getBirthday(), formatter);
 
