@@ -8,11 +8,11 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
   const [isDragging, setIsDragging] = useState(false);
   const navigate = useNavigate();
 
-  const handleMouseUp = (id) => {
+  const handleMouseUp = (shortsId) => {
     if (!isDragging) {
       navigate("/art", {
         state: {
-          id,
+          shortsId,
         },
       });
     }
