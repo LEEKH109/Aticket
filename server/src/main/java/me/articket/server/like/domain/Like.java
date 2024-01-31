@@ -2,6 +2,7 @@ package me.articket.server.like.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.articket.server.common.entity.BaseEntity;
@@ -13,6 +14,7 @@ import me.articket.server.user.domain.User;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Like extends BaseEntity {
 
     @ManyToOne
