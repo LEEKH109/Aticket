@@ -8,7 +8,7 @@ spring:
     hibernate:
       ddl-auto: update
   jackson:
-    property-naming-strategy: SNAKE_CASE
+    property-naming-strategy: LOWER_CAMEL_CASE
 
   profiles:
     include:
