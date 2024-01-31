@@ -14,6 +14,7 @@ public class AddArtReq {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private String location;
     private List<String> actors;
     private Integer rate;
     private String posterUrl;
@@ -25,6 +26,7 @@ public class AddArtReq {
         art.setTitle(getTitle());
         art.setStartDate(getStartDate());
         art.setEndDate(getEndDate());
+        art.setLocation(getLocation());
         art.getActors().clear();
         art.getActors().addAll(getActors());
         art.setRate(getRate());
