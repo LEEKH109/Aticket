@@ -33,7 +33,7 @@ public class LikeService {
         Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR)); // 인증 경로이므로 발생하면 안됨
         Optional<Like> optionalLike = likeRepository.findTopByShortsAndUserOrderByCreatedDateDesc(shorts, user);
-        boolean state = optionalLike.map(Like::getLike).orElse(false);
+        boolean state = optionalLike.map(Like::getState).orElse(false);
         return LikeStateRes.of(state);
     }
 
@@ -44,16 +44,16 @@ public class LikeService {
         Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR)); // 인증 경로이므로 발생하면 안됨
         Optional<Like> optionalLike = likeRepository.findTopByShortsAndUserOrderByCreatedDateDesc(shorts, user);
-        boolean state = optionalLike.map(Like::getLike).orElse(false);
+        boolean state = optionalLike.map(Like::getState).orElse(false);
         if (state == req.getLike()) {
             throw new CustomException(ErrorCode.INVALID_LIKE_REQUEST_ERROR);
         }
         Like like = Like.builder()
                 .shorts(shorts)
                 .user(user)
-                .like(state)
+                .state(state)
                 .build();
         like = likeRepository.save(like);
-        return LikeStateRes.of(like.getLike());
+        return LikeStateRes.of(like.getState());
     }
 }

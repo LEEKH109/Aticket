@@ -26,5 +26,5 @@ public class Like extends BaseEntity {
     private User user;
 
     @Column(nullable = false)
-    private Boolean like;
+    private Boolean state;
 }
