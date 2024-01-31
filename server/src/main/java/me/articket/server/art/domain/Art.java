@@ -38,7 +38,7 @@ public class Art extends BaseEntity {
     @Setter
     private LocalDateTime endDate;
 
-    @Column
+    @Column(nullable = false)
     @Setter
     private String location;
 
@@ -50,11 +50,11 @@ public class Art extends BaseEntity {
     @Setter
     private Integer rate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String posterUrl;
 
     @Convert(converter = StringListStringConverter.class)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 65535)
     private List<String> infoUrls = new ArrayList<>();
 
     @Builder

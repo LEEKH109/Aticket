@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     // 사용자 프로필 사진 URL을 저장하는 필드
-    @Column
+    @Column(length = 2000)
     private String profileUrl;
 
     @Enumerated(EnumType.STRING)

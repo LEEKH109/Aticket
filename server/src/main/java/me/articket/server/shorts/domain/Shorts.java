@@ -22,11 +22,11 @@ public class Shorts extends BaseEntity {
     @Setter
     private Art art;
 
-    @Column
+    @Column(nullable = false, length = 2000)
     private String mediaUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     @Setter
     private ShortsType type;
 
