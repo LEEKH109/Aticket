@@ -33,8 +33,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
                         "/login/oauth2/code/kakao",
-                        "/shorts/*"
-
+                        "/user/oauth/token",
+                        "/shorts/{:\\d+}",
+                        "/shorts/recommend",
+                        "/art/{:\\d+}"
                 ).permitAll()
                 .anyRequest().authenticated());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
