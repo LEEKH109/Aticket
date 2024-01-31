@@ -10,7 +10,7 @@ import me.articket.server.user.domain.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chatlogs")
+@Table(name = "chatlog")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

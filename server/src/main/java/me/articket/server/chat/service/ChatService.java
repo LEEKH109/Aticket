@@ -7,7 +7,9 @@ import me.articket.server.chat.repository.ChatlogRepository;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,30 +22,30 @@ public class ChatService {
 
     private final ChatlogRepository chatlogRepository;
 
-    public Chatlog saveChatlog(Chatlog chatlog) {
-        return chatlogRepository.save(chatlog);
-    }
+    public void saveChatlog(Chatlog chatlog) {
+        chatlogRepository.save(chatlog);
+    }//ChatInputFrom component -> controller에서 Chatlog 갖고 옴
 
-    //특정 카테고리의 최신 채팅 1개 불러오기
+    //특정 카테고리의 최신 채팅 1개 불러오기(없으면 반환x)
     public ChatlogRes getLatestChatlogByCategory(int categoryId) {
-        Optional<Chatlog> optionalChatlog = chatlogRepository.findTopByCategoryIdOrderByCreatedDateDesc(categoryId);
-        if (optionalChatlog.isEmpty()) {
+        Optional<Chatlog> chatlog = chatlogRepository.findTopByCategoryIdOrderByRegDateDesc(categoryId);
+        if (chatlog.isEmpty()) {
             throw new CustomException(ErrorCode.CHATLOG_NOT_FOUND);
         }
-        return ChatlogRes.of(optionalChatlog.get());
+        return ChatlogRes.of(chatlog.get());
     }
 
     //최근 채팅 5개 불러오기
-    public List<ChatlogRes> getRecentChatlogsForPreview(int categoryId) {
-        List<Chatlog> chatlogs = chatlogRepository.findTop5ByCategoryIdOrderByCreatedDateDesc(categoryId);
-        return chatlogs.stream().map(ChatlogRes::of).collect(Collectors.toList());
-    }
+    public List<ChatlogRes> getRecentChatlogsForPreview(int categoryId, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        Page<Chatlog> preview = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId, pageable);
+        return preview.stream().map(ChatlogRes::of).toList();
+    } //chatpreview component -> controller에서 categoryId 갖고 옴
 
     //최근 채팅 10개 불러오기 (페이징)
     public List<ChatlogRes> getChatlogsByCategoryWithPaging(int categoryId, Pageable pageable) {
-        Page<Chatlog> chatlogPage = chatlogRepository.findByCategoryIdOrderByCreatedDateDesc(categoryId, pageable);
-        return chatlogPage.getContent().stream().map(ChatlogRes::of).collect(Collectors.toList());
+        Page<Chatlog> chatlogPage = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId, pageable);
+        return chatlogPage.stream().map(ChatlogRes::of).toList();
     }
-
 
 }
