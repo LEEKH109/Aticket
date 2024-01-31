@@ -1,7 +1,0 @@
-package me.articket.server.common.response;
-
-public class SuccessResponse<T> extends BaseResponse<T> {
-    public SuccessResponse(T data) {
-        super("success", data);
-    }
-}
