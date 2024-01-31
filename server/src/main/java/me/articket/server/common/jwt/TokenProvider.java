@@ -1,9 +1,14 @@
 package me.articket.server.common.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import me.articket.server.common.exception.CustomException;
+import me.articket.server.common.exception.ErrorCode;
 import me.articket.server.login.data.OauthTokenRes;
 import me.articket.server.login.data.UserDetail;
 import me.articket.server.login.data.UserDetailAuthenticationToken;
@@ -61,10 +66,16 @@ public class TokenProvider {
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .claim(AUTHORITIES_KEY, user.getRoles())
                 .signWith(key, SignatureAlgorithm.HS512)
+                .setIssuer(ISS)
+                .setAudience(AUD)
+                .setSubject(String.valueOf(user.getId()))
+                .setIssuedAt(Timestamp.valueOf(now()))
                 .compact();
 
         return OauthTokenRes.builder()
+                .userId(user.getId())
                 .accessToken(accessToken)
                 .tokenType(BEARER_TYPE)
                 .expiresIn(ACCESS_TOKEN_EXPIRE_TIME - 1)
@@ -106,16 +117,9 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_EXPIRE_ERROR);
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
