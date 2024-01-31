@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
 import ChatListPage from "./pages/ChatListPage";
+import ChatRoomPage from "./pages/ChatRoomPage";
 import UserPage from "./pages/UserPage";
 import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
@@ -29,6 +30,13 @@ function App() {
           path: "/chat",
           element: <ChatListPage />,
           errorElement: <ErrorPage />,
+          children: [
+            {
+              path: ":categoryId/paging",
+              element: <ChatRoomPage/>,
+              errorElement: <ErrorPage/>
+            }
+          ]
         },
         {
           path: "/user",
@@ -80,6 +88,10 @@ function App() {
       </div>
     </>
   );
+}
+
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+  window.global = window;
 }
 
 export default App;
