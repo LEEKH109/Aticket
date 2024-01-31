@@ -37,6 +37,7 @@ public class ArtService {
     public ArtInfoRes modifyArt(Long id, ModifyArtReq req) {
         Optional<Art> optionalArt = artRepository.findById(id);
         Art art = optionalArt.orElseThrow(() -> new CustomException(ErrorCode.ART_NOT_FOUND_ERROR));
+        art = req.apply(art);
         art = artRepository.save(art);
         return ArtInfoRes.of(art);
     }

@@ -38,6 +38,10 @@ public class Art extends BaseEntity {
     @Setter
     private LocalDateTime endDate;
 
+    @Column(nullable = false)
+    @Setter
+    private String location;
+
     @Convert(converter = StringListStringConverter.class)
     @Column(nullable = false)
     private List<String> actors = new ArrayList<>();
@@ -46,21 +50,22 @@ public class Art extends BaseEntity {
     @Setter
     private Integer rate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String posterUrl;
 
     @Convert(converter = StringListStringConverter.class)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 65535)
     private List<String> infoUrls = new ArrayList<>();
 
     @Builder
-    public Art(Long id, Integer vendorArtId, ArtCategory category, String title, LocalDateTime startDate, LocalDateTime endDate, List<String> actors, Integer rate, String posterUrl, List<String> infoUrls) {
+    public Art(Long id, Integer vendorArtId, ArtCategory category, String title, LocalDateTime startDate, LocalDateTime endDate, String location, List<String> actors, Integer rate, String posterUrl, List<String> infoUrls) {
         this.id = id;
         this.vendorArtId = vendorArtId;
         this.category = category;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.location = location;
         this.actors = actors;
         this.rate = rate;
         this.posterUrl = posterUrl;
