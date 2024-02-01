@@ -35,11 +35,11 @@ public class RefreshToken extends BaseEntity {
         this.isExpired = true;
     }
 
-    public void setUserRefreshToken(User user, String token) {
+    public void setUserRefreshToken(User user, String token, long tokenexpiresecond) {
 
         this.user = user;
         this.token = token;
         this.isExpired = false;
-        this.expireDate = LocalDateTime.now().plusDays(7);
+        this.expireDate = LocalDateTime.now().plusSeconds(tokenexpiresecond);
     }
 }
