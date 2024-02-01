@@ -1,11 +1,9 @@
 package me.articket.server.common.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
@@ -65,13 +63,12 @@ public class TokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .claim(AUTHORITIES_KEY, user.getRoles())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setIssuer(ISS)
                 .setAudience(AUD)
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(Timestamp.valueOf(now()))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .compact();
 
         return OauthTokenRes.builder()
@@ -119,6 +116,8 @@ public class TokenProvider {
             return true;
         } catch (ExpiredJwtException e) {
             throw new CustomException(ErrorCode.ACCESS_TOKEN_EXPIRE_ERROR);
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
         }
     }
 
