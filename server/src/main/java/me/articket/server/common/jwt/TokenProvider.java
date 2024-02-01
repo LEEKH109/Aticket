@@ -81,7 +81,7 @@ public class TokenProvider {
                 .build();
     }
 
-    // JWT토큰을 복호화하여 검증 후 값 가져오기
+    // Access 토큰을 복호화하여 검증 후 값 가져오기
     public UserDetailAuthenticationToken getAuthentication(String accessToken) {
 
         // 토큰 복호화 : JWT의 body
@@ -107,6 +107,23 @@ public class TokenProvider {
 
         return new UserDetailAuthenticationToken(userDetail, authorities);
 
+    }
+
+    // 검증이 끝난 Refresh Token을 복호화하여 값 가져오기
+    public UserDetail getUserDetailbyRefreshToken(String refreshToken) {
+
+        Claims claims = parseClaims(refreshToken);
+        Long userId = Long.valueOf(claims.getSubject());
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(); // 액세스 토큰 ID에 해당하는 유저가 없을 경우 오류
+
+        UserDetail userDetail = new UserDetail();
+        userDetail.setId(userId);
+        userDetail.setNickname(user.getNickname());
+        userDetail.setProfileUrl(user.getProfileUrl());
+
+        return userDetail;
     }
 
     // 토큰을 검증하는 역할

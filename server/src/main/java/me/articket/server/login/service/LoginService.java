@@ -125,10 +125,8 @@ public class LoginService {
 
     public User getUserInfoByRefreshToken(String refreshtoken) {
 
-        Authentication authentication = tokenProvider.getAuthentication(refreshtoken);
+        UserDetail userDetail = tokenProvider.getUserDetailbyRefreshToken(refreshtoken);
 
-        //유저 정보 가져오기
-        UserDetail userDetail = (UserDetail) authentication.getDetails();
         return userRepository.findById(userDetail.getId())
                 .orElseThrow();
 
