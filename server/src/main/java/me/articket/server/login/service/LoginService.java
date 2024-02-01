@@ -2,15 +2,22 @@ package me.articket.server.login.service;
 
 import com.nimbusds.jose.shaded.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import me.articket.server.common.jwt.TokenProvider;
 import me.articket.server.login.data.KakaoOAuthTokenRes;
 import me.articket.server.login.data.KakaoUserInfoRes;
+import me.articket.server.login.data.OauthTokenRes;
+import me.articket.server.login.data.UserDetail;
+import me.articket.server.login.repository.RefreshTokenRepository;
+import me.articket.server.user.domain.RefreshToken;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,6 +31,8 @@ import java.time.format.DateTimeFormatter;
 public class LoginService {
 
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private final String GRANT_TYPE = "authorization_code";
 
@@ -95,7 +104,7 @@ public class LoginService {
 
     }
 
-    public User RegistrationCheck(KakaoUserInfoRes userinfo) {
+    public User registrationCheck(KakaoUserInfoRes userinfo) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate birthday = LocalDate.parse(userinfo.getKakao_account().getBirthyear() + userinfo.getKakao_account().getBirthday(), formatter);
 
@@ -112,5 +121,28 @@ public class LoginService {
         }
 
         return userRepository.findByKakaoId(userinfo.getId());
+    }
+
+    public User getUserInfoByRefreshToken(String refreshtoken) {
+
+        Authentication authentication = tokenProvider.getAuthentication(refreshtoken);
+
+        //유저 정보 가져오기
+        UserDetail userDetail = (UserDetail) authentication.getDetails();
+        return userRepository.findById(userDetail.getId())
+                .orElseThrow();
+
+    }
+
+    public OauthTokenRes replaceToken(User user, RefreshToken refreshToken) {
+
+        OauthTokenRes oauthTokenRes = tokenProvider.generateTokenDto(user);
+        refreshToken.setExpired();
+        refreshTokenRepository.save(refreshToken);
+        RefreshToken newrefreshToken = new RefreshToken();
+        newrefreshToken.setUserRefreshToken(user, oauthTokenRes.getRefreshToken(), oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
+        refreshTokenRepository.save(newrefreshToken);
+
+        return oauthTokenRes;
     }
 }
