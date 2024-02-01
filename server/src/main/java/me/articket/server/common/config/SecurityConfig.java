@@ -37,12 +37,13 @@ public class SecurityConfig {
 
                         "/login/oauth2/code/kakao",
                         "/login/oauth/token",
-                        "/shorts/*",
+                        "/shorts/{:\\d+}",
+                        "/shorts/recommend",
                         "/chat/*/paging",
                         "/chat/*/preview",
                         "/chat/*/latest",
                         "/chat/list",
-                        "/art/*"
+                        "/art/{:\\d+}"
 
                 ).permitAll()
                 .anyRequest().authenticated());
