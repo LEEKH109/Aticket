@@ -4,7 +4,7 @@
 FROM openjdk:17
 
 # jar 파일 복제
-COPY ./server/build/libs/*.jar /var/jenkins_home/workspace/articket/app.jar
+COPY ./server/build/libs/*.jar app.jar
 
 # 인자 설정 부분과 jar 파일 복제 부분 합쳐서 진행해도 무방
 
