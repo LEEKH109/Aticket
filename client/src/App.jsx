@@ -15,6 +15,11 @@ import CollectionList from "./components/CollectionList";
 import BookHistoryList from "./components/BookHistoryList";
 
 function App() {
+
+  if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+    window.global = window;
+  }
+  
   const router = createBrowserRouter([
     {
       path: "/",
@@ -90,8 +95,6 @@ function App() {
   );
 }
 
-if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
-  window.global = window;
-}
+
 
 export default App;

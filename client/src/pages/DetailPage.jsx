@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
+import ChatPreview from "../components/ChatPreview";
 
 const DetailPage = () => {
   const location = useLocation();
@@ -51,7 +52,7 @@ const DetailPage = () => {
         </div>
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
-            채팅창?????
+            <ChatPreview categoryId={shortInfo.categoryId}/>
         </div>
         </div>
       </div>

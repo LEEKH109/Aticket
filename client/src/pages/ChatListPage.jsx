@@ -5,41 +5,45 @@ import ChatPreview from "../components/ChatPreview";
 // import Stomp from 'stompjs';
 
 const ChatList = () => {
-  //const [상태, 함수] = userState(초기값)
-  const [categoryId, setCategoryId] = useState([1,2,3]);
-  const [chatPreview, setChatPreview] = useState([]);
-  // List<List<ChatlogRes>> 로 응답
-  var stompClient = null;
+  const categories = [
+    {
+      categoryId: 1,
+      categoryName: "show"
+    },
+    {
+      categoryId: 2,
+      categoryName: "play"
+    },
+    {
+      categoryId: 3,
+      categoryName: "musical"
+    }
+  ];
+  
+  let stompClient = null;
+
   function onConnected() {
     stompClient.subscribe('/chat'); //chat에 접근한다는 건 토픽 구독과 같다
   }
+
+  useEffect(() => {
+    onConnected;
+  }, [stompClient]);
+
+
   function onError(error) {
     //오류가 발생했다고 document.querySelector의 textContent에 넣기
     console.error(error);
   }
-  useEffect(()=>{
-    categoryId.forEach(async (categoryId) => {
-      try {
-        await ChatApi.getLatestChatlogByCategory(categoryId);
-      } catch (error) {
-        if (error.response && error.response.status === 'CustomExceptionCode') {
-          // // WebSocket 연결 함수 호출
-          // var socket = new SockJS('/ws'); 
-          // stompClient = Stomp.over(socket);
-          // stompClient.connect({},onConnected, onError);
-          const msg = "채팅이 아직 없다"
-          console.log(msg);
-        }
-    }});
-  }, [categoryId]);
 
   return (
   <div className="h-[calc(100%_-_64px)] text-white">
     <div>
-    <ul>
-          {categoryId.map((id) => (
-            <li key={id} className="p-4 bg-white shadow-md mb-2 rounded-lg">
-              <ChatPreview categoryId={id} />
+      <ul>
+          {categories.map((category) => (
+            <li key={category.categoryId} className="p-4 bg-white shadow-md mb-2 rounded-lg">
+              <h2>{category.categoryName} 채팅방</h2>
+              <ChatPreview categoryId={category.categoryId}/>
             </li>
           ))}
         </ul>
