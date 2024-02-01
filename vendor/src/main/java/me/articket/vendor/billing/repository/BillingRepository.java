@@ -24,8 +24,14 @@ public interface BillingRepository {
       "WHERE ticket_type_id = #{ticketTypeId}")
   int countValidTicketTypeId(@Param("ticketTypeId") int ticketTypeId);
 
-  @Select("SELECT COUNT(*) " +
+  //해당 좌석이 존재하고 예약이 가능한지 반환
+  @Select("SELECT " +
+      "CASE " +
+      "WHEN COUNT(*) > 0 THEN 'EXISTS_RESERVED' " +
+      "ELSE 'NOT_EXISTS' " +
+      "END AS seat_status " +
       "FROM seat " +
-      "WHERE timetable_id = #{timetableId} AND seat_number = #{seatNumber}")
-  int countValidSeatId(@Param("timetableId") int timetableId, @Param("seatNumber") String seatNumber);
+      "WHERE timetable_id = #{timetableId} " +
+      "AND seat_number = #{seatNumber}")
+  String checkSeatStatus(@Param("timetableId") int timetableId, @Param("seatNumber") String seatNumber);
 }
