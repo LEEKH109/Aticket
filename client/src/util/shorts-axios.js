@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const BASE_URL = "https://picsum.photos/v2/list";
-const INFO_URL = "https://picsum.photos/id/";
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -14,13 +13,4 @@ const ShortsAPI = {
   },
 };
 
-const InfoAPI = {
-  getInfo: (id) => {
-    const infoApiClient = axios.create({
-      baseURL: INFO_URL+id+"/info",
-    });
-    return infoApiClient.get();
-  }
-}
-
-export { ShortsAPI, InfoAPI };
+export { ShortsAPI };
