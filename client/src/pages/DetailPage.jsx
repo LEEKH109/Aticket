@@ -3,20 +3,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
-import { InfoAPI } from "../util/shorts-axios";
-
+import { DetailApi } from "../util/details-axios";
+import { dateFormatter, dateFormmatterWithTime } from "../util/dateFormatter";
 const DetailPage = () => {
   const location = useLocation();
   const { shortsId } = location.state;
   const navigate = useNavigate();
-  const [shortInfo, setShortInfo] = useState({download_url:undefined});
-  const [infoLoad, setInfoLoad] = useState(true);
   const isLogin = useLoginState();
+
+  const [shortInfo, setShortInfo] = useState({actors:[], infoUrls:[], startDate:'1900-01-01', endDate:'1900-01-01'});
+  const [infoLoad, setInfoLoad] = useState(
+    <div className="absolute w-full h-full bg-gray-300 opacity-70 flex justify-center">
+      <CircularProgress
+      sx={{alignSelf:"center"}}
+      />
+    </div>
+  );
+
   const getShortsInfo = (shortsId) => {
-    InfoAPI.getInfo(shortsId).then((res) => {
+    DetailApi.getDetail(shortsId).then((res)=>{
       setShortInfo(res.data);
-      setInfoLoad(false);
-    });
+      setInfoLoad([]);
+     });
   };
 
   useEffect(() => {
@@ -24,7 +32,8 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <main className="relative h-[calc(100vh_-_64px)] mx-auto">
+    <main className="relative h-[calc(100vh_-_64px)] mx-auto bg-slate-300">
+      { infoLoad }
       <div className="flex w-full h-12 items-center justify-center bg-slate-600">
         <Button
           sx={{ justifySelf: "flex-start" }}
@@ -33,23 +42,21 @@ const DetailPage = () => {
             navigate(-1);
           }}
         >&lt;</Button>
-        <h1 className="text-white flex-grow text-center pr-6">{shortsId}번 작품</h1>
+        <h1 className="text-white flex-grow text-center pr-6">여기다 뭐넣지???</h1>
       </div>
-      <div className="overflow-y-scroll h-[calc(100vh_-_112px)] bg-cover bg-center" style={{backgroundImage: `url(${shortInfo.download_url})`}}>
+      <div className="overflow-y-scroll h-[calc(100vh_-_112px)] bg-cover bg-center" style={{backgroundImage: `url(${shortInfo.posterUrl})`}}>
         <div className="h-[68vh]">
 
         </div>
-        <div className="bg-white w-full h- rounded-tl-2xl rounded-tr-2xl pr-5 pl-5 pt-5 pb-[20vh] leading-8">
-        <h1 className="font-bold text-2xl">무슨무슨무슨무슨展</h1>
-        <h2 className="text-gray-400">무슨무슨무슨무슨</h2>
+        <div className="bg-white w-full rounded-tl-2xl rounded-tr-2xl p-5 pb-20 leading-8">
+        <h1 className="font-bold text-2xl">{shortInfo.title}</h1>
+        <h2 className="text-gray-400">{shortInfo.location}</h2>
         <hr className="my-[2vh]"/>
-        <h2>작가 : {shortInfo.author}</h2>
-        <h2>주연 : {shortInfo.author}, {shortInfo.author}, {shortInfo.author}</h2>
+        <h2>기간 : {dateFormmatterWithTime(new Date(shortInfo.startDate))} ~ {dateFormmatterWithTime(new Date(shortInfo.endDate))}</h2>
+        <h2>주연 : {shortInfo.actors}</h2>
         <hr className="my-[2vh]"/>
         <h1 className="font-bold text-2xl pb-4">작품 상세설명</h1>
-        <div className="text-center bg-slate-400 w-full h-[100vh]">
-            인포이미지
-        </div>
+        {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
             채팅창?????
@@ -69,7 +76,7 @@ const DetailPage = () => {
           }}
           >예매하기</Button>
           :
-          <div className="bg-gray-200 h-[48px] w-full rounded-lg text-gray-400 text-center flex justify-center items-center">
+          <div className="bg-gray-200 h-[48px] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
             로그인이 필요한 서비스입니다.
           </div>
         }

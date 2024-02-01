@@ -9,29 +9,27 @@ const LoginLoad = (props) => {
   const isLogin = useLoginState();
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
-
+  const LoginProgress = async () => {
+    await axios({
+      method: "GET",
+      url: `http://localhost:8080${
+        import.meta.env.VITE_REDIRECT_URI
+      }?code=${code}`,
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        "Access-Control-Allow-Origin": "*", // cors 에러 방지
+      },
+    }).then((res) => {
+      console.log(res);
+      localStorage.setItem("name", res.data.nickname);
+      localStorage.setItem("profile_img", res.data.profile_image);
+      localStorage.setItem("id", "test");
+      localStorage.setItem("token", "testToken");
+      setLogin(true);
+      navigate("/");
+    });
+  };
   useEffect(() => {
-    console.log(code);
-      const LoginProgress = async () => {
-        await axios({
-          method: "GET",
-          url: `http://localhost:8080${
-            import.meta.env.VITE_REDIRECT_URI
-          }?code=${code}`,
-          headers: {
-            "Content-Type": "application/json;charset=utf-8",
-            "Access-Control-Allow-Origin": "*", // cors 에러 방지
-          },
-        }).then((res) => {
-          console.log(res);
-          localStorage.setItem("name", res.data.nickname);
-          localStorage.setItem("profile_img", res.data.profile_image);
-          localStorage.setItem("id", "test");
-          localStorage.setItem("token", "testToken");
-          setLogin(true);
-          navigate("/");
-        });
-      };
       LoginProgress();
   }, []);
   return (
