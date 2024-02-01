@@ -1,6 +1,7 @@
 package me.articket.vendor.billing.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.articket.vendor.billing.data.PaymentPreparationDto;
 import me.articket.vendor.billing.data.ReservationSeatReqDto;
 import me.articket.vendor.billing.data.ReservationTicketReqDto;
 import me.articket.vendor.billing.service.BillingService;
@@ -21,21 +22,22 @@ public class BillingController {
   private final BillingService billingService;
 
   @PostMapping("/reservation/ticket")
-  public ResponseEntity<?> reserveTicket(@RequestBody ReservationTicketReqDto request) {
+  public ResponseEntity<?> reserveTicket(@RequestBody ReservationTicketReqDto request, @RequestBody PaymentPreparationDto paymentInfo) {
     // 유효성 검사
     billingService.prepareTicketReservation(request);
     // 결제 준비 요청
-    String paymentResponse = billingService.preparePayment();
+    String paymentResponse = billingService.preparePayment(paymentInfo);
     System.out.println(paymentResponse);
+    // billingService.createBillingAndExtractRedirectUrl(paymentResponse);
     return ResponseEntity.ok(paymentResponse);
   }
 
   @PostMapping("/reservation/seat")
-  public ResponseEntity<?> reserveSeat(@RequestBody ReservationSeatReqDto request) {
+  public ResponseEntity<?> reserveSeat(@RequestBody ReservationSeatReqDto request, @RequestBody PaymentPreparationDto paymentInfo) {
     // 유효성 검사
     billingService.reserveSeats(request);
     // 결제 준비 요청
-    String paymentResponse = billingService.preparePayment();
+    String paymentResponse = billingService.preparePayment(paymentInfo);
     System.out.println(paymentResponse);
     return ResponseEntity.ok(paymentResponse);
   }
