@@ -1,7 +1,10 @@
 import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
-import SelectDateTimePage from "./pages/SelectDateTimePage";
+import SelectDateTimePage from "./pages/book/SelectDateTimePage";
+import TicketBookingPage from "./pages/book/TicketBookingPage";
+import SeatBookingPage from "./pages/book/SeatBookingPage";
+import BookLayout from "./pages/book/BookLayout";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
@@ -33,10 +36,10 @@ function App() {
           children: [
             {
               path: ":categoryId/paging",
-              element: <ChatRoomPage/>,
-              errorElement: <ErrorPage/>
-            }
-          ]
+              element: <ChatRoomPage />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
         {
           path: "/user",
@@ -56,9 +59,25 @@ function App() {
           ],
         },
         {
-          path: "/select",
-          element: <SelectDateTimePage />,
+          path: "/book",
           errorElement: <ErrorPage />,
+          children: [
+            {
+              path: "",
+              element: <SelectDateTimePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "ticket",
+              element: <TicketBookingPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "seat",
+              element: <SeatBookingPage />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
         {
           path: "/loginpage",
@@ -90,7 +109,7 @@ function App() {
   );
 }
 
-if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
 }
 
