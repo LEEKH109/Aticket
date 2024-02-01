@@ -51,7 +51,7 @@ public class LikeService {
         Like like = Like.builder()
                 .shorts(shorts)
                 .user(user)
-                .state(state)
+                .state(req.getLike())
                 .build();
         like = likeRepository.save(like);
         return LikeStateRes.of(like.getState());
