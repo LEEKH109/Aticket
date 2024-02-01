@@ -17,7 +17,7 @@ public class RefreshToken extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column
+    @Column(length = 500)
     private String token;
 
     @Column
@@ -31,11 +31,15 @@ public class RefreshToken extends BaseEntity {
         return expireDate.isAfter(now);
     }
 
-    public boolean setUserRefreshToken(User user, String token) {
+    public void setExpired() {
+        this.isExpired = true;
+    }
+
+    public void setUserRefreshToken(User user, String token, long tokenexpiresecond) {
+
         this.user = user;
         this.token = token;
         this.isExpired = false;
-        this.expireDate = LocalDateTime.now().plusDays(7);
-        return true;
+        this.expireDate = LocalDateTime.now().plusSeconds(tokenexpiresecond);
     }
 }
