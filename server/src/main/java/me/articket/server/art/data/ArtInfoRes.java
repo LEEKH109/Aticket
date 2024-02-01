@@ -14,9 +14,11 @@ import java.util.List;
 public class ArtInfoRes {
 
     private Long artId;
+    private ArtCategory category;
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private String location;
     private List<String> actors;
     private String location;
     private Integer rate;
@@ -27,9 +29,11 @@ public class ArtInfoRes {
     public static ArtInfoRes of(Art art) {
         return ArtInfoRes.builder()
                 .artId(art.getId())
+                .category(art.getCategory())
                 .title(art.getTitle())
                 .startDate(art.getStartDate())
                 .endDate(art.getEndDate())
+                .location(art.getLocation())
                 .actors(art.getActors())
                 .location(art.getLocation())
                 .rate(art.getRate())
