@@ -196,7 +196,14 @@ const SeatBookingPage = () => {
       const serverSeat = serverResponseSeats.find(
         (s) => s.seatNumber === seat.seatNumber
       );
-      return serverSeat ? { ...seat, status: serverSeat.status } : seat;
+      return serverSeat
+        ? {
+            ...seat,
+            status: serverSeat.status,
+            type: serverSeat.type,
+            price: serverSeat.price,
+          }
+        : seat;
     });
 
     setSeats(updatedSeats);
