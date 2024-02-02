@@ -1,9 +1,11 @@
 package me.articket.vendor.billing.repository;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 @Mapper
 @Repository
@@ -11,7 +13,7 @@ public interface BillingRepository {
 
   @Select("SELECT COUNT(*) " +
       "FROM art " +
-      "WHERE art_id = #{artId} AND category_id = (SELECT category_id FROM category WHERE name = '전시')")
+      "WHERE art_id = #{artId})")
   int countValidArtId(@Param("artId") int artId);
 
   @Select("SELECT COUNT(*) " +
@@ -34,4 +36,6 @@ public interface BillingRepository {
       "WHERE timetable_id = #{timetableId} " +
       "AND seat_number = #{seatNumber}")
   String checkSeatStatus(@Param("timetableId") int timetableId, @Param("seatNumber") String seatNumber);
+
+  @Insert()
 }

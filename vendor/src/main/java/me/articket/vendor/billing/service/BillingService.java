@@ -1,13 +1,13 @@
 package me.articket.vendor.billing.service;
 
 import lombok.RequiredArgsConstructor;
-import me.articket.vendor.billing.data.PaymentPreparationDto;
+import me.articket.vendor.art.domain.Art;
+import me.articket.vendor.art.repository.ArtRepository;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
 import me.articket.vendor.billing.data.ReservationSeatReqDto;
 import me.articket.vendor.billing.data.ReservationTicketReqDto;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.repository.BillingRepository;
-import me.articket.vendor.billing.util.BillingUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 public class BillingService {
 
   private final BillingRepository billingRepository;
+  private final ArtRepository artRepository;
 
   @Transactional
   public void prepareTicketReservation(ReservationTicketReqDto request) {
@@ -62,10 +63,18 @@ public class BillingService {
     System.out.println("ByeWorld");
 
   }
-  @Transactional
-  public void createBilling(ReservationTicketReqDto request){
 
+  @Transactional
+  public void createBilling(ReservationTicketReqDto request, String category, String tid) {
+    Billing billing = new Billing();
+    billing.setArtId(request.getArtId());
+    billing.setReservationId(request.getReservationId());
+    billing.setStatus("결제준비");
+    billing.setCategory(category);
+    billing.setTid(tid);
+    billing.setPgToken(null);
   }
+
   //추후에는 변수로 요청값을 넣어줘야 합니다.
   @Transactional
   public PaymentPreparationResDto preparePaymentForTicket(ReservationTicketReqDto request) {
@@ -73,12 +82,14 @@ public class BillingService {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     headers.set("Authorization", "KakaoAK 667c2d03c60f1645bcdd746797aa0913");
+    // 전시-공연 객체 조회
+    Art artData = artRepository.selectArt(request.getArtId());
     // 요청 본문 설정
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("cid", "TC0ONETIME");
-    body.add("partner_order_id", "partner_order_id1234");
-    body.add("partner_user_id", "partner_user_id1234");
-    body.add("item_name", "상품명"); // 상품명 설정 (예: 예약한 공연 또는 전시의 이름)
+    body.add("partner_order_id", request.getReservationId());
+    body.add("partner_user_id", request.getBookerName());
+    body.add("item_name", artData.getTitle()); // 상품명 설정 (예: 예약한 공연 또는 전시의 이름)
     body.add("quantity", "1"); // 수량 설정 (예: 예약된 티켓의 수량)
     body.add("total_amount", "22000"); // 총 금액 설정
     body.add("vat_amount", "2000"); // 부가세 설정
@@ -92,7 +103,8 @@ public class BillingService {
     // RestTemplate을 사용하여 요청 보내기
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(
+        "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
 
     // 응답 반환
     return createBillingAndExtractRedirectUrl(response.getBody());
@@ -123,10 +135,12 @@ public class BillingService {
     // RestTemplate을 사용하여 요청 보내기
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(
+        "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
     // 응답 반환
     return createBillingAndExtractRedirectUrl(response.getBody());
   }
+
   @Transactional
   public PaymentPreparationResDto createBillingAndExtractRedirectUrl(String response)
       throws JSONException {
