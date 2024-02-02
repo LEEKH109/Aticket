@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -61,47 +62,79 @@ public class BillingService {
     System.out.println("ByeWorld");
 
   }
+  @Transactional
+  public void createBilling(ReservationTicketReqDto request){
 
+  }
   //추후에는 변수로 요청값을 넣어줘야 합니다.
   @Transactional
-  public String preparePayment(PaymentPreparationDto paymentInfo) {
+  public PaymentPreparationResDto preparePaymentForTicket(ReservationTicketReqDto request) {
     // 헤더 설정
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     headers.set("Authorization", "KakaoAK 667c2d03c60f1645bcdd746797aa0913");
-
-    // convertToMultiValueMap 메서드를 사용하여 요청 본문 생성
-    MultiValueMap<String, String> body = BillingUtil.convertToMultiValueMap(paymentInfo);
-
-    // 로그 출력
+    // 요청 본문 설정
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    body.add("cid", "TC0ONETIME");
+    body.add("partner_order_id", "partner_order_id1234");
+    body.add("partner_user_id", "partner_user_id1234");
+    body.add("item_name", "상품명"); // 상품명 설정 (예: 예약한 공연 또는 전시의 이름)
+    body.add("quantity", "1"); // 수량 설정 (예: 예약된 티켓의 수량)
+    body.add("total_amount", "22000"); // 총 금액 설정
+    body.add("vat_amount", "2000"); // 부가세 설정
+    body.add("tax_free_amount", "0"); // 비과세 금액 설정
+    body.add("approval_url", "http://localhost:8080/approve/test"); // 승인 URL 설정
+    body.add("fail_url", "http://localhost:8080/fail/{paymentId}"); // 실패 URL 설정
+    body.add("cancel_url", "http://localhost:8080/cancel/{paymentId}"); // 취소 URL 설정
+    // 요청 로그 남기기
     System.out.println("HTTP Headers: " + headers.toString());
     System.out.println("Request Body: " + body.toString());
-
-    // RestTemplate을 사용하여 결제 준비 요청 보내기
+    // RestTemplate을 사용하여 요청 보내기
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity(
-        "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/ready", entity, String.class);
 
     // 응답 반환
-    return response.getBody();
+    return createBillingAndExtractRedirectUrl(response.getBody());
+  }
+
+  @Transactional
+  public PaymentPreparationResDto preparePaymentForSeat(ReservationSeatReqDto request) {
+    // 헤더 설정
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    headers.set("Authorization", "KakaoAK 667c2d03c60f1645bcdd746797aa0913");
+    // 요청 본문 설정
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    body.add("cid", "TC0ONETIME");
+    body.add("partner_order_id", "partner_order_id1234");
+    body.add("partner_user_id", "partner_user_id1234");
+    body.add("item_name", "상품명"); // 상품명 설정 (예: 예약한 공연 또는 전시의 이름)
+    body.add("quantity", "1"); // 수량 설정 (예: 예약된 티켓의 수량)
+    body.add("total_amount", "22000"); // 총 금액 설정
+    body.add("vat_amount", "2000"); // 부가세 설정
+    body.add("tax_free_amount", "0"); // 비과세 금액 설정
+    body.add("approval_url", "http://localhost:8080/approve/test"); // 승인 URL 설정
+    body.add("fail_url", "http://localhost:8080/fail/{paymentId}"); // 실패 URL 설정
+    body.add("cancel_url", "http://localhost:8080/cancel/{paymentId}"); // 취소 URL 설정
+    // 요청 로그 남기기
+    System.out.println("HTTP Headers: " + headers.toString());
+    System.out.println("Request Body: " + body.toString());
+    // RestTemplate을 사용하여 요청 보내기
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+    ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    // 응답 반환
+    return createBillingAndExtractRedirectUrl(response.getBody());
   }
   @Transactional
-  public PaymentPreparationResDto createBillingAndExtractRedirectUrl(PaymentPreparationDto paymentInfo)
+  public PaymentPreparationResDto createBillingAndExtractRedirectUrl(String response)
       throws JSONException {
-    // 결제 준비 요청
-    String paymentResponse = preparePayment(paymentInfo);
-
     // JSON 응답 파싱
-    JSONObject json = new JSONObject(paymentResponse);
+    JSONObject json = new JSONObject(response);
     String tid = json.getString("tid");
     String nextRedirectPcUrl = json.getString("next_redirect_pc_url");
-
-    // Billing 객체 생성 및 저장 (예시 로직)
-    Billing billing = new Billing();
-    billing.setTid(tid);
-    // billingRepository.save(billing);
-
+    // Billing 객체 생성 및 저장 (추후 추가 예정)
     // 응답 객체 생성 및 반환
     return new PaymentPreparationResDto(tid, nextRedirectPcUrl);
   }
