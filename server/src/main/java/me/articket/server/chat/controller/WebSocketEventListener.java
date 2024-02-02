@@ -1,6 +1,5 @@
 package me.articket.server.chat.controller;
 
-import me.articket.server.chat.domain.Chatlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;

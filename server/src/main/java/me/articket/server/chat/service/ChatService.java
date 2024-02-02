@@ -9,7 +9,7 @@ import me.articket.server.common.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,5 +47,4 @@ public class ChatService {
         Page<Chatlog> chatlogPage = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId, pageable);
         return chatlogPage.stream().map(ChatlogRes::of).toList();
     }
-
 }
