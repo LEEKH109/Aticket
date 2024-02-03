@@ -11,6 +11,22 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface SeatRepository {
+  // 전시 공연 유효성 체크
+  @Select("SELECT COUNT(*) " +
+      "FROM art " +
+      "WHERE art_id = #{artId}")
+  int countSeatValidArtId(@Param("artId") int artId);
+
+  // 해당 시간표-좌석 유효성 체크
+  @Select("SELECT " +
+      "CASE " +
+      "WHEN COUNT(*) > 0 THEN 'EXISTS_RESERVED' " +
+      "ELSE 'NOT_EXISTS' " +
+      "END AS seat_status " +
+      "FROM seat " +
+      "WHERE timetable_id = #{timetableId} " +
+      "AND seat_number = #{seatNumber}")
+  String checkSeatValidation(@Param("timetableId") int timetableId, @Param("seatNumber") String seatNumber);
 
   // 시간표 기준으로 예약가능한 좌석 조회 메서드
   @Select("SELECT timetable_id as timetableId, seat_number as seatNumber, status, type, price " +

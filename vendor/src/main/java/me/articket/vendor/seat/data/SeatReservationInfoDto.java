@@ -13,6 +13,8 @@ public class SeatReservationInfoDto {
 
   private int artId;
   private String artTitle;
+  private String reservationId;
+  private String bookerName;
   private int timetableId;
   private Time startTime;
   private Time endTime;

@@ -37,6 +37,24 @@ public class SeatService {
 
     return response;
   }
+  public void SeatValidationCheck(SeatReservationRequestDto request){
+    // 공연 존재여부 유효성 검사
+    if(seatRepository.countSeatValidArtId(request.getArtId()) == 0){
+      throw new IllegalArgumentException("Invalid artId.");
+    }
+    // 각 좌석에 대한 유효성 검사
+    for(SeatReservationRequestDto.BookedSeats bookedSeats : request.getSeats()){
+      String seatStatus = seatRepository.checkSeatValidation(bookedSeats.getTimetableId(),
+          bookedSeats.getSeatNumber());
+      switch (seatStatus) {
+        case "NOT_EXISTS":
+          throw new IllegalArgumentException("Seat does not exist: " + bookedSeats.getSeatNumber());
+        case "RESERVED":
+          throw new IllegalArgumentException(
+              "Seat is already reserved: " + bookedSeats.getSeatNumber());
+      }
+    }
+  }
 
   @Transactional(readOnly = true)
   public SeatReservationInfoDto processSeatReservation(SeatReservationRequestDto requestDto) {
@@ -49,6 +67,9 @@ public class SeatService {
     // Art id,title 설정
     infoDto.setArtId(requestDto.getArtId());
     infoDto.setArtTitle(art.getTitle());
+    // 예약번호, 예약자 설정
+    infoDto.setReservationId(requestDto.getReservationId());
+    infoDto.setBookerName(requestDto.getBookerName());
     // 좌석 정보없는 경우 예외처리
     if (!requestDto.getSeats().isEmpty()) {
       // timetable id 추출

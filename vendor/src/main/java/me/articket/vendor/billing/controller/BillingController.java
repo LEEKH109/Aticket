@@ -6,6 +6,9 @@ import me.articket.vendor.billing.data.PaymentPreparationResDto;
 import me.articket.vendor.billing.data.ReservationSeatReqDto;
 import me.articket.vendor.billing.data.ReservationTicketReqDto;
 import me.articket.vendor.billing.service.BillingService;
+import me.articket.vendor.seat.data.SeatReservationInfoDto;
+import me.articket.vendor.seat.data.SeatReservationRequestDto;
+import me.articket.vendor.seat.service.SeatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BillingController {
 
   private final BillingService billingService;
+  private final SeatService seatService;
 
   @PostMapping("/reservation/ticket")
   public ResponseEntity<?> reserveTicket(@RequestBody ReservationTicketReqDto request) {
@@ -35,15 +39,14 @@ public class BillingController {
   }
 
   @PostMapping("/reservation/seat")
-  public ResponseEntity<?> reserveSeat(@RequestBody ReservationSeatReqDto request) {
+  public ResponseEntity<?> reserveSeat(@RequestBody SeatReservationRequestDto request) {
     // 유효성 검사
     //  => 유효성 검사 통과 하지 못 하면 다음 로직으로 진행되지 않습니다.
-    billingService.reserveSeats(request);
+    seatService.SeatValidationCheck(request);
     // 결제 준비 요청
     //  => 결제 준비 단계에서는 카카오페이 결제준비 와 해당 응답의 결과에 따라 billing 객체를 생성합니다.
-    PaymentPreparationResDto paymentResponse = billingService.preparePaymentForSeat(request);
-    System.out.println(paymentResponse);
-    return ResponseEntity.ok(paymentResponse);
+    PaymentPreparationResDto paymentPreparationResDto = billingService.preparePaymentForSeat(seatService.processSeatReservation(request));
+    return ResponseEntity.ok(paymentPreparationResDto);
   }
 
   @GetMapping("/approve/{paymentId}")
