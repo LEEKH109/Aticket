@@ -1,19 +1,14 @@
 package me.articket.vendor.billing.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.articket.vendor.billing.data.PaymentPreparationDto;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
-import me.articket.vendor.billing.data.ReservationSeatReqDto;
-import me.articket.vendor.billing.data.ReservationTicketReqDto;
 import me.articket.vendor.billing.service.BillingService;
-import me.articket.vendor.seat.data.SeatReservationInfoDto;
 import me.articket.vendor.seat.data.SeatReservationRequestDto;
 import me.articket.vendor.seat.service.SeatService;
 import me.articket.vendor.tickettype.data.TicketReservationRequestDto;
 import me.articket.vendor.tickettype.service.TicketTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +38,9 @@ public class BillingController {
           ticketTypeService.processTicketReservation(request));
       System.out.println(paymentResponse);
       return ResponseEntity.ok(paymentResponse);
-    } catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
-    } catch (RuntimeException e){
+    } catch (RuntimeException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     } catch (Exception e) {
       // 그 외 에러 처리
@@ -64,9 +59,9 @@ public class BillingController {
       PaymentPreparationResDto paymentPreparationResDto = billingService.preparePaymentForSeat(
           seatService.processSeatReservation(request));
       return ResponseEntity.ok(paymentPreparationResDto);
-    }catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
-    } catch (RuntimeException e){
+    } catch (RuntimeException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     } catch (Exception e) {
       // 그 외 에러 처리
@@ -75,20 +70,23 @@ public class BillingController {
   }
 
   @PostMapping("/approve/{reservationId}")
-  public ResponseEntity<?> approvePayment(@PathVariable String reservationId, @RequestParam("pgToken") String pgToken, @RequestParam("tid") String tid) {
+  public ResponseEntity<?> approvePayment(@PathVariable String reservationId,
+      @RequestParam("pgToken") String pgToken, @RequestParam("tid") String tid) {
     billingService.updateBillingStatusToProcessing(reservationId, pgToken, tid);
     return ResponseEntity.ok().body("결제가 진행 중입니다.");
     // 결제 완료 로직 및 응답 추가
   }
 
   @PostMapping("/fail/{reservationId}")
-  public ResponseEntity<?> failPayment(@PathVariable String reservationId, @RequestParam("tid") String tid) {
+  public ResponseEntity<?> failPayment(@PathVariable String reservationId,
+      @RequestParam("tid") String tid) {
     billingService.updateBillingStatusToFailed(reservationId, tid);
     return ResponseEntity.ok().body("결제가 실패하였습니다.");
   }
 
   @PostMapping("/cancel/{reservationId}")
-  public ResponseEntity<?> cancelPayment(@PathVariable String reservationId, @RequestParam("tid") String tid) {
+  public ResponseEntity<?> cancelPayment(@PathVariable String reservationId,
+      @RequestParam("tid") String tid) {
     billingService.updateBillingStatusToCancelled(reservationId, tid);
     return ResponseEntity.ok().body("결제가 취소되었습니다.");
   }
