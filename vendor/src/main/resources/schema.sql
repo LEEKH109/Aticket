@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `billing` (
                                          `category` VARCHAR(255) NOT NULL,
                                          `tid` varchar(100) NULL COMMENT '카카오에서 생성하는 결제 고유 번호',
                                          `pg_token` varchar(255) NULL COMMENT '결제 준비 완료시에 카카오에서 전달해주는 pg사 고유값',
+                                         `total_amount` int NOT NULL,
                                          `reservation_confirmation_date_time` Date NULL,
                                          PRIMARY KEY (`billing_id`, `art_id`)
 );
