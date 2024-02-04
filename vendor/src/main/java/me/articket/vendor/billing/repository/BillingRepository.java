@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +33,14 @@ public interface BillingRepository {
   // 결제 준비 완료시 tid 업데이트 및 결제 상태 업데이트
   @Update("UPDATE billing SET tid = #{tid}, status = #{status} WHERE reservation_id = #{reservationId}")
   int updateBillingWithTidAndStatus(@Param("reservationId") String reservationId, @Param("tid") String tid, @Param("status") String status);
+
+  @Update("UPDATE billing SET status = #{status}, tid = #{tid}, pg_token = #{pgToken} WHERE reservation_id = #{reservationId}")
+  void updateBillingStatusAndToken(@Param("reservationId") String reservationId, @Param("status") String status, @Param("tid") String tid, @Param("pgToken") String pgToken);
+
+  @Update("UPDATE billing SET status = #{status} WHERE reservation_id = #{reservationId}")
+  void updateBillingStatus(@Param("reservationId") String reservationId, @Param("status") String status);
+
+  // 예약 존재 여부 유효성 체크
+  @Select("SELECT COUNT(*) FROM billing WHERE reservation_id = #{reservationId} AND tid = #{tid}")
+  int existsByReservationIdAndTid(@Param("reservationId") String reservationId, @Param("tid") String tid);
 }

@@ -208,4 +208,31 @@ public class BillingService {
     return detailsInserted == billingDetails.size();
   }
 
+  // 유효성 체크 메서드 추가
+  public boolean validateBilling(String reservationId, String tid) {
+    return billingRepository.existsByReservationIdAndTid(reservationId, tid) > 0;
+  }
+  public void updateBillingStatusToProcessing(String reservationId, String pgToken, String tid) {
+    if (!validateBilling(reservationId, tid)) {
+      throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
+    }
+    billingRepository.updateBillingStatusAndToken(reservationId,
+        String.valueOf(BillingStatus.결제진행중), tid, pgToken);
+    // 결제 최종 완료 메서드 수행
+  }
+
+  public void updateBillingStatusToFailed(String reservationId, String tid) {
+    if (!validateBilling(reservationId, tid)) {
+      throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
+    }
+    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제실패));
+  }
+
+  public void updateBillingStatusToCancelled(String reservationId, String tid) {
+    if (!validateBilling(reservationId, tid)) {
+      throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
+    }
+    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제취소));
+  }
+
 }

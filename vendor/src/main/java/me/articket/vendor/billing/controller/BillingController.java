@@ -74,25 +74,23 @@ public class BillingController {
     }
   }
 
-  @GetMapping("/approve/{paymentId}")
-  public ResponseEntity<?> approvePayment(@PathVariable String paymentId, @RequestParam("pg_token") String pgToken) {
-    // 결제 승인 로직 처리
-    // 예: pgToken을 사용하여 카카오 결제 승인 API 호출
-    System.out.println("PaymentId: " + paymentId);
-    System.out.println("Received pg_token: " + pgToken);
-    return ResponseEntity.ok("결제가 승인되었습니다.");
+  @PostMapping("/approve/{reservationId}")
+  public ResponseEntity<?> approvePayment(@PathVariable String reservationId, @RequestParam("pgToken") String pgToken, @RequestParam("tid") String tid) {
+    billingService.updateBillingStatusToProcessing(reservationId, pgToken, tid);
+    return ResponseEntity.ok().body("결제가 진행 중입니다.");
+    // 결제 완료 로직 및 응답 추가
   }
 
-  @GetMapping("/fail/{paymentId}")
-  public ResponseEntity<?> failPayment(@PathVariable String paymentId) {
-    // 결제 실패 처리
-    return ResponseEntity.ok("결제가 실패하였습니다.");
+  @PostMapping("/fail/{reservationId}")
+  public ResponseEntity<?> failPayment(@PathVariable String reservationId, @RequestParam("tid") String tid) {
+    billingService.updateBillingStatusToFailed(reservationId, tid);
+    return ResponseEntity.ok().body("결제가 실패하였습니다.");
   }
 
-  @GetMapping("/cancel/{paymentId}")
-  public ResponseEntity<?> cancelPayment(@PathVariable String paymentId) {
-    // 결제 취소 처리
-    return ResponseEntity.ok("결제가 취소되었습니다.");
+  @PostMapping("/cancel/{reservationId}")
+  public ResponseEntity<?> cancelPayment(@PathVariable String reservationId, @RequestParam("tid") String tid) {
+    billingService.updateBillingStatusToCancelled(reservationId, tid);
+    return ResponseEntity.ok().body("결제가 취소되었습니다.");
   }
 
 }
