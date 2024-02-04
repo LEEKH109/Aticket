@@ -85,6 +85,6 @@ ALTER TABLE `billing`
 
 ALTER TABLE `billing_detail`
     ADD FOREIGN KEY (`billing_id`) REFERENCES `billing` (`billing_id`),
-    ADD FOREIGN KEY (`timetable_id`) REFERENCES `ticket_type` (`timetable_id`),
+    ADD FOREIGN KEY (`timetable_id`) REFERENCES `timetable` (`timetable_id`),
     ADD FOREIGN KEY (`ticket_type_id`) REFERENCES `ticket_type` (`ticket_type_id`),
     ADD FOREIGN KEY (`seat_timetable_id`, `seat_number`) REFERENCES `seat` (`timetable_id`, `seat_number`);
