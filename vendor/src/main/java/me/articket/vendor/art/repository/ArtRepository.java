@@ -12,7 +12,6 @@ public interface ArtRepository {
 
   @Select("SELECT * " +
       "FROM art " +
-      "WHERE art_id = #{artId})")
+      "WHERE art_id = #{artId}")
   Art selectArt(@Param("artId") int artId);
-
 }
