@@ -1,5 +1,6 @@
 package me.articket.vendor.billing.repository;
 
+import java.util.List;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.BillingDetail;
 import org.apache.ibatis.annotations.Insert;
@@ -19,21 +20,16 @@ public interface BillingRepository {
   @Options(useGeneratedKeys = true, keyProperty = "billingId")
   int insertBilling(Billing billing);
 
-  // 전시를 위한 BillingDetail 생성(삽입)
-  @Insert({
-      "INSERT INTO billing_detail (billing_id, timetable_id, ticket_type_id, count) " +
-      "VALUES (#{billingId}, #{timetableId}, #{ticketTypeId}, #{count})"
-  })
-  int insertBillingDetailForExhibition(BillingDetail billingDetail);
-
   // 공연을 위한 BillingDetail 생성(삽입)
-  @Insert({
-      "INSERT INTO billing_detail (billing_id, timetable_id, seat_id, count) " +
-      "VALUES (#{billingId}, #{timetableId}, #{seatId}, #{count})"
-  })
-  int insertBillingDetailForPerformance(BillingDetail billingDetail);
+  @Insert("<script>" +
+      "INSERT INTO billing_detail (billing_id, timetable_id, ticket_type_id, seat_timetable_id, seat_number, count) VALUES " +
+      "<foreach collection='billingDetails' item='detail' index='index' separator=','>" +
+      "(#{detail.billingId}, #{detail.timetableId}, #{detail.ticketTypeId}, #{detail.seatTimetableId}, #{detail.seatNumber}, #{detail.count})" +
+      "</foreach>" +
+      "</script>")
+  int insertBillingDetails(@Param("billingDetails") List<BillingDetail> billingDetails);
 
-  // 결제 준비 완료시 tid 업데이트
-  @Update("UPDATE billing SET tid = #{tid} WHERE billing_id = #{billingId}")
-  int updateBillingWithTid(@Param("billingId") int billingId, @Param("tid") String tid);
+  // 결제 준비 완료시 tid 업데이트 및 결제 상태 업데이트
+  @Update("UPDATE billing SET tid = #{tid}, status = #{status} WHERE reservation_id = #{reservationId}")
+  int updateBillingWithTidAndStatus(@Param("reservationId") String reservationId, @Param("tid") String tid, @Param("status") String status);
 }
