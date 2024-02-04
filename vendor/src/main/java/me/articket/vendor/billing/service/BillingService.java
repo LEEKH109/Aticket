@@ -2,19 +2,15 @@ package me.articket.vendor.billing.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import me.articket.vendor.art.domain.Art;
 import me.articket.vendor.art.repository.ArtRepository;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
-import me.articket.vendor.billing.data.ReservationSeatReqDto;
-import me.articket.vendor.billing.data.ReservationTicketReqDto;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.Billing.BillingStatus;
 import me.articket.vendor.billing.domain.BillingDetail;
 import me.articket.vendor.billing.repository.BillingRepository;
+import me.articket.vendor.billing.data.PaymentApprovalResponse;
 import me.articket.vendor.seat.data.SeatReservationInfoDto;
-import me.articket.vendor.seat.repository.SeatRepository;
 import me.articket.vendor.tickettype.data.TicketReservationInfoDto;
-import me.articket.vendor.tickettype.data.TicketReservationRequestDto;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -68,7 +64,15 @@ public class BillingService {
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
     ResponseEntity<String> response = restTemplate.postForEntity(
         "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
-
+// 카카오페이 응답에서 tid 추출 및 결제 상태 업데이트
+    PaymentPreparationResDto paymentResponseDto = convertBillingAndExtractRedirectUrl(response.getBody());
+    String tid = paymentResponseDto.getTid();
+    // Billing 객체의 결제상태를 '결제준비'로 수정하고, tid 업데이트
+    int updateCount = billingRepository.updateBillingWithTidAndStatus(request.getReservationId(), tid,
+        String.valueOf(BillingStatus.결제준비));
+    if (updateCount != 1) {
+      throw new RuntimeException("결제 정보 업데이트에 실패했습니다.");
+    }
     // 응답 반환
     return convertBillingAndExtractRedirectUrl(response.getBody());
   }
@@ -140,6 +144,7 @@ public class BillingService {
     billing.setBookerName(ticketInfo.getBookerName());
     billing.setStatus(Billing.BillingStatus.결제생성);
     billing.setCategory(artRepository.findCategoryNameByArtId(ticketInfo.getArtId()));
+    billing.setTotalAmount(ticketInfo.getTotalAmount());
     // DB 등록
     int billingInserted = billingRepository.insertBilling(billing);
     if (billingInserted < 1) {
@@ -182,6 +187,7 @@ public class BillingService {
     billing.setBookerName(seatInfo.getBookerName());
     billing.setStatus(Billing.BillingStatus.결제생성);
     billing.setCategory(artRepository.findCategoryNameByArtId(seatInfo.getArtId()));
+    billing.setTotalAmount(seatInfo.getTotalAmount());
     // DB 등록
     int billingInserted = billingRepository.insertBilling(billing);
     if (billingInserted < 1) {
@@ -210,29 +216,84 @@ public class BillingService {
 
   // 유효성 체크 메서드 추가
   public boolean validateBilling(String reservationId, String tid) {
-    return billingRepository.existsByReservationIdAndTid(reservationId, tid) > 0;
+    return billingRepository.existsByReservationIdAndTid(reservationId, tid) <= 0;
   }
-  public void updateBillingStatusToProcessing(String reservationId, String pgToken, String tid) {
-    if (!validateBilling(reservationId, tid)) {
-      throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
-    }
+  public PaymentApprovalResponse updateBillingStatusToProcessing(String reservationId, String pgToken, String tid) {
+    // 1. 결제 객체 조회 및 유효성 체크 동시 진행, optional 방식 첫 적용
+    Billing billing = billingRepository.selectByReservationIdAndTid(reservationId, tid)
+        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 결제 정보입니다."));
+    // 2. 결제 진행 중으로 진행 단계 수정
     billingRepository.updateBillingStatusAndToken(reservationId,
         String.valueOf(BillingStatus.결제진행중), tid, pgToken);
-    // 결제 최종 완료 메서드 수행
+    // 3. 카카오페이 결제 최종 승인 요청
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    headers.set("Authorization", "KakaoAK 667c2d03c60f1645bcdd746797aa0913");
+
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("cid", "TC0ONETIME");
+    params.add("tid", billing.getTid());
+    params.add("partner_order_id", billing.getReservationId());
+    params.add("partner_user_id", billing.getBookerName());
+    params.add("pg_token", pgToken);
+    params.add("total_amount", String.valueOf(billing.getTotalAmount()));
+
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+    ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/approve", requestEntity, String.class);
+
+    // 4. 응답 처리
+    if (response.getStatusCode() == HttpStatus.OK) {
+      // 성공 응답 처리 로직
+      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제완료));
+      // jsonResponse 변환해서 바로 PaymentApprovalResponse 응답 값 반환
+      return parsePaymentApprovalResponse(response.getBody());
+    } else {
+      // 실패 응답 처리 로직
+      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제실패));
+      throw new RuntimeException("결제 승인 실패: " + response.getBody());
+    }
   }
 
   public void updateBillingStatusToFailed(String reservationId, String tid) {
-    if (!validateBilling(reservationId, tid)) {
+    if (validateBilling(reservationId, tid)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
     billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제실패));
   }
 
   public void updateBillingStatusToCancelled(String reservationId, String tid) {
-    if (!validateBilling(reservationId, tid)) {
+    if (validateBilling(reservationId, tid)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
     billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제취소));
+  }
+
+  public PaymentApprovalResponse parsePaymentApprovalResponse(String jsonResponse) {
+    JSONObject json = new JSONObject(jsonResponse);
+    PaymentApprovalResponse response = new PaymentApprovalResponse();
+
+    response.setStatus("결제완료");
+    response.setMessage("결제가 성공적으로 처리되었습니다.");
+    response.setTid(json.getString("tid"));
+    response.setPartnerUserId(json.getString("partner_user_id"));
+    response.setPartnerOrderId(json.getString("partner_order_id"));
+    response.setItemName(json.getString("item_name"));
+    response.setQuantity(json.getInt("quantity"));
+
+    PaymentApprovalResponse.Amount amount = new PaymentApprovalResponse.Amount();
+    JSONObject jsonAmount = json.getJSONObject("amount");
+    amount.setTotal(jsonAmount.getInt("total"));
+    amount.setTaxFree(jsonAmount.getInt("tax_free"));
+    amount.setVat(jsonAmount.getInt("vat"));
+    amount.setDiscount(jsonAmount.getInt("discount"));
+    amount.setPoint(jsonAmount.getInt("point"));
+    response.setAmount(amount);
+
+    response.setCreatedAt(json.getString("created_at"));
+    response.setApprovedAt(json.getString("approved_at"));
+
+    return response;
   }
 
 }

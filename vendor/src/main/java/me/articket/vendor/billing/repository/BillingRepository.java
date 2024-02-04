@@ -1,6 +1,7 @@
 package me.articket.vendor.billing.repository;
 
 import java.util.List;
+import java.util.Optional;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.BillingDetail;
 import org.apache.ibatis.annotations.Insert;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Repository;
 public interface BillingRepository {
 
   // 결제 객체 생성, tid와 pg_token은 결제 진행 중 생성되는 값이라 null로 둡니다.
-  @Insert("INSERT INTO billing (art_id, reservation_id, booker_name, status, category) " +
-      "VALUES (#{artId}, #{reservationId}, #{bookerName}, #{status}, #{category})")
+  @Insert("INSERT INTO billing (art_id, reservation_id, booker_name, status, category, total_amount) " +
+      "VALUES (#{artId}, #{reservationId}, #{bookerName}, #{status}, #{category}, #{totalAmount})")
   @Options(useGeneratedKeys = true, keyProperty = "billingId")
   int insertBilling(Billing billing);
 
@@ -40,7 +41,11 @@ public interface BillingRepository {
   @Update("UPDATE billing SET status = #{status} WHERE reservation_id = #{reservationId}")
   void updateBillingStatus(@Param("reservationId") String reservationId, @Param("status") String status);
 
-  // 예약 존재 여부 유효성 체크
+  // 예약 존재 여부 유효성 체크(실패,취소 요청시)
   @Select("SELECT COUNT(*) FROM billing WHERE reservation_id = #{reservationId} AND tid = #{tid}")
   int existsByReservationIdAndTid(@Param("reservationId") String reservationId, @Param("tid") String tid);
+
+  @Select("SELECT * FROM billing WHERE reservation_id = #{reservationId} AND tid = #{tid}")
+  Optional<Billing> selectByReservationIdAndTid(@Param("reservationId") String reservationId, @Param("tid") String tid);
+  // 조회시 null이 반환될 수 있어 optional 처리
 }

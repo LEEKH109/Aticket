@@ -3,6 +3,7 @@ package me.articket.vendor.billing.controller;
 import lombok.RequiredArgsConstructor;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
 import me.articket.vendor.billing.service.BillingService;
+import me.articket.vendor.billing.data.PaymentApprovalResponse;
 import me.articket.vendor.seat.data.SeatReservationRequestDto;
 import me.articket.vendor.seat.service.SeatService;
 import me.articket.vendor.tickettype.data.TicketReservationRequestDto;
@@ -70,11 +71,14 @@ public class BillingController {
   }
 
   @PostMapping("/approve/{reservationId}")
-  public ResponseEntity<?> approvePayment(@PathVariable String reservationId,
+  public ResponseEntity<PaymentApprovalResponse> approvePayment(@PathVariable String reservationId,
       @RequestParam("pgToken") String pgToken, @RequestParam("tid") String tid) {
-    billingService.updateBillingStatusToProcessing(reservationId, pgToken, tid);
-    return ResponseEntity.ok().body("결제가 진행 중입니다.");
-    // 결제 완료 로직 및 응답 추가
+    try {
+      PaymentApprovalResponse response = billingService.updateBillingStatusToProcessing(reservationId, pgToken, tid);
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      return (ResponseEntity<PaymentApprovalResponse>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PostMapping("/fail/{reservationId}")
