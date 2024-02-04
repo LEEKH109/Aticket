@@ -12,8 +12,9 @@ public class BillingDetail {
   private Integer billingDetailId;
   private Integer billingId;
   private Integer timetableId;
-  private int ticketTypeId;
-  private int seatId;
+  private Integer ticketTypeId;
+  private Integer seatTimetableId;
+  private String seatNumber;
   private Integer count;//티켓 매수
 }
 
