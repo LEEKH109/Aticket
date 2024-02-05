@@ -52,10 +52,10 @@ public class BillingService {
     body.add("vat_amount", "0"); // 부가세 설정 => 전시-공연은 부가세 면제입니다.
     body.add("tax_free_amount", String.valueOf(request.getTotalAmount())); // 비과세 금액 설정
     body.add("approval_url",
-        "http://localhost:8080/approve/" + request.getReservationId()); // 승인 URL 설정
-    body.add("fail_url", "http://localhost:8080/fail/" + request.getReservationId()); // 실패 URL 설정
+        "http://localhost:5173/billing/approve/" + request.getReservationId()); // 승인 URL 설정
+    body.add("fail_url", "http://localhost:5173/billing/fail/" + request.getReservationId()); // 실패 URL 설정
     body.add("cancel_url",
-        "http://localhost:8080/cancel/" + request.getReservationId()); // 취소 URL 설정
+        "http://localhost:5173/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
     // 요청 로그 남기기
     System.out.println("HTTP Headers: " + headers.toString());
     System.out.println("Request Body: " + body.toString());
@@ -64,6 +64,7 @@ public class BillingService {
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
     ResponseEntity<String> response = restTemplate.postForEntity(
         "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    System.out.println(response);
 // 카카오페이 응답에서 tid 추출 및 결제 상태 업데이트
     PaymentPreparationResDto paymentResponseDto = convertBillingAndExtractRedirectUrl(response.getBody());
     String tid = paymentResponseDto.getTid();
@@ -97,10 +98,10 @@ public class BillingService {
     body.add("vat_amount", "0"); // 부가세 설정 - 전시,공연은 부가세 면제입니다.
     body.add("tax_free_amount", String.valueOf(request.getTotalAmount())); // 비과세 금액 설정
     body.add("approval_url",
-        "http://localhost:8080/approve/" + request.getReservationId()); // 승인 URL 설정
-    body.add("fail_url", "http://localhost:8080/fail/" + request.getReservationId()); // 실패 URL 설정
+        "http://localhost:5173/billing/approve/" + request.getReservationId()); // 승인 URL 설정
+    body.add("fail_url", "http://localhost:5173/billing/fail/" + request.getReservationId()); // 실패 URL 설정
     body.add("cancel_url",
-        "http://localhost:8080/cancel/" + request.getReservationId()); // 취소 URL 설정
+        "http://localhost:5173/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
     // 요청 로그 남기기
     System.out.println("HTTP Headers: " + headers.toString());
     System.out.println("Request Body: " + body.toString());
@@ -109,6 +110,7 @@ public class BillingService {
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
     ResponseEntity<String> response = restTemplate.postForEntity(
         "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    System.out.println(response);
     // 카카오페이 응답에서 tid 추출 및 결제 상태 업데이트
     PaymentPreparationResDto paymentResponseDto = convertBillingAndExtractRedirectUrl(response.getBody());
     String tid = paymentResponseDto.getTid();
@@ -215,16 +217,16 @@ public class BillingService {
   }
 
   // 유효성 체크 메서드 추가
-  public boolean validateBilling(String reservationId, String tid) {
-    return billingRepository.existsByReservationIdAndTid(reservationId, tid) <= 0;
+  public boolean validateBilling(String reservationId) {
+    return billingRepository.existsByReservationId(reservationId) <= 0;
   }
-  public PaymentApprovalResponse updateBillingStatusToProcessing(String reservationId, String pgToken, String tid) {
+  public PaymentApprovalResponse updateBillingStatusToProcessing(String reservationId, String pgToken) {
     // 1. 결제 객체 조회 및 유효성 체크 동시 진행, optional 방식 첫 적용
-    Billing billing = billingRepository.selectByReservationIdAndTid(reservationId, tid)
+    Billing billing = billingRepository.selectByReservationId(reservationId)
         .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 결제 정보입니다."));
     // 2. 결제 진행 중으로 진행 단계 수정
     billingRepository.updateBillingStatusAndToken(reservationId,
-        String.valueOf(BillingStatus.PAYMENT_IN_PROGRESS), tid, pgToken);
+        String.valueOf(BillingStatus.PAYMENT_IN_PROGRESS), billing.getTid(), pgToken);
     // 3. 카카오페이 결제 최종 승인 요청
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -241,7 +243,8 @@ public class BillingService {
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
     ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/approve", requestEntity, String.class);
-
+    System.out.println("end");
+    System.out.println(response);
     // 4. 응답 처리
     if (response.getStatusCode() == HttpStatus.OK) {
       // 성공 응답 처리 로직
@@ -255,15 +258,15 @@ public class BillingService {
     }
   }
 
-  public void updateBillingStatusToFailed(String reservationId, String tid) {
-    if (validateBilling(reservationId, tid)) {
+  public void updateBillingStatusToFailed(String reservationId) {
+    if (validateBilling(reservationId)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
     billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_FAILED));
   }
 
-  public void updateBillingStatusToCancelled(String reservationId, String tid) {
-    if (validateBilling(reservationId, tid)) {
+  public void updateBillingStatusToCancelled(String reservationId) {
+    if (validateBilling(reservationId)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
     billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_CANCELLED));

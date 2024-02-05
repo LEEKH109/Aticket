@@ -73,26 +73,24 @@ public class BillingController {
 
   @PostMapping("/approve/{reservationId}")
   public ResponseEntity<PaymentApprovalResponse> approvePayment(@PathVariable String reservationId,
-      @RequestParam("pgToken") String pgToken, @RequestParam("tid") String tid) {
+      @RequestParam("pgToken") String pgToken) {
     try {
-      PaymentApprovalResponse response = billingService.updateBillingStatusToProcessing(reservationId, pgToken, tid);
+      PaymentApprovalResponse response = billingService.updateBillingStatusToProcessing(reservationId, pgToken);
       return ResponseEntity.ok(response);
     } catch (Exception e) {
-      return (ResponseEntity<PaymentApprovalResponse>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 
   @PostMapping("/fail/{reservationId}")
-  public ResponseEntity<?> failPayment(@PathVariable String reservationId,
-      @RequestParam("tid") String tid) {
-    billingService.updateBillingStatusToFailed(reservationId, tid);
+  public ResponseEntity<?> failPayment(@PathVariable String reservationId) {
+    billingService.updateBillingStatusToFailed(reservationId);
     return ResponseEntity.ok().body("결제가 실패하였습니다.");
   }
 
   @PostMapping("/cancel/{reservationId}")
-  public ResponseEntity<?> cancelPayment(@PathVariable String reservationId,
-      @RequestParam("tid") String tid) {
-    billingService.updateBillingStatusToCancelled(reservationId, tid);
+  public ResponseEntity<?> cancelPayment(@PathVariable String reservationId) {
+    billingService.updateBillingStatusToCancelled(reservationId);
     return ResponseEntity.ok().body("결제가 취소되었습니다.");
   }
 
