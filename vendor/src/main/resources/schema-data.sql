@@ -102,3 +102,20 @@ FROM art;
 
 SELECT *
 FROM timetable;
+
+SELECT *
+FROM timetable
+WHERE art_id = 1 AND timetable_id = 30;
+
+SELECT a.art_id, a.title as artTitle, t.timetable_id, t.start_time, t.end_time, s.seat_number, s.status
+FROM art a
+JOIN timetable t ON a.art_id = t.art_id
+JOIN seat s ON t.timetable_id = s.timetable_id
+WHERE a.art_id = '6' AND t.timetable_id = '9';
+
+SELECT a.art_id, a.title AS artTitle, t.timetable_id, t.start_time, t.end_time, s.seat_number, s.status, s.price
+FROM art a
+JOIN timetable t ON a.art_id = t.art_id
+JOIN seat s ON t.timetable_id = s.timetable_id
+WHERE a.art_id = 6 AND t.timetable_id = 9 AND s.seat_number IN ('B1', 'B2', 'B3');
+

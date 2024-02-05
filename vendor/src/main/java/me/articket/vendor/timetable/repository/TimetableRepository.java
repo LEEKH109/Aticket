@@ -13,6 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TimetableRepository {
 
+  @Select("SELECT * " +
+  "FROM timetable " +
+  "WHERE timetable_id = #{timetableId}")
+  Timetable findTimetableByTimetableId(int timetableId);
   @Select("SELECT date " +
       "FROM timetable " +
       "WHERE art_id = #{artId} " +
