@@ -14,11 +14,19 @@ public class UserRes {
 
     private String nickname;
 
+    private String email;
+
     public static UserRes of(User user) {
         UserRes userRes = new UserRes();
         userRes.userId = user.getId();
         userRes.profileUrl = user.getProfileUrl();
         userRes.nickname = user.getNickname();
+        userRes.email = user.getEmail();
         return userRes;
+    }
+
+    public UserRes(Long userId, String nickname) {
+        this.userId=userId;
+        this.nickname=nickname;
     }
 }
