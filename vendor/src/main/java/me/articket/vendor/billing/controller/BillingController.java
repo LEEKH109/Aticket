@@ -32,7 +32,7 @@ public class BillingController {
       // 유효성 검사
       //  => 유효성 검사 통과 하지 못 하면 다음 로직으로 진행되지 않습니다.
       //  => 유효성 테스트는 각 도메인별로 이관, 미 통과시 예외처리 throw
-      ticketTypeService.TicketValidationCheck(request);
+      ticketTypeService.ticketValidationCheck(request);
       // 결제 준비 요청
       //  => 결제 준비 단계에서는 카카오페이 결제준비 와 해당 응답의 결과에 따라 billing 객체를 생성합니다.
       PaymentPreparationResDto paymentResponse = billingService.preparePaymentForTicket(

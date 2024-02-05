@@ -37,7 +37,7 @@ public class TicketTypeService {
     return response;
   }
 
-  public void TicketValidationCheck(TicketReservationRequestDto request){
+  public void ticketValidationCheck(TicketReservationRequestDto request){
     // 전시 유효성 체크
     if(ticketTypeRepository.countSeatValidArtId(request.getArtId()) == 0){
       throw new IllegalArgumentException("Invalid artId.");
