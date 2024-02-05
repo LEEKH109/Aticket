@@ -78,7 +78,7 @@ public class BillingController {
       PaymentApprovalResponse response = billingService.updateBillingStatusToProcessing(reservationId, pgToken);
       return ResponseEntity.ok(response);
     } catch (Exception e) {
-      return (ResponseEntity<PaymentApprovalResponse>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 

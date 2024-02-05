@@ -42,10 +42,10 @@ public interface BillingRepository {
   void updateBillingStatus(@Param("reservationId") String reservationId, @Param("status") String status);
 
   // 예약 존재 여부 유효성 체크(실패,취소 요청시)
-  @Select("SELECT COUNT(*) FROM billing WHERE reservation_id = #{reservationId} AND tid = #{tid}")
+  @Select("SELECT COUNT(*) FROM billing WHERE reservation_id = #{reservationId}")
   int existsByReservationId(@Param("reservationId") String reservationId);
 
-  @Select("SELECT * FROM billing WHERE reservation_id = #{reservationId} AND tid = #{tid}")
+  @Select("SELECT * FROM billing WHERE reservation_id = #{reservationId}")
   Optional<Billing> selectByReservationId(@Param("reservationId") String reservationId);
   // 조회시 null이 반환될 수 있어 optional 처리
 }

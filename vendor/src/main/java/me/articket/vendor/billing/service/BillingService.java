@@ -110,6 +110,7 @@ public class BillingService {
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
     ResponseEntity<String> response = restTemplate.postForEntity(
         "https://kapi.kakao.com/v1/payment/ready", entity, String.class);
+    System.out.println(response);
     // 카카오페이 응답에서 tid 추출 및 결제 상태 업데이트
     PaymentPreparationResDto paymentResponseDto = convertBillingAndExtractRedirectUrl(response.getBody());
     String tid = paymentResponseDto.getTid();
@@ -242,7 +243,8 @@ public class BillingService {
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
     ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/payment/approve", requestEntity, String.class);
-
+    System.out.println("end");
+    System.out.println(response);
     // 4. 응답 처리
     if (response.getStatusCode() == HttpStatus.OK) {
       // 성공 응답 처리 로직
