@@ -4,7 +4,7 @@ COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/doc
 FROM openjdk:17-jdk
 EXPOSE 443
 
-ADD ./server/build/libs/*.jar app.jar
+ADD ./vendor/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # Dockerfile
@@ -13,7 +13,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 #FROM openjdk:17
 
 # jar 파일 복제
-#COPY ./server/build/libs/*.jar app.jar
+#COPY ./vendor/build/libs/*.jar app.jar
 
 
 # 인자 설정 부분과 jar 파일 복제 부분 합쳐서 진행해도 무방
