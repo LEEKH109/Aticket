@@ -30,7 +30,8 @@ public class BillingController {
   public ResponseEntity<?> reserveTicket(@RequestBody TicketReservationRequestDto request) {
     try {
       // 유효성 검사
-      //  => 유효성 검사 통과 하지 못 하면 다음 로직으로 진행되지 않습니다.
+      //  => 유효성 검사 통과 하지 못 하면 다음 로직으로 진행되지 않
+      //  니다.
       //  => 유효성 테스트는 각 도메인별로 이관, 미 통과시 예외처리 throw
       ticketTypeService.ticketValidationCheck(request);
       // 결제 준비 요청

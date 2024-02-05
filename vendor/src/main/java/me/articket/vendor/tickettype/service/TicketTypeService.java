@@ -39,13 +39,13 @@ public class TicketTypeService {
 
   public void ticketValidationCheck(TicketReservationRequestDto request){
     // 전시 유효성 체크
-    if(ticketTypeRepository.countSeatValidArtId(request.getArtId()) == 0){
+    if(ticketTypeRepository.countSeatByArtId(request.getArtId()) == 0){
       throw new IllegalArgumentException("Invalid artId.");
     }
-    if(ticketTypeRepository.countValidTimetableId(request.getTimetableTd()) == 0){
+    if(ticketTypeRepository.countTimetableId(request.getTimetableTd()) == 0){
       throw new IllegalArgumentException("Invalid timetableId.");
     }
-    if (request.getTickets().stream().anyMatch(ticket -> ticketTypeRepository.countValidTicketTypeId(
+    if (request.getTickets().stream().anyMatch(ticket -> ticketTypeRepository.countTicketTypeId(
         ticket.getTicketTypeId()) == 0)){
       throw new IllegalArgumentException("Invalid ticketTypeId.");
     }

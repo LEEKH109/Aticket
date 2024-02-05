@@ -15,17 +15,17 @@ public interface TicketTypeRepository {
   @Select("SELECT COUNT(*) " +
       "FROM art " +
       "WHERE art_id = #{artId}")
-  int countSeatValidArtId(@Param("artId") int artId);
+  int countSeatByArtId(@Param("artId") int artId);
   // timetable 유효성 체크
   @Select("SELECT COUNT(*) " +
       "FROM timetable " +
       "WHERE timetable_id = #{timetableId}")
-  int countValidTimetableId(@Param("timetableId") int timetableId);
+  int countTimetableId(@Param("timetableId") int timetableId);
   // ticketType 유효성 체크
   @Select("SELECT COUNT(*) " +
       "FROM ticket_type " +
       "WHERE ticket_type_id = #{ticketTypeId}")
-  int countValidTicketTypeId(@Param("ticketTypeId") int ticketTypeId);
+  int countTicketTypeId(@Param("ticketTypeId") int ticketTypeId);
   // ticketType 조회
   @Select("SELECT ticket_type_id, user_type, price " +
       "FROM ticket_type " +
