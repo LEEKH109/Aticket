@@ -16,6 +16,8 @@ import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
 import CollectionList from "./components/CollectionList";
 import BookHistoryList from "./components/BookHistoryList";
+import BillingApprovePage from "./pages/book/BillingApprovePage";
+import BillingResultPage from "./pages/book/BillingResultPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -92,6 +94,16 @@ function App() {
         {
           path: "/art",
           element: <DetailPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "billing/approve/:reservationId",
+          element: <BillingApprovePage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/billing/result",
+          element: <BillingResultPage />,
           errorElement: <ErrorPage />,
         },
       ],
