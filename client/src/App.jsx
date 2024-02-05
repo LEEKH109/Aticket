@@ -35,13 +35,11 @@ function App() {
           path: "/chat",
           element: <ChatListPage />,
           errorElement: <ErrorPage />,
-          children: [
-            {
-              path: ":categoryId/paging",
-              element: <ChatRoomPage/>,
-              errorElement: <ErrorPage/>
-            }
-          ]
+        },
+        {
+          path: "/chat/room/:categoryId",
+          element: <ChatRoomPage/>,
+          errorElement: <ErrorPage/>
         },
         {
           path: "/user",

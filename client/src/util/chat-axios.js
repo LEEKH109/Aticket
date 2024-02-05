@@ -1,4 +1,5 @@
 import axios from "axios";
+import ErrorPage from "../pages/ErrorPage";
 
 const BASE_URL = "http://localhost:8080/chat";
 
@@ -8,13 +9,13 @@ const apiClient = axios.create({
 
 const ChatApi = {
 
-    chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),
+    sendChatlog: (categoryId, chatlog) => apiClient.post(`/send/${categoryId}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
 
-    preview: (categoryId) => apiClient.get(`${categoryId}/preview`).then(response=>response.data).catch(error=>console.error(error)),
+    preview: (categoryId) => apiClient.get(`/preview/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
+    
+    chatRoom: (categoryId) => apiClient.get(`/room/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
 
-    chatRoom: (categoryId, page) => apiClient.get(`${categoryId}/paging`).then(response=>response).catch(error=>console.error(error)),
-
-    sendChatlog: (categoryId, chatlog) => apiClient.post(`/${categoryId}/send`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
+    chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),//임시
 
 }
 
