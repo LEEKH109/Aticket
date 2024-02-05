@@ -3,6 +3,7 @@ package me.articket.server.user.service;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
+import me.articket.server.user.data.ProfileUrlRes;
 import me.articket.server.user.data.UserRes;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
