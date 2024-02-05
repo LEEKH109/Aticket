@@ -20,6 +20,11 @@ public class Billing {
   private int totalAmount;
 
   public enum BillingStatus {
-    결제생성, 결제준비, 결제진행중, 결제완료, 결제실패, 결제취소
+    PAYMENT_CREATED, // 결제생성
+    PAYMENT_PENDING, // 결제준비
+    PAYMENT_IN_PROGRESS, // 결제진행중
+    PAYMENT_COMPLETED, // 결제완료
+    PAYMENT_FAILED, // 결제실패
+    PAYMENT_CANCELLED // 결제취소
   }
 }

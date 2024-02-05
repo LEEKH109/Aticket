@@ -69,7 +69,7 @@ public class BillingService {
     String tid = paymentResponseDto.getTid();
     // Billing 객체의 결제상태를 '결제준비'로 수정하고, tid 업데이트
     int updateCount = billingRepository.updateBillingWithTidAndStatus(request.getReservationId(), tid,
-        String.valueOf(BillingStatus.결제준비));
+        String.valueOf(BillingStatus.PAYMENT_PENDING));
     if (updateCount != 1) {
       throw new RuntimeException("결제 정보 업데이트에 실패했습니다.");
     }
@@ -114,7 +114,7 @@ public class BillingService {
     String tid = paymentResponseDto.getTid();
     // Billing 객체의 결제상태를 '결제준비'로 수정하고, tid 업데이트
     int updateCount = billingRepository.updateBillingWithTidAndStatus(request.getReservationId(), tid,
-        String.valueOf(BillingStatus.결제준비));
+        String.valueOf(BillingStatus.PAYMENT_PENDING));
     if (updateCount != 1) {
       throw new RuntimeException("결제 정보 업데이트에 실패했습니다.");
     }
@@ -142,7 +142,7 @@ public class BillingService {
     billing.setArtId(ticketInfo.getArtId());
     billing.setReservationId(ticketInfo.getReservationId());
     billing.setBookerName(ticketInfo.getBookerName());
-    billing.setStatus(Billing.BillingStatus.결제생성);
+    billing.setStatus(Billing.BillingStatus.PAYMENT_CREATED);
     billing.setCategory(artRepository.findCategoryNameByArtId(ticketInfo.getArtId()));
     billing.setTotalAmount(ticketInfo.getTotalAmount());
     // DB 등록
@@ -185,7 +185,7 @@ public class BillingService {
     billing.setArtId(seatInfo.getArtId());
     billing.setReservationId(seatInfo.getReservationId());
     billing.setBookerName(seatInfo.getBookerName());
-    billing.setStatus(Billing.BillingStatus.결제생성);
+    billing.setStatus(BillingStatus.PAYMENT_CREATED);
     billing.setCategory(artRepository.findCategoryNameByArtId(seatInfo.getArtId()));
     billing.setTotalAmount(seatInfo.getTotalAmount());
     // DB 등록
@@ -224,7 +224,7 @@ public class BillingService {
         .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 결제 정보입니다."));
     // 2. 결제 진행 중으로 진행 단계 수정
     billingRepository.updateBillingStatusAndToken(reservationId,
-        String.valueOf(BillingStatus.결제진행중), tid, pgToken);
+        String.valueOf(BillingStatus.PAYMENT_IN_PROGRESS), tid, pgToken);
     // 3. 카카오페이 결제 최종 승인 요청
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -245,12 +245,12 @@ public class BillingService {
     // 4. 응답 처리
     if (response.getStatusCode() == HttpStatus.OK) {
       // 성공 응답 처리 로직
-      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제완료));
+      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_COMPLETED));
       // jsonResponse 변환해서 바로 PaymentApprovalResponse 응답 값 반환
       return parsePaymentApprovalResponse(response.getBody());
     } else {
       // 실패 응답 처리 로직
-      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제실패));
+      billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_FAILED));
       throw new RuntimeException("결제 승인 실패: " + response.getBody());
     }
   }
@@ -259,14 +259,14 @@ public class BillingService {
     if (validateBilling(reservationId, tid)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
-    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제실패));
+    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_FAILED));
   }
 
   public void updateBillingStatusToCancelled(String reservationId, String tid) {
     if (validateBilling(reservationId, tid)) {
       throw new IllegalArgumentException("유효하지 않은 결제 정보입니다.");
     }
-    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.결제취소));
+    billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_CANCELLED));
   }
 
   public PaymentApprovalResponse parsePaymentApprovalResponse(String jsonResponse) {
