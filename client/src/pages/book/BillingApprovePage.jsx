@@ -12,8 +12,10 @@ const BillingApprovePage = () => {
     if (reservationId && pgToken) {
       billingApi
         .approvePayment(reservationId, pgToken)
-        .then(() => {
-          navigate("/billing/result");
+        .then((response) => {
+          navigate("/billing/result", {
+            state: { paymentInfo: response.data },
+          });
         })
         .catch((error) => {
           console.error("결제 승인 실패:", error);
