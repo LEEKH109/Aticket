@@ -21,8 +21,6 @@ public enum ErrorCode {
     SHORTS_NOT_FOUND_ERROR(404, "SHR001", "존재하지 않는 숏폼입니다."),
 
     INVALID_LIKE_REQUEST_ERROR(409, "LIK001", "현재 좋아요 상태가 변경하려는 상태와 동일합니다."),
-
-    CHATLOG_NOT_FOUND( 404, "CHT001", "채팅이 없습니다.");
     ;
 
     private final int status;
