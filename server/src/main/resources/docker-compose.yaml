@@ -16,6 +16,6 @@ services:
     ports:
       - '3307:3307'
     networks:
-      - https://i10a704.p.ssafy.io/
+      - http://i10a704.p.ssafy.io/
 networks:
   my_network:
