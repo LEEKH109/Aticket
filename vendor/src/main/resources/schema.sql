@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `billing` (
                                          `art_id` int NOT NULL,
                                          `reservation_id` varchar(255) NOT NULL COMMENT '가맹점에서 생성한 주문번호',
                                          `booker_name` varchar(255) NOT NULL,
-                                         `status` ENUM('결제생성', '결제준비', '결제진행중', '결제완료', '결제실패', '결제취소') NOT NULL,
+                                         `status` ENUM('PAYMENT_CREATED', 'PAYMENT_PENDING', 'PAYMENT_IN_PROGRESS', 'PAYMENT_COMPLETED', 'PAYMENT_FAILED', 'PAYMENT_CANCELLED') NOT NULL,
                                          `category` VARCHAR(255) NOT NULL,
                                          `tid` varchar(100) NULL COMMENT '카카오에서 생성하는 결제 고유 번호',
                                          `pg_token` varchar(255) NULL COMMENT '결제 준비 완료시에 카카오에서 전달해주는 pg사 고유값',
