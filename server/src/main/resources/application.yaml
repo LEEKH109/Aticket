@@ -15,9 +15,11 @@ cloud:
   aws:
     s3:
       bucket: articketbuket
-      base-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/
+      base-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com
     region:
       static: ap-northeast-2
       auto: false
     stack:
       auto: false
+
+default-profile-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/defaultProfile.jpg
