@@ -42,7 +42,7 @@ const SelectDateTimePage = ({ artId }) => {
       .catch((error) => {
         console.error("Error fetching available dates:", error);
       });
-  }, [artId, navigate]);
+  }, []);
 
   useEffect(() => {
     const formattedDate = selectedDate.format("YYYY-MM-DD");
@@ -50,7 +50,7 @@ const SelectDateTimePage = ({ artId }) => {
       .getTimetables(1, formattedDate)
       .then((response) => setTimetable(response.data))
       .catch((error) => console.error("Error fetching timetable:", error));
-  }, [selectedDate, artId]);
+  }, [selectedDate]);
 
   const isDateAvailable = (date) =>
     availableDates.some((availableDate) => availableDate.isSame(date, "day"));

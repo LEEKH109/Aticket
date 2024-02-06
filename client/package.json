@@ -26,7 +26,8 @@
     "sockjs-client": "^1.6.1",
     "sort-by": "^1.2.0",
     "stompjs": "^2.3.3",
-    "sweetalert2": "^11.10.3"
+    "sweetalert2": "^11.10.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
