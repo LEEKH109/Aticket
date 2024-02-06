@@ -41,10 +41,10 @@ function Footer() {
         />
         {isLogin != null && isLogin ? (
           <BottomNavigationAction
-            value="mypage"
+            value="user"
             icon={<Avatar sx={{width:36, height:36}} src={profile_image} />}
             label="마이페이지"
-            onClick={() => navigate("/mypage")}>
+            onClick={() => navigate("/user")}>
             
             </BottomNavigationAction>
         ) : (
