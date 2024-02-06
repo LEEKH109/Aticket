@@ -46,6 +46,9 @@ public class LoginService {
 
     private final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
 
+    @Value("${default-profile-url}")
+    private String defaultUrl;
+
     public KakaoOAuthTokenRes getTokenbyCode(String code) {
 
         // POST 방식으로 key=value 데이터를 요청 (카카오쪽으로)
@@ -116,7 +119,7 @@ public class LoginService {
                     userinfo.getKakao_account().getEmail(),
                     birthday,
                     userinfo.getKakao_account().getProfile().getNickname(),
-                    "https://articketbuket.s3.ap-northeast-2.amazonaws.com/defaultProfile.jpg");
+                    defaultUrl);
             userRepository.save(newuser);
         }
 
