@@ -22,8 +22,8 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: articketbucket
-      base-url: https://articketbucket.s3.ap-northeast-2.amazonaws.com/
+      bucket: articketbuket
+      base-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/
     credentials:
       access-key: AKIAYJ77X7CI7Q7QBJIC
       secret-key: 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
