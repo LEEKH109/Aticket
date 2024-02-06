@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
 import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
-import { LoginContext, IsLoginProvider, useLoginState } from '../components/LoginContext';
+import { LoginContext } from "../components/LoginContext";
+import { UserApi } from "../util/user-axios";
 
 const ChatRoom = () => {
     //Intersection Observer 사용하는 방식의 무한 스크롤 구현
-    const isLogin = useLoginState();
+    const { isLogin, userId } = useContext(LoginContext);
     let {categoryId} = useParams();
     const [chatContent, setChatContent] = useState("");
     const [chatlogs, setChatlogs] = useState([]);
@@ -67,7 +68,7 @@ const ChatRoom = () => {
         
             // 사용자 프로필 이미지를 생성하고 속성 설정
             const avatarElement = document.createElement('img');
-            avatarElement.src = newChatlog.profileUrl; // 사용자 프로필 URL 사용
+            avatarElement.src = newChatlog.user.profileUrl; // 사용자 프로필 URL 사용
             avatarElement.alt = `Avatar of ${newChatlog.nickname}`; // 대체 텍스트로 'nickname' 사용
             chatlogElement.appendChild(avatarElement);
         
@@ -128,7 +129,7 @@ const ChatRoom = () => {
         }
 
         const chatlog = {
-            user: user,
+            user: userId,
             categoryId: categoryId,
             content: chatContent,
             regDate: new Date(),
