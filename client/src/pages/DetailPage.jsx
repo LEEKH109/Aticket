@@ -129,7 +129,7 @@ const DetailPage = () => {
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
-            채팅창?????
+            <ChatPreview categoryId={shortInfo.categoryId}/>
         </div>
         </div>
       </div>
