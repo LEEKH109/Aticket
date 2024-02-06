@@ -12,8 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.articket.server.art.domain.Art;
 import me.articket.server.billing.data.BillingCateogry;
 import me.articket.server.common.entity.BaseEntity;
+import me.articket.server.user.domain.User;
 
 @Entity
 @Table(name = "billing")
@@ -23,10 +25,12 @@ import me.articket.server.common.entity.BaseEntity;
 public class Billing extends BaseEntity {
 
   @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @ManyToOne
   @JoinColumn(name = "art_id", nullable = false)
-  @JoinColumn(name = "kakao_id", nullable = false)
-  @Setter
-  private Billing billing;
+  private Art art;
 
   @Column(nullable = false)
   private String reservationId;
