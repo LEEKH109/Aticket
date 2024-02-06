@@ -10,6 +10,8 @@ public enum ErrorCode {
 
     USER_NOT_FOUND_ERROR(404, "USR001", "존재하지 않는 사용자입니다."),
 
+    USER_NICKNAME_WRONG_ERROR(401, "USER002", "닉네임의 형식이 잘못되었습니다."),
+
     ACCESS_TOKEN_EXPIRE_ERROR(401, "ACC001", "Access Token의 기간이 만료되었습니다."),
 
     ACCESS_TOKEN_ERROR(401, "ACC002", "Access Token이 잘못되었습니다."),

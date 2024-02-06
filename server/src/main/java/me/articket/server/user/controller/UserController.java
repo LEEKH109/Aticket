@@ -14,6 +14,7 @@ import me.articket.server.user.data.UserRes;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
 import me.articket.server.user.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -48,14 +49,14 @@ public class UserController {
 
     @PostMapping("/{id}/profile")
     public SuccessResponse<ProfileUrlRes> uploadProfileImage(@PathVariable Long id, @RequestPart MultipartFile file) {
-        System.out.println(file.getOriginalFilename());
         try {
             // auth 비교
-            String fileName = file.getOriginalFilename();
+            String fileName = RandomStringUtils.randomAlphanumeric(20);
             String fileUrl = baseUrl + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
+
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(
                     bucket, fileName, file.getInputStream(), metadata
@@ -96,7 +97,9 @@ public class UserController {
 
         optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
         User user = optionalUser.get();
-        user.setNickname(nickname.getNickname());
+        if(!user.setNickname(nickname.getNickname())) {
+            throw new CustomException(ErrorCode.USER_NICKNAME_WRONG_ERROR);
+        }
 
         userRepository.save(user);
 
