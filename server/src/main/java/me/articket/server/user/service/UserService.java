@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
+import me.articket.server.user.data.NicknameRes;
 import me.articket.server.user.data.ProfileUrlRes;
 import me.articket.server.user.data.UserRes;
 import me.articket.server.user.domain.User;
@@ -51,7 +52,7 @@ public class UserService {
         return UserRes.of(user);
     }
 
-    public UserRes setNickname(Long id, String nickname) {
+    public NicknameRes setNickname(Long id, String nickname) {
 
         Optional<User> optionalUser = userRepository.findById(id);
 
@@ -61,9 +62,9 @@ public class UserService {
             throw new CustomException(ErrorCode.USER_NICKNAME_WRONG_ERROR);
         }
 
-        userRepository.save(user);
+        user = userRepository.save(user);
 
-        return new UserRes(id, nickname);
+        return new NicknameRes(id, nickname);
     }
 
     public ProfileUrlRes uploadProfile(Long id, MultipartFile file) {
@@ -83,7 +84,7 @@ public class UserService {
 
             return setProfileUrl(id, fileUrl);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new CustomException(ErrorCode.FILE_UPLOAD_ERROR);
         }
     }
 
@@ -95,7 +96,7 @@ public class UserService {
 
         user.setProfileUrl(url);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         return new ProfileUrlRes(id, url);
     }
