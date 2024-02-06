@@ -25,8 +25,4 @@ public class UserRes {
         return userRes;
     }
 
-    public UserRes(Long userId, String nickname) {
-        this.userId=userId;
-        this.nickname=nickname;
-    }
 }
