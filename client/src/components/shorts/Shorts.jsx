@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import ReactPlayer from "react-player";
 import ShortsInfo from "./ShortsInfo";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
