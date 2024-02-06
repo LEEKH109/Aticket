@@ -1,6 +1,10 @@
 package me.articket.server.chat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,8 +15,11 @@ import me.articket.server.chat.repository.ChatlogRepository;
 @Service
 public class ChatService {
 
-    @Autowired
-    private ChatlogRepository chatlogRepository;
+    private final ChatlogRepository chatlogRepository;
+
+    public ChatService(ChatlogRepository chatlogRepository) {
+        this.chatlogRepository = chatlogRepository;
+    }
 
     public void saveChatlog(Chatlog chatlog) {
         chatlogRepository.save(chatlog);
@@ -23,14 +30,21 @@ public class ChatService {
         return chatlogs.stream()
                 .limit(5)
                 .map(ChatlogRes::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public List<ChatlogRes> findTop10ByCategoryId(int categoryId) {
+    public List<ChatlogRes> findTop15ByCategoryId(int categoryId) {
         List<Chatlog> chatlogs = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId);
         return chatlogs.stream()
-                .limit(10)
+                .limit(15)
                 .map(ChatlogRes::of)
-                .collect(Collectors.toList());
+                .toList();
     }
+
+    public Page<ChatlogRes> getChatlogs(int categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("regDate").descending());
+        Page<Chatlog> chatlogs = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId, pageable);
+        return chatlogs.map(ChatlogRes::of);
+    }
+
 }
