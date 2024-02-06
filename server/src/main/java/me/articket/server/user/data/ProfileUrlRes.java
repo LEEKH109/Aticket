@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class ProfileUrlRes {
+
     private Long userId;
 
     private String profileUrl;
-
 
 }
