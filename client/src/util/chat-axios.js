@@ -15,7 +15,9 @@ const ChatApi = {
     
     chatRoom: (categoryId) => apiClient.get(`/room/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
 
-    chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),//임시
+    chatScroll: (categoryId, page, size) => apiClient.get(`/paging/${categoryId}?page=${page}&size=${size}`).then(response => response.data).catch(error=> console.error(error)),
+
+    // chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),//임시
 
 }
 

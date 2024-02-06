@@ -1,19 +1,31 @@
-import { useState, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
-import Chatlog from "../components/Chatlog";
 import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
-import {LoginContext, IsLoginProvider, useLoginState } from '../components/LoginContext';
+import { LoginContext, IsLoginProvider, useLoginState } from '../components/LoginContext';
 
 const ChatRoom = () => {
-    
-    const token = useContext(LoginContext);
-    const location = useLocation();
-    const { categoryid } = location.state;
+    //Intersection Observer 사용하는 방식의 무한 스크롤 구현
+    const isLogin = useLoginState();
+    let {categoryId} = useParams();
     const [chatContent, setChatContent] = useState("");
-    console.log(token);
+    const [chatlogs, setChatlogs] = useState([]);
+
+    const [pins, setPins] = useState([]); //처음 chatlog부터 이어져야 하니 => 데이터를 담고 있는 state인 pins를 operator 연산자로 복제
+    const [page, setPage] = useState(1);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
+    const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
+
+    const token = useContext(LoginContext);
+    const chatsRef = useRef(null);
     let stompClient = null;
+    //scrollTop : 요소 맨 위에서부터 스크롤바까지의 거리
+    //scrollHeight : 요소 전체 높이
+    //clientHeight : 요소 중 현재 보이는 부분의 높이
+
+    const fetchPins = async page => {
+        const res = await fetch(`https://localhost:8080/chat/`)
+    }
 
     useEffect(()=>{
         const connect = () => {
@@ -21,7 +33,7 @@ const ChatRoom = () => {
                 return new SockJS("http://localhost:8080/ws");
             })
             stompClient.connect({},()=> {
-                onConnected(categoryid);
+                onConnected(categoryId);
             }, onError);
         };
 
@@ -87,7 +99,19 @@ const ChatRoom = () => {
                 });
             }
         }
-    }, [categoryid, token])
+    }, [categoryId, navigate, token])
+
+    useEffect(() => {
+        setChatlogs(ChatApi.chatRoom(categoryId));
+        if (chatsRef.current) {
+            chatsRef.current.addEventListener('scroll', handleScroll);
+        }
+        return () => {
+            if (chatsRef.current) {
+                chatsRef.current.removeEventListener('scroll', handleScroll);
+            }
+        }        
+    }, [chatsRef]);
 
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
@@ -105,32 +129,74 @@ const ChatRoom = () => {
 
         const chatlog = {
             user: user,
-            categoryId: categoryid,
+            categoryId: categoryId,
             content: chatContent,
             regDate: new Date(),
         };
 
         try {
-            const response = await ChatApi.sendChatlog(categoryid, chatlog);
+            const response = await ChatApi.sendChatlog(categoryId, chatlog);
+            onChatlogReceived(response);
         } catch (error) {
             console.error("채팅 전송 실패:", error);
         }
         setChatContent("");
     };
 
+    const handleScroll = () => {
+        const ref = chatsRef.current;
+        if (Math.abs(ref.scrollTop) > ref.scrollHeight - ref.clentHeight -100) {
+            //다음 페이지 요청
+            //ChatApi.chatScroll: (categoryId, page, size) 에서 categoryId는 let {categoryId} = useParams(); 에서 불러온 친구, page는 기존 페이지 번호보다 +1, size는 15
+        }
+        if (ref.scrollTop < -50) {
+            //스크롤이 맨 아래가 아닌 경우 프리뷰 버튼, 버튼 클릭하면 pageDown함수 실행
+        }
+        if (ref.scrollTop > - 10) {
+            //스크롤이 맨 아래가 아닌 경우 프리뷰 제거?
+        }
+    }
 
+    const pageDown = () => {
+        const ref = chatsRef.current;
+        ref.scrollTop = 0;
+    };
+    
 
     return (
         <div>
-            <h2>채팅 카테고리 = {categoryid}</h2>
-            <div id="chatArea">
-                <Chatlog categoryId={categoryid}/>
+            <h2>채팅 카테고리 = {categoryId}</h2>
+            <div>           
+            {recentPage.length > 0 ? (
+            // <ul>
+            //     {recentPage.map((chatlog) => ( 
+            //         <li key={chatlog.chatlogId}>
+            //             <img src={chatlog.profileUrl} alt="profile" />
+            //             <span>{chatlog.nickname}: </span>
+            //             <span>{chatlog.content}</span>
+            //             <span> ({new Date(chatlog.regDate).toLocaleString()})</span>
+            //         </li>
+            //     ))}
+            // </ul>
+            <div ref={chatsRef}></div>
+                        ) : (
+                            <p>채팅이 존재하지 않습니다.</p>
+                        )}
             </div>
             <div>
-                <form name="chatform" >
-                    <textarea name="chat-insert" id="chatContent" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} required></textarea>
-                    <button type="submit" onClick={sendChat}>submit</button>
-                </form>
+                {
+                    isLogin === true ?
+                    <div>
+                    {/* <form name="chatform" > */}
+                        <textarea name="chat-insert" id="chatContent" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} required></textarea>
+                        <button type="submit" onClick={sendChat}>submit</button>
+                    {/* </form> */}
+                    </div>
+                    :
+                    <div>
+                        로그인이 필요한 서비스입니다.
+                    </div>
+                }
             </div>
         </div>
     );

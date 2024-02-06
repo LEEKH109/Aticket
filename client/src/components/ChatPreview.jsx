@@ -7,6 +7,10 @@ const ChatPreview = ({ categoryid}) => {
 
     useEffect(() => { 
         setChatPreviews(ChatApi.preview(categoryid));
+        // if (!categoryid) {
+        //     navigate("/chat");
+        //     return;
+        // }
       }, [categoryid]);
 
     return (
