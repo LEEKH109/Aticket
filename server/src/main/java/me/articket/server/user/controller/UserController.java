@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
 import me.articket.server.common.response.SuccessResponse;
+import me.articket.server.user.data.NicknameReq;
 import me.articket.server.user.data.ProfileUrlRes;
 import me.articket.server.user.data.UserRes;
 import me.articket.server.user.domain.User;
@@ -89,17 +90,17 @@ public class UserController {
     }
 
     @PostMapping("/{id}/nickname")
-    public SuccessResponse<UserRes> updateNickname(@PathVariable Long id, @RequestBody String nickname) {
+    public SuccessResponse<UserRes> updateNickname(@PathVariable Long id, @RequestBody NicknameReq nickname) {
 
         Optional<User> optionalUser = userRepository.findById(id);
 
         optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
         User user = optionalUser.get();
-        user.setNickname(nickname);
+        user.setNickname(nickname.getNickname());
 
         userRepository.save(user);
 
-        return new SuccessResponse<>(new UserRes(id, nickname));
+        return new SuccessResponse<>(new UserRes(id, nickname.getNickname()));
     }
 
 }
