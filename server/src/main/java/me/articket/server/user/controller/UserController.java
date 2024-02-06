@@ -4,13 +4,10 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.sun.net.httpserver.Authenticator;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
-import me.articket.server.common.response.FailResponse;
 import me.articket.server.common.response.SuccessResponse;
-import me.articket.server.login.data.UserDetail;
 import me.articket.server.user.data.ProfileUrlRes;
 import me.articket.server.user.data.UserRes;
 import me.articket.server.user.domain.User;
@@ -18,9 +15,6 @@ import me.articket.server.user.repository.UserRepository;
 import me.articket.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,8 +46,10 @@ public class UserController {
     }
 
     @PostMapping("/{id}/profile")
-    public SuccessResponse<ProfileUrlRes> uploadProfileImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    public SuccessResponse<ProfileUrlRes> uploadProfileImage(@PathVariable Long id, @RequestPart MultipartFile file) {
+        System.out.println(file.getOriginalFilename());
         try {
+            // auth 비교
             String fileName = file.getOriginalFilename();
             String fileUrl = baseUrl + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
@@ -68,8 +64,7 @@ public class UserController {
 
             Optional<User> optionalUser = userRepository.findById(id);
 
-            optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
-            User user = optionalUser.get();
+            User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
             user.setProfileUrl(fileUrl);
 
             userRepository.save(user);
@@ -94,7 +89,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/nickname")
-    public SuccessResponse<UserRes> updateNickname(@PathVariable Long id, @RequestParam String nickname) {
+    public SuccessResponse<UserRes> updateNickname(@PathVariable Long id, @RequestBody String nickname) {
 
         Optional<User> optionalUser = userRepository.findById(id);
 
