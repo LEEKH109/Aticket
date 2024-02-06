@@ -18,6 +18,9 @@ const timetableApi = {
   getTimetables: (artId, date) => {
     return axiosInstance.get(`/time/${artId}/${date}`);
   },
+  getTicketTypes: (timetableId) => {
+    return axiosInstance.get(`/time/${timetableId}/tickets`);
+  },
 };
 
 export { timetableApi };

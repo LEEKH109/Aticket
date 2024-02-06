@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import TicketModal from "./TicketModal";
 import theme from "../util/theme";
+import { timetableApi } from "../util/timetable-axios";
 
 const TimeTable = ({ timeList }) => {
-  // 예약 가능한 시간을 클릭했을 때의 동작을 정의하는 함수
+  console.log("timeList", timeList);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(null);
+
   const handleTimeClick = (timeInfo) => {
-    // 여기에 예약 로직을 구현합니다.
-    console.log("Selected Time:", timeInfo);
+    timetableApi
+      .getTicketTypes(timeInfo.timetableId)
+      .then((response) => {
+        setSelectedTime({
+          ...timeInfo,
+          ticketTypes: response.data.ticketTypes,
+        });
+        setOpenModal(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching ticket types:", error);
+      });
   };
 
   return (
@@ -28,6 +43,15 @@ const TimeTable = ({ timeList }) => {
           </Button>
         ))}
       </div>
+      {selectedTime && (
+        <TicketModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          artId={selectedTime.artId}
+          timetableId={selectedTime.timetableId}
+          ticketTypes={selectedTime.ticketTypes} // 선택된 시간 정보를 TicketModal에 전달
+        />
+      )}
     </div>
   );
 };

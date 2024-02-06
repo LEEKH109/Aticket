@@ -22,6 +22,7 @@ const SelectDateTimePage = ({ artId }) => {
     timetableApi
       .getAvailableDates(1)
       .then((response) => {
+        console.log("dates", response);
         const dates = response.data
           .map((dateObj) => dayjs(dateObj.date))
           .filter((date) => date.isAfter(dayjs())); // 오늘 날짜 이전 일자는 제외(유효성 체크)
