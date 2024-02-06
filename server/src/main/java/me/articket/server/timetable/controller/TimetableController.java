@@ -36,7 +36,7 @@ public class TimetableController {
     TimeTicketTypeResponseDto response = timetableService.getTimeTickets(timetableId);
     return ResponseEntity.ok(response);
   }
-  
+
   @GetMapping("/{timetableId}/seats")
   public ResponseEntity<TimeSeatResponseDto> getTimeSeats(@PathVariable int timetableId){
     TimeSeatResponseDto response = timetableService.getTimeSeats(timetableId);
