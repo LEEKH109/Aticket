@@ -1,7 +1,10 @@
 import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
-import SelectDateTimePage from "./pages/SelectDateTimePage";
+import SelectDateTimePage from "./pages/book/SelectDateTimePage";
+import TicketBookingPage from "./pages/book/TicketBookingPage";
+import SeatBookingPage from "./pages/book/SeatBookingPage";
+import BookLayout from "./pages/book/BookLayout";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
@@ -13,6 +16,9 @@ import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
 import CollectionList from "./components/CollectionList";
 import BookHistoryList from "./components/BookHistoryList";
+import BillingApprovePage from "./pages/book/BillingApprovePage";
+import BillingResultPage from "./pages/book/BillingResultPage";
+import BillingPreviewPage from "./pages/book/BillingPreviewPage";
 
 function App() {
 
@@ -39,7 +45,7 @@ function App() {
         {
           path: "/chat/room/:categoryId",
           element: <ChatRoomPage/>,
-          errorElement: <ErrorPage/>
+          errorElement: <ErrorPage/>,
         },
         {
           path: "/user",
@@ -59,9 +65,25 @@ function App() {
           ],
         },
         {
-          path: "/select",
-          element: <SelectDateTimePage />,
+          path: "/book",
           errorElement: <ErrorPage />,
+          children: [
+            {
+              path: "",
+              element: <SelectDateTimePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "ticket",
+              element: <TicketBookingPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "seat",
+              element: <SeatBookingPage />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
         {
           path: "/loginpage",
@@ -76,6 +98,21 @@ function App() {
         {
           path: "/art",
           element: <DetailPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "billing/approve/:reservationId",
+          element: <BillingApprovePage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/billing/preview",
+          element: <BillingPreviewPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/billing/result",
+          element: <BillingResultPage />,
           errorElement: <ErrorPage />,
         },
       ],
@@ -94,5 +131,8 @@ function App() {
 }
 
 
+if (typeof window !== "undefined" && typeof window.global === "undefined") {
+  window.global = window;
+}
 
 export default App;

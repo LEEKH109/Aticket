@@ -1,27 +1,28 @@
-import React, { useState, useContext, useMemo, createContext } from "react";
+import { useState, useContext, useMemo, createContext } from "react";
 
-const userId = sessionStorage.getItem("id");
-const token = sessionStorage.getItem("token");
+const loginId = localStorage.getItem("userId");
+const refreshToken = localStorage.getItem("refreshToken");
+const accessToken = localStorage.getItem("accessToken");
 
 export const LoginContext = createContext({
-  isLogin: userId !== null ? true : false,
-  token: null,
+  isLogin: "",
+  userId: "",
+  setLogin: () => {},
+  setUserId: () => {},
 });
+
 export function IsLoginProvider({ children }) {
-  const [isLogin, setLogin] = useState(
-    userId !== null && token !== null ? true : false
-  );
-  const [authToken, setToken] = useState(token);
+  const [isLogin, setLogin] = useState(loginId !== null);
+  const [userId, setUserId] = useState(loginId);
   // useMemo로 캐싱하지 않으면 value가 바뀔 때마다 state를 사용하는 모든 컴포넌트가 매번 리렌더링됨
-  const value = useMemo(() => ({ isLogin, setLogin, token: authToken }), [isLogin, setLogin, authToken]);
-  return (
-    <LoginContext.Provider value={value}>{children}</LoginContext.Provider>
-  );
+  const value = useMemo(() => ({ isLogin, setLogin, userId, setUserId }), [isLogin, setLogin]);
+  return <LoginContext.Provider value={value}>{children}</LoginContext.Provider>;
 }
 export function useLoginState() {
   const context = useContext(LoginContext);
-  if(!context) {
-    throw new Error('Cannot find LoginProvider');
+  console.log("login context", context);
+  if (!context) {
+    throw new Error("Cannot find LoginProvider");
   }
-  return {isLogin: context.isLogin, token: context.token};
+  return context;
 }
