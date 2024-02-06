@@ -24,8 +24,9 @@ public enum ErrorCode {
 
     INVALID_LIKE_REQUEST_ERROR(409, "LIK001", "현재 좋아요 상태가 변경하려는 상태와 동일합니다."),
 
-    CHATLOG_NOT_FOUND( 404, "CHT001", "채팅이 없습니다.");
-    ;
+    CHATLOG_NOT_FOUND( 404, "CHT001", "채팅이 없습니다."),
+
+    FILE_UPLOAD_ERROR(404, "UPL001", "파일 업로드 에러");
 
     private final int status;
 
