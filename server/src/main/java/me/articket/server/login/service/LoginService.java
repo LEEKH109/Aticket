@@ -116,7 +116,7 @@ public class LoginService {
                     userinfo.getKakao_account().getEmail(),
                     birthday,
                     userinfo.getKakao_account().getProfile().getNickname(),
-                    userinfo.getKakao_account().getProfile().getProfile_image_url());
+                    "https://articketbuket.s3.ap-northeast-2.amazonaws.com/defaultProfile.jpg");
             userRepository.save(newuser);
         }
 
