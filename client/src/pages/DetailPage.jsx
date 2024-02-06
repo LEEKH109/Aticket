@@ -5,6 +5,8 @@ import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
 import { DetailApi } from "../util/details-axios";
 import { dateFormatter, dateFormmatterWithTime } from "../util/dateFormatter";
+import ChatPreview from "../components/ChatPreview";
+
 const DetailPage = () => {
   const location = useLocation();
   const { shortsId } = location.state;
@@ -59,7 +61,7 @@ const DetailPage = () => {
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
-            채팅창?????
+            <ChatPreview categoryId={shortInfo.categoryId}/>
         </div>
         </div>
       </div>

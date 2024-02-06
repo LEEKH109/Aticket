@@ -21,6 +21,11 @@ import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
 
 function App() {
+
+  if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+    window.global = window;
+  }
+  
   const router = createBrowserRouter([
     {
       path: "/",
@@ -36,13 +41,11 @@ function App() {
           path: "/chat",
           element: <ChatListPage />,
           errorElement: <ErrorPage />,
-          children: [
-            {
-              path: ":categoryId/paging",
-              element: <ChatRoomPage />,
-              errorElement: <ErrorPage />,
-            },
-          ],
+        },
+        {
+          path: "/chat/room/:categoryId",
+          element: <ChatRoomPage/>,
+          errorElement: <ErrorPage/>,
         },
         {
           path: "/user",
@@ -126,6 +129,7 @@ function App() {
     </>
   );
 }
+
 
 if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
