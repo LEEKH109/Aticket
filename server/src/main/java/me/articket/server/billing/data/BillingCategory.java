@@ -1,6 +1,6 @@
 package me.articket.server.billing.data;
 
-public enum BillingCateogry {
+public enum BillingCategory {
   // 결제 생성
   PAYMENT_CREATED,
   // 결제 준비

@@ -43,7 +43,9 @@ public class SecurityConfig {
                         "/chat/preview/**",
                         "/chat/room/**",
                         "/ws/**",
-                        "/art/{:\\d+}"
+                        "/art/{:\\d+}",
+                        "/time/**",
+                        "/billing/**"
 
                 ).permitAll()
                 .anyRequest().authenticated());
