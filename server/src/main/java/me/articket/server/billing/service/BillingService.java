@@ -90,13 +90,11 @@ public class BillingService {
   }
   // POST: /billing/reservation/seat
   public BillingPaymentCreatedResponse createBillingForSeat(Long id, BillingCreateSeatRequest request){
-    // artId 유효성 검사
-    boolean existArtId = artRepository.existsById(request.getArtId());
-    boolean existUserId = userRepository.existsById(id);
-    if(!existUserId){
+    // 유효성 검사
+    if(!artRepository.existsById(request.getArtId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Request");
     }
-    else if (!existArtId) {
+    else if (!userRepository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid artId");
     }
     // 1단계) Billing 객체 생성하기 / status - PAYMENT_CREATED
@@ -145,12 +143,10 @@ public class BillingService {
   // POST: /billing/approve/{reservationId}
   public BillingApproveResponse requestApprovePayment(String reservationId, BillingApproveRequest request) {
     // 유효성 검사
-    boolean existReservationId = billingRepository.existsByReservationId(reservationId);
-    boolean existUserId = userRepository.existsById(request.getUserId());
-    if(!existUserId){
+    if(!userRepository.existsById(request.getUserId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Request");
     }
-    else if (!existReservationId) {
+    else if (!billingRepository.existsByReservationId(reservationId)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Reservation");
     }
     Optional<Billing> optionalBilling = billingRepository.findByReservationId(reservationId);
