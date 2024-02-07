@@ -3,6 +3,9 @@ COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/doc
 
 FROM openjdk:17-jdk
 EXPOSE 443
+EXPOSE 8081
+EXPOSE 80
+
 
 ADD ./server/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]

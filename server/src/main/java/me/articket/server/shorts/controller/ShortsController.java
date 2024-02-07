@@ -46,4 +46,6 @@ public class ShortsController {
     public SuccessResponse<LikeStateRes> setLikeStatus(@PathVariable Long id, @RequestBody ModifyLikeReq req, @AuthenticationPrincipal UserDetail userDetail) {
         return new SuccessResponse<>(likeService.setLikeState(id, userDetail.getId(), req));
     }
+
+
 }

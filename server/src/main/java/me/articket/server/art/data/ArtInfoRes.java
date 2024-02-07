@@ -18,9 +18,11 @@ public class ArtInfoRes {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<String> actors;
+    private String location;
     private Integer rate;
     private String posterUrl;
     private List<String> infoUrls;
+    private ArtCategory category;
 
     public static ArtInfoRes of(Art art) {
         return ArtInfoRes.builder()
@@ -29,9 +31,11 @@ public class ArtInfoRes {
                 .startDate(art.getStartDate())
                 .endDate(art.getEndDate())
                 .actors(art.getActors())
+                .location(art.getLocation())
                 .rate(art.getRate())
                 .posterUrl(art.getPosterUrl())
                 .infoUrls(art.getInfoUrls())
+                .category(art.getCategory())
                 .build();
     }
 }
