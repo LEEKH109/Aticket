@@ -20,11 +20,9 @@ public class ArtInfoRes {
     private LocalDateTime endDate;
     private String location;
     private List<String> actors;
-    private String location;
     private Integer rate;
     private String posterUrl;
     private List<String> infoUrls;
-    private ArtCategory category;
 
     public static ArtInfoRes of(Art art) {
         return ArtInfoRes.builder()
