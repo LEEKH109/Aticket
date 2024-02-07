@@ -12,5 +12,6 @@ import lombok.Setter;
 public class PaymentPreparationResDto {
 
   private String tid;
-  private String redirectUrl;
+  private String redirectUrlPc;
+  private String redirectUrlMobile;
 }

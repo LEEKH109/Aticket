@@ -131,9 +131,10 @@ public class BillingService {
     JSONObject json = new JSONObject(response);
     String tid = json.getString("tid");
     String nextRedirectPcUrl = json.getString("next_redirect_pc_url");
+    String nextRedirectMobileUrl = json.getString("next_redirect_mobile_url");
     // Billing 객체 생성 및 저장 (추후 추가 예정)
     // 응답 객체 생성 및 반환
-    return new PaymentPreparationResDto(tid, nextRedirectPcUrl);
+    return new PaymentPreparationResDto(tid, nextRedirectPcUrl, nextRedirectMobileUrl);
   }
 
   @Transactional
