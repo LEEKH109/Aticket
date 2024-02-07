@@ -12,16 +12,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import me.articket.server.art.domain.Art;
-import me.articket.server.billing.data.BillingCateogry;
+import me.articket.server.billing.data.BillingCategory;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.user.domain.User;
 
 @Entity
 @Table(name = "billing")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Billing extends BaseEntity {
 
   @ManyToOne
@@ -38,14 +41,11 @@ public class Billing extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  @Setter
-  private BillingCateogry status;
+  private BillingCategory status;
 
   @Column
-  @Setter
   private LocalDateTime viewingDateTime;
 
   @Column
-  @Setter
   private LocalDateTime reservationConfirmationDateTime;
 }
