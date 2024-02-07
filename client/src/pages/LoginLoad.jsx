@@ -11,7 +11,7 @@ const LoginLoad = () => {
   const LoginProgress = async () => {
     await axios({
       method: "GET",
-      url: `http://i10a704.p.ssafy.io:8081${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
+      url: `http://i10a704.p.ssafy.io${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
       headers: {
         "Content-Type": "application/json;charset=utf-8",
         "Access-Control-Allow-Origin": "*", // cors 에러 방지
