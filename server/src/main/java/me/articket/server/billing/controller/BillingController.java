@@ -24,22 +24,25 @@ public class BillingController {
 
   @Transactional
   @PostMapping("/reservation/ticket/{id}")
-  public ResponseEntity<BillingPaymentCreatedResponse> billingPaymentCreateForTicket(@PathVariable Long id, @RequestBody
-      BillingCreateTicketRequest request){
+  public ResponseEntity<BillingPaymentCreatedResponse> billingPaymentCreateForTicket(
+      @PathVariable Long id, @RequestBody
+  BillingCreateTicketRequest request) {
     BillingPaymentCreatedResponse response = billingService.createBillingForTicket(id, request);
     return ResponseEntity.ok(response);
   }
 
   @Transactional
   @PostMapping("/reservation/seat/{id}")
-  public BillingPaymentCreatedResponse billingPaymentCreateForSeat(@PathVariable Long id, @RequestBody
-  BillingCreateSeatRequest request){
+  public BillingPaymentCreatedResponse billingPaymentCreateForSeat(@PathVariable Long id,
+      @RequestBody
+      BillingCreateSeatRequest request) {
     return billingService.createBillingForSeat(id, request);
   }
 
   @Transactional
   @PostMapping("/approve/{reservationId}")
-  public BillingApproveResponse requestBillingApprove(@PathVariable String reservationId, @RequestBody BillingApproveRequest request ){
+  public BillingApproveResponse requestBillingApprove(@PathVariable String reservationId,
+      @RequestBody BillingApproveRequest request) {
     return billingService.requestApprovePayment(reservationId, request);
   }
 
