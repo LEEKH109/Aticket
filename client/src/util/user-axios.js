@@ -3,14 +3,12 @@ import instance from "./interceptor";
 const UserApi = {
   // 유저 정보 불러오기
   getUserInfo: (id) => {
-    console.log("user api", id);
     return instance.get(`/user/${id}`);
   },
 
   // 프로필 이미지 수정
   updateProfileImage: (userId, data) => {
-    console.log("user api updateProfileImage", userId, data);
-    return instance.post(`/user/${userId}/profile`, data, {
+    return instance.put(`/user/${userId}/profile`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -19,13 +17,17 @@ const UserApi = {
 
   // 닉네임 수정
   updateNickname: (userId, data) => {
-    console.log("user api updateNickname", userId, data);
-    return instance.post(`/user/${userId}/nickname`, data);
+    return instance.put(`/user/${userId}/nickname`, data);
   },
 
   // 프로필 이미지 삭제
   deleteProfileImgae: (userId) => {
     return instance.delete(`/user/${userId}/profile`);
+  },
+
+  // collection 리스트 받아오기
+  getCollections: (userId) => {
+    return instance.get(`/user/${userId}/collection`);
   },
 };
 
