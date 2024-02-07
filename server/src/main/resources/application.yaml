@@ -6,10 +6,12 @@ spring:
   jackson:
     property-naming-strategy: LOWER_CAMEL_CASE
 
+
   profiles:
     include:
       - secret
       - cors
+
 
 cloud:
   aws:
@@ -24,5 +26,7 @@ cloud:
 
 default-profile-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/defaultProfile.jpg
 
-
 external-service-url: http://i10a704.p.ssafy.io:8082
+
+server:
+  port: 8081
