@@ -5,19 +5,19 @@ import { Link, useNavigate, useParams  } from "react-router-dom";
 
 const ChatList = () => {
   const navigate = useNavigate();
-  let { categoryId, page } = useParams();
+  let { category, page } = useParams();
   const categories = [
     {
       categoryId: 1,
-      categoryName: "show"
+      category: "SHOW"
     },
     {
       categoryId: 2,
-      categoryName: "play"
+      category: "MUSICAL"
     },
     {
       categoryId: 3,
-      categoryName: "musical"
+      category: "PLAY"
     }
   ];
 
@@ -34,11 +34,11 @@ const ChatList = () => {
   <div className="h-[calc(100%_-_64px)] text-white">
     <div id="chat-list">
       <ul>
-          {categories.map((category) => (
-            <li key={category.categoryName} className="p-4 bg-white shadow-md mb-2 rounded-lg">
-              <h2>{category.categoryName} 채팅방</h2>
-              <ChatPreview categoryid={category.categoryId}/>
-              <Link to={`/chat/room/${category.categoryId}?page=${0}`}>채팅방 바로가기</Link>
+          {categories.map((art) => (
+            <li key={art.category} className="p-4 bg-white shadow-md mb-2 rounded-lg">
+              <h2>{art.category} 채팅방</h2>
+              <ChatPreview category={art.category}/>
+              <Link to={`/chat/room/${art.category}?page=${0}`}>채팅방 바로가기</Link>
             </li>
           ))}
         </ul>

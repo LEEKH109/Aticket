@@ -8,7 +8,7 @@ import { UserApi } from "../util/user-axios";
 
 const ChatRoom = () => {
     const { isLogin, userId } = useContext(LoginContext);
-    let {categoryId} = useParams();
+    let {category} = useParams();
     const [chatContent, setChatContent] = useState("");
     // const [chatlogs, setChatlogs] = useState([]);
     const location = useLocation();
@@ -16,7 +16,7 @@ const ChatRoom = () => {
 
     const chatlog = {
         nickname: userId,
-        categoryId: categoryId,
+        category: category,
         content: chatContent,
         regDate: new Date(),
     };
@@ -37,7 +37,7 @@ const ChatRoom = () => {
     const fetchPins = async () => {
         setLoading(true);
         try {
-            const response = await ChatApi.chatScroll(categoryId,page);
+            const response = await ChatApi.chatScroll(category,page);
             const newPins = response.content || [];
             setPins(prev => [...prev, ...newPins]);
         } catch (error) {
@@ -74,12 +74,12 @@ const ChatRoom = () => {
                 return new SockJS("http://localhost:8080/ws");
             })
             stompClient.connect({},()=> {
-                onConnected(categoryId);
+                onConnected(category);
             }, onError);
         };
 
-        const onConnected = (categoryid) => {
-            stompClient.subscribe(`/chat/room/${categoryid}`, onChatlogReceived);
+        const onConnected = (category) => {
+            stompClient.subscribe(`/chat/room/${category}`, onChatlogReceived);
         }; 
 
         const onError = (error) => {
@@ -140,7 +140,7 @@ const ChatRoom = () => {
                 });
             }
         }
-    }, [categoryId,token])
+    }, [category,token])
 
     // useEffect(() => {
     //     setPins(ChatApi.chatScroll(categoryId,page));   
@@ -155,13 +155,13 @@ const ChatRoom = () => {
 
         const chatlog = {
             user: userId,
-            categoryId: categoryId,
+            category: category,
             content: chatContent,
             regDate: new Date(),
         };
 
         try {
-            const response = await ChatApi.sendChatlog(categoryId, chatlog);
+            const response = await ChatApi.sendChatlog(category, chatlog);
             onChatlogReceived(response);
         } catch (error) {
             console.error("채팅 전송 실패:", error);
@@ -171,7 +171,7 @@ const ChatRoom = () => {
 
     return (
         <div>
-            <h2>채팅 카테고리 = {categoryId}</h2>
+            <h2>채팅 카테고리 = {category}</h2>
             <div ref={pageEnd}/>
             <div>           
             {pins.length > 0 ? (
@@ -195,7 +195,7 @@ const ChatRoom = () => {
                 {
                     isLogin === true ?
                     <div>
-                        <textarea name="chat-insert" id="chatContent" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} required></textarea>
+                        <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
                         <button type="submit" onClick={sendChat}>submit</button>
                     </div>
                     :
@@ -203,6 +203,10 @@ const ChatRoom = () => {
                         로그인이 필요한 서비스입니다.
                     </div>
                 }
+            </div>
+            <div>
+            <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
+                        <button type="submit" onClick={sendChat}>submit</button>
             </div>
         </div>
     );

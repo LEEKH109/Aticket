@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { ChatApi } from "../util/chat-axios";
 
-const ChatPreview = ({ categoryid}) => {
+const ChatPreview = ({ category}) => {
 
     const [chatPreviews, setChatPreviews] = useState([]);
 
     useEffect(() => { 
-        setChatPreviews(ChatApi.preview(categoryid));
+        setChatPreviews(ChatApi.preview(category));
         // if (!categoryid) {
         //     navigate("/chat");
         //     return;
         // }
-      }, [categoryid]);
+      }, [category]);
 
     return (
         <div>

@@ -43,7 +43,7 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "/chat/room/:categoryId",
+          path: "/chat/room/:category",
           element: <ChatRoomPage/>,
           errorElement: <ErrorPage/>,
         },
