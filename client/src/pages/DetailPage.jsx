@@ -4,11 +4,18 @@ import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
+import ChatPreview from "../components/ChatPreview";
 import { DetailApi } from "../util/details-axios";
 import { dateFormmatterWithTime } from "../util/dateFormatter";
 import { IconButton } from "@mui/material";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useCallback } from "react";
 const DetailPage = () => {
   const location = useLocation();
   const { shortsId } = location.state;
@@ -17,11 +24,12 @@ const DetailPage = () => {
   const scrollRef = useRef(null);
 
   const [openPoster, setOpenPoster] = useState(false); // 포스터 클릭시 확대
-  const [scorllPos, setScrollPos] = useState(0); // 스크롤 감지
+  const [openAlert, setOpenAlert] = useState(false); // 로딩 실패시 alert 출력
+  const [scorllPos, setScrollPos] = useState(false); // 스크롤 감지
   const [category, setCategory] = useState();
   const [shortInfo, setShortInfo] = useState({actors:['-'], infoUrls:[], startDate:'1900-01-01', endDate:'1900-01-01'});
   const [infoLoad, setInfoLoad] = useState(
-    <div className="absolute w-full h-full bg-gray-300 opacity-70 flex justify-center">
+    <div className="absolute w-full h-full bg-gray-300 opacity-70 flex justify-center z-10">
       <CircularProgress
       sx={{alignSelf:"center"}}
       />
@@ -33,29 +41,34 @@ const DetailPage = () => {
   const handleClosePoster = () => setOpenPoster(false);
  
   /* 전시 및 공연 정보 세팅 */
-  const getShortsInfo = (shortsId) => {
-    DetailApi.getDetail(shortsId).then((res)=>{
-      if(res.data.category==="MUSICAL") {
-        setCategory("뮤지컬");
-      } else if(res.date.category==="SHOW") {
-        setCategory("전시");
-      } else if(res.data.category==="PLAY") {
-        setCategory("공연");
-      }
-      setShortInfo(res.data);
-      if(res.data.actors[0] === '') {
-        res.data.actors[0] = '-';
-      }
-      setInfoLoad([]);
-     });
+  const getShortsInfo = async (shortsId) => {
+    try {
+      await DetailApi.getDetail(shortsId).then((res)=>{
+        if(res.data.category==="MUSICAL") {
+          setCategory("뮤지컬");
+        } else if(res.data.category==="SHOW") {
+          setCategory("전시");
+        } else if(res.data.category==="PLAY") {
+          setCategory("공연");
+        }
+        setShortInfo(res.data);
+        if(res.data.actors[0] === '') {
+          res.data.actors[0] = '-';
+        }
+        setInfoLoad([]);
+       });
+    } catch (error) {
+      setOpenAlert(true);
+    }
   };
+  /* 스크롤 감지 */
+  const updateScroll = useCallback((event) => {
+    if(event.target.scrollTop > 650) setScrollPos(true);
+    else setScrollPos(false);
+  }, []);
 
   useEffect(() => {
     getShortsInfo(shortsId); // 전시 및 공연 정보 가져오기
-    /* 스크롤 감지 */
-    const updateScroll = (event) => {
-      setScrollPos(event.target.scrollTop);
-    };
     const scrollElement = scrollRef.current;
     if(scrollElement) {
       scrollElement.addEventListener('scroll', updateScroll);
@@ -70,6 +83,19 @@ const DetailPage = () => {
 
   return (
     <main className="relative h-[calc(100vh_-_64px)] mx-auto bg-slate-300">
+      <Dialog open={openAlert}>
+        <DialogTitle>
+          {"오류"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            불러오는 도중 오류가 발생하였습니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{navigate(-1);}}>확인</Button>
+        </DialogActions>
+      </Dialog>
       <Modal
         open={openPoster}
         onClose={handleClosePoster}
@@ -94,7 +120,7 @@ const DetailPage = () => {
         </IconButton>
       </div>
       <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-gray-500 flex items-center justify-between 
-      transition-opacity ease-in-out duratino-500 ${scorllPos > 650 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      transition-opacity ease-in-out duration-500 ${scorllPos ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
       <IconButton
       sx={{ width:'5vh', height:'5vh', marginLeft:'0.6vh', marginTop:'0.2vh'}}
       onClick={() => {
@@ -129,7 +155,7 @@ const DetailPage = () => {
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
-            <ChatPreview categoryId={shortInfo.categoryId}/>
+            {/* <ChatPreview categoryId={shortInfo.categoryId}/> */}
         </div>
         </div>
       </div>
@@ -137,12 +163,16 @@ const DetailPage = () => {
 
       <div className="h-13 w-full relative bottom-[5.2vh]">
         {
-          isLogin!=null && isLogin ?
+          isLogin.isLogin ?
           <Button
           sx={{width:"100%", height:"5.25vh"}}
           variant="contained"
           onClick={() => {
-            navigate(-1);
+            navigate("/book", {
+              state: {
+                shortInfo
+              },
+            });
           }}
           >예매하기</Button>
           :

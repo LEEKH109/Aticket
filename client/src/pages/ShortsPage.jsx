@@ -7,13 +7,16 @@ const Shorts = () => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
   const [collected, setCollected] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
-  const [shortList, setShortList] = useState([]);
-
+  const [shortList, setShortList] = useState([{type:''}]);
   const getShortsList = () => {
     // ShortsAPI.getShorts().then((res) => {
     //   setShortList(res.data);
     // });
     setShortList([
+      {
+        id: 0,
+        type: "start",
+      },
       {
         id: 3,
         download_url: "https://cdn.pixabay.com/photo/2023/07/04/08/31/cats-8105667_960_720.jpg",

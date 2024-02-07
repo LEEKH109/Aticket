@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { timetableApi } from "../../util/timetable-axios";
 import dayjs from "dayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
@@ -8,17 +8,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TextField } from "@mui/material";
 import TimeTable from "../../components/TimeTable";
 
-const SelectDateTimePage = ({ artId }) => {
+const SelectDateTimePage = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [availableDates, setAvailableDates] = useState([]);
   const [timetable, setTimetable] = useState([]);
   const navigate = useNavigate();
+  
+  const location = useLocation();
+  const { shortInfo } = location.state;
 
   useEffect(() => {
     // if (!artId || artId < 1) {
     //   navigate("/");
     //   return;
     // }
+    console.log(shortInfo);
     timetableApi
       .getAvailableDates(1)
       .then((response) => {
