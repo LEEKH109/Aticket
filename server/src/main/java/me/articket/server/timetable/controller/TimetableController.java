@@ -8,6 +8,7 @@ import me.articket.server.timetable.data.TimeStatusResponseDto;
 import me.articket.server.timetable.data.TimeTicketTypeResponseDto;
 import me.articket.server.timetable.service.TimetableService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,8 @@ public class TimetableController {
 
   private final TimetableService timetableService;
 
-  @GetMapping("/time/{artId}")
+  @Transactional
+  @GetMapping("/{artId}")
   public ResponseEntity<List<TimeStatusDto>> getTimeStatus(@PathVariable Long artId) {
     List<TimeStatusDto> timeStatusDto = timetableService.getTimeStatus(artId);
     return ResponseEntity.ok(timeStatusDto);
