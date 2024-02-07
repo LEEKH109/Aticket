@@ -57,7 +57,7 @@ public class ShortsService {
     }
 
     public List<RecommendedShortsInfoRes> recommendShorts(Long userId, @Nullable ArtCategory category) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+//        Optional<User> optionalUser = userRepository.findById(userId);
 //        User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
         List<Shorts> shorts = category == null ? shortsRepository.findAll() : shortsRepository.findAllByArt_Category(category);
         return shorts.stream().map(RecommendedShortsInfoRes::of).toList();
