@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import UserInfo from "../components/UserInfo";
+import UserInfo from "../components/profile/UserInfo";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../components/LoginContext";
@@ -15,13 +15,14 @@ const MyPage = () => {
   const location = useLocation();
   const path = location.pathname.slice(6);
   const navigate = useNavigate();
-  const { setLogin, userId } = useContext(LoginContext);
+  const { setLogin, userId, setUserId } = useContext(LoginContext);
 
   const logout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setLogin(false);
+    setUserId(undefined);
     navigate("/");
   };
 
@@ -39,24 +40,44 @@ const MyPage = () => {
     });
   };
 
+  // 프로필 이미지 삭제했을 때
+  const handleDeleteProfileImage = () => {
+    UserApi.deleteProfileImgae(userId)
+      .then((res) => console.log(res))
+      .catch((err) => console.error(err));
+  };
+
   // 최종 수정하기 버튼 눌렀을
   const handleSubmitUserInfo = () => {
-    UserApi.updateNickname(userId, { nickname: nickname.new })
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.error(err);
-      });
+    if (nickname.prev != nickname.new) {
+      UserApi.updateNickname(userId, { nickname: nickname.new })
+        .then((res) => {
+          setUpdateSuccess(true);
+          console.log("닉네임 수정 성공", res.data.data);
+        })
+        .catch((err) => {
+          setUpdateSuccess(false);
+          console.error(err);
+        });
+    }
 
-    const fd = new FormData();
-    fd.append("file", profileImage.new);
+    // 닉네임만 바꿨을 때는 이미지 수정 api를 호출하지 않음
+    if (profileImage.new != profileImage.prev) {
+      const fd = new FormData();
+      fd.append("file", profileImage.new);
 
-    UserApi.updateProfileImage(userId, fd)
-      .then((res) => {
-        setUpdateSuccess(true);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      UserApi.updateProfileImage(userId, fd)
+        .then((res) => {
+          console.log(res);
+          setUpdateSuccess(true);
+        })
+        .catch((err) => {
+          setUpdateSuccess(false);
+          console.error(err);
+        });
+    }
+
+    setUpdateSuccess(false);
   };
 
   useEffect(() => {
@@ -90,9 +111,11 @@ const MyPage = () => {
         updateSuccess={updateSuccess}
         onChangeProfileImage={handleChangeImage}
         onChangeNickname={handleChangeNickname}
+        onDeleteProfileImage={handleDeleteProfileImage}
         onSubmitUserInfo={handleSubmitUserInfo}
       />
       <div className="flex justify-around py-2 border-b-[1px] border-gray-300 text-gray-400">
+        {}
         <Link
           to="/user/collection"
           className={`${nowCollectionTab ? tabBarClass : ""} `}

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import Modal from "./Modal";
+import Modal from "../Modal";
+import { UserApi } from "../../util/user-axios";
 
 const UserInfo = ({
   nickname,
@@ -10,15 +11,28 @@ const UserInfo = ({
   updateSuccess,
   onChangeProfileImage,
   onChangeNickname,
+  onDeleteProfileImage,
   onSubmitUserInfo,
 }) => {
   const [previewImage, setPreviewImage] = useState();
+  const [validNickname, setValidNickname] = useState(true);
   const imgRef = useRef();
   const dialog = useRef();
 
   // 수정하는 모달 여는 이벤트
   const handleButtonClick = () => {
     dialog.current.open();
+  };
+
+  // 닉네임 유효성 검사
+  const handleChangeNickname = (e) => {
+    if (!e.target.value.match(/[^a-zA-Z0-9ㄱ-힣]/g) && e.target.value.length < 10) {
+      setValidNickname(true);
+    } else {
+      setValidNickname(false);
+    }
+
+    onChangeNickname(e.target.value);
   };
 
   // 업로드한 이미지 미리보기(수정 필요)
@@ -30,12 +44,18 @@ const UserInfo = ({
       setPreviewImage(reader.result);
     };
 
-    onChangeProfileImage(imgRef.current.files[0]);
+    onChangeProfileImage(file);
+  };
+
+  const handleDeleteProfileImage = () => {
+    onDeleteProfileImage();
   };
 
   // 수정에 성공했을 때 모달 닫기
   useEffect(() => {
-    dialog.current.close();
+    if (updateSuccess) {
+      dialog.current.close();
+    }
   }, [updateSuccess]);
 
   return (
@@ -51,19 +71,28 @@ const UserInfo = ({
               <label htmlFor="profile-img">이미지 수정하기</label>
               <input type="file" className="hidden" id="profile-img" ref={imgRef} onChange={handleChangeProfileImg} />
             </div>
-            <button>이미지 삭제하기</button>
+            <button onClick={handleDeleteProfileImage}>이미지 삭제하기</button>
           </div>
           <div className="w-full">
             <label htmlFor="nickname">닉네임</label>
             <input
               type="text"
               id="nickname"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-2"
-              onChange={(e) => onChangeNickname(e.target.value)}
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-2 ${
+                !validNickname ? "border-red-500 " : ""
+              }`}
+              onChange={handleChangeNickname}
               value={nickname.new}
             />
+            {!validNickname && <p className="text-red-500">2~10자의 한글, 영어, 숫자만 입력해주세요.</p>}
           </div>
-          <button onClick={onSubmitUserInfo}>수정하기</button>
+          <button
+            className={`${!validNickname ? "text-gray-300" : ""}`}
+            onClick={onSubmitUserInfo}
+            disabled={!validNickname}
+          >
+            수정하기
+          </button>
         </section>
       </Modal>
       <section className="flex px-6 py-4 gap-6 items-center ">
