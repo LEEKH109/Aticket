@@ -18,10 +18,10 @@ import me.articket.server.billing.data.BillingCategory;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.user.domain.User;
 
-@Setter
 @Entity
 @Table(name = "billing")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

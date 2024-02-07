@@ -34,16 +34,13 @@ public class BillingController {
   @PostMapping("/reservation/seat/{id}")
   public BillingPaymentCreatedResponse billingPaymentCreateForSeat(@PathVariable Long id, @RequestBody
   BillingCreateSeatRequest request){
-    BillingPaymentCreatedResponse response = billingService.createBillingForSeat(id, request);
-    return response;
+    return billingService.createBillingForSeat(id, request);
   }
 
   @Transactional
   @PostMapping("/approve/{reservationId}")
   public BillingApproveResponse requestBillingApprove(@PathVariable String reservationId, @RequestBody BillingApproveRequest request ){
-    BillingApproveResponse response= billingService.requestApprovePayment(reservationId, request);
-    System.out.println("hello");
-    return response;
+    return billingService.requestApprovePayment(reservationId, request);
   }
 
 }
