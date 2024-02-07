@@ -50,7 +50,7 @@ public class ShortsController {
         return new SuccessResponse<>(likeService.setLikeState(id, userDetail.getId(), req));
     }
 
-    @GetMapping("/shorts/collection")
+    @GetMapping("/collection")
     public SuccessResponse<List<LikedShortsInfoRes>> getLikedShorts(@AuthenticationPrincipal UserDetail userDetail) {
         return new SuccessResponse<>(shortsService.getLikedShorts(userDetail.getId()));
     }
