@@ -1,6 +1,7 @@
 package me.articket.server.chat.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.articket.server.art.data.ArtCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,27 +24,22 @@ public class ChatlogController {
 
     private final ChatService chatService;
 
-    @MessageMapping("/send/{categoryId}")
-    @SendTo("/room/{categoryId}")
-    public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable int categoryId, @Payload Chatlog chatlog) {
+    @MessageMapping("/send/{category}")
+    @SendTo("/room/{category}")
+    public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable ArtCategory category, @Payload Chatlog chatlog) {
         chatService.saveChatlog(chatlog);
         ChatlogRes chatlogRes = ChatlogRes.of(chatlog);
         return new SuccessResponse<>(chatlogRes);
     }
 
-    @GetMapping("/preview/{categoryId}")
-    public SuccessResponse<List<ChatlogRes>> getRecentChatlogsForPreview(@PathVariable int categoryId) {
-        return new SuccessResponse<>(chatService.findTop5ByCategoryId(categoryId));
+    @GetMapping("/preview/{category}")
+    public SuccessResponse<List<ChatlogRes>> getRecentChatlogsForPreview(@PathVariable ArtCategory category) {
+        return new SuccessResponse<>(chatService.findTop5ByCategory(category));
     }
 
-//    @GetMapping("/room/{categoryId}")
-//    public SuccessResponse<List<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable int categoryId) {
-//        return new SuccessResponse<>(chatService.findTop15ByCategoryId(categoryId));
-//    }
-
-    @GetMapping("/room/{categoryId}")
-    public SuccessResponse<Page<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable int categoryId, @RequestParam int page) {
-        Page<ChatlogRes> chatlogs = chatService.getChatlogs(categoryId, page, 15);
+    @GetMapping("/room/{category}")
+    public SuccessResponse<Page<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable ArtCategory category, @RequestParam int page) {
+        Page<ChatlogRes> chatlogs = chatService.getChatlogs(category, page, 15);
         return new SuccessResponse<>(chatlogs);
     }
 }

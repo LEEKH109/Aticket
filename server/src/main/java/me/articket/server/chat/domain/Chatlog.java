@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.user.domain.User;
+import me.articket.server.art.data.ArtCategory;
 
 import java.time.LocalDateTime;
 
@@ -20,8 +21,9 @@ public class Chatlog extends BaseEntity {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private int categoryId;
+    private ArtCategory category;
 
     @Column(nullable = false)
     private String content;
