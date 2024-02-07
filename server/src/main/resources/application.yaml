@@ -26,4 +26,4 @@ default-profile-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/defau
 
 external:
   service:
-    url: http://localhost:8081
+    url: http://localhost:8082
