@@ -13,7 +13,7 @@ const LoginLoad = () => {
       method: "GET",
       url: `http://i10a704.p.ssafy.io:8081${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
       headers: {
-        "Access-Control-Allow-Origin": "http://http://i10a704.p.ssafy.io:8081",
+        "Access-Control-Allow-Origin": "http://i10a704.p.ssafy.io:8081",
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
       },
