@@ -2,9 +2,8 @@ package me.articket.server.chat.data;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import me.articket.server.chat.domain.Chatlog;
-import me.articket.server.user.domain.User;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -20,6 +19,9 @@ public class ChatlogRes {
     private String content;
 
     private LocalDateTime regDate;
+
+    @Setter
+    private String message;
 
     public static ChatlogRes of(Chatlog chatlog) {
         ChatlogRes chatlogRes = new ChatlogRes();
