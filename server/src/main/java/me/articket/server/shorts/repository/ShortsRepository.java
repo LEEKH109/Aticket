@@ -1,5 +1,6 @@
 package me.articket.server.shorts.repository;
 
+import me.articket.server.art.data.ArtCategory;
 import me.articket.server.shorts.domain.Shorts;
 import me.articket.server.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,6 @@ public interface ShortsRepository extends JpaRepository<Shorts, Long> {
                              WHERE l2.user = :user
                              GROUP BY l2.user, l2.shorts))""")
     List<Shorts> findByUserAndLikeStateIsTrue(User user);
+
+    List<Shorts> findAllByArt_Category(ArtCategory category);
 }

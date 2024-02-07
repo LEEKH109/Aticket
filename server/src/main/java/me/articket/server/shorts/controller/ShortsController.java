@@ -1,15 +1,13 @@
 package me.articket.server.shorts.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.articket.server.art.data.ArtCategory;
 import me.articket.server.common.response.SuccessResponse;
 import me.articket.server.like.data.LikeStateRes;
 import me.articket.server.like.data.ModifyLikeReq;
 import me.articket.server.like.service.LikeService;
 import me.articket.server.login.data.UserDetail;
-import me.articket.server.shorts.data.AddShortsReq;
-import me.articket.server.shorts.data.LikedShortsInfoRes;
-import me.articket.server.shorts.data.ModifyShortsReq;
-import me.articket.server.shorts.data.ShortsInfoRes;
+import me.articket.server.shorts.data.*;
 import me.articket.server.shorts.service.ShortsService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +51,12 @@ public class ShortsController {
     @GetMapping("/collection")
     public SuccessResponse<List<LikedShortsInfoRes>> getLikedShorts(@AuthenticationPrincipal UserDetail userDetail) {
         return new SuccessResponse<>(shortsService.getLikedShorts(userDetail.getId()));
+    }
+
+    @GetMapping("/recommend")
+    public SuccessResponse<List<RecommendedShortsInfoRes>> recommendShorts(
+            @RequestParam(required = false) ArtCategory category,
+            @AuthenticationPrincipal UserDetail userDetail) {
+        return new SuccessResponse<>(shortsService.recommendShorts(userDetail == null ? null : userDetail.getId(), category));
     }
 }
