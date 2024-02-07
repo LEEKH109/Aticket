@@ -10,5 +10,4 @@ import lombok.Setter;
 public class TimetableDtoRes {
 
   private String date;
-  private boolean status;
 }
