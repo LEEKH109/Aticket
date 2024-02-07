@@ -17,7 +17,13 @@ public class WebConfig {
             .allowedOrigins(
                 "http://localhost:5173",
                 "http://localhost:8080",
-                "http://localhost:8081"
+                "http://localhost:8081",
+                "http://localhost:4173",
+                "http://i10a704.p.ssafy.io:8081",
+                "http://i10a704.p.ssafy.io",
+                "http://i10a704.p.ssafy.io:8082",
+                "http://i10a704.p.ssafy.io:80",
+                "https://articket.me"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
