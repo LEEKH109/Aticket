@@ -2,4 +2,5 @@ cors:
   allowed-origins: >
     http://localhost:5173,
     http://localhost:4173,
+    http://i10a704.p.ssafy.io/,
     https://articket.me
