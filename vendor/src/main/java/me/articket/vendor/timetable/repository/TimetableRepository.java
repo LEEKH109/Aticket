@@ -21,7 +21,7 @@ public interface TimetableRepository {
       "FROM timetable " +
       "WHERE art_id = #{artId} " +
       "GROUP BY date " +
-      "HAVING SUM(status = 0) > 0")
+      "HAVING SUM(status = 1) > 0")
   List<TimetableDtoRes> findTimetableByArtId(int artId);
 
   @Select("SELECT t.art_id, c.name as category, t.date " +
