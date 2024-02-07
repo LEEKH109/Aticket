@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
 import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
@@ -7,26 +7,66 @@ import { LoginContext } from "../components/LoginContext";
 import { UserApi } from "../util/user-axios";
 
 const ChatRoom = () => {
-    //Intersection Observer 사용하는 방식의 무한 스크롤 구현
     const { isLogin, userId } = useContext(LoginContext);
-    let {categoryId} = useParams();
+    let {category} = useParams();
     const [chatContent, setChatContent] = useState("");
-    const [chatlogs, setChatlogs] = useState([]);
+    // const [chatlogs, setChatlogs] = useState([]);
+    const location = useLocation();
+    const initialPage = location.state?.page??0;
+
+    const chatlog = {
+        nickname: userId,
+        category: category,
+        content: chatContent,
+        regDate: new Date(),
+    };
 
     const [pins, setPins] = useState([]); //처음 chatlog부터 이어져야 하니 => 데이터를 담고 있는 state인 pins를 operator 연산자로 복제
-    const [page, setPage] = useState(1);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
+    const [page, setPage] = useState(initialPage);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
     const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
+    const pageEnd = useRef(null);
+
+    const loadMore = () => {
+        setPage(prev => prev + 1);
+    } //페이지 넘버 바꾸기
 
     const token = useContext(LoginContext);
     const chatsRef = useRef(null);
     let stompClient = null;
-    //scrollTop : 요소 맨 위에서부터 스크롤바까지의 거리
-    //scrollHeight : 요소 전체 높이
-    //clientHeight : 요소 중 현재 보이는 부분의 높이
 
-    const fetchPins = async page => {
-        const res = await fetch(`https://localhost:8080/chat/`)
-    }
+    const fetchPins = async () => {
+        setLoading(true);
+        try {
+            const response = await ChatApi.chatScroll(category,page);
+            const newPins = response.content || [];
+            setPins(prev => [...prev, ...newPins]);
+        } catch (error) {
+            console.error(error);
+        }
+        // console.log("page:"+page);
+        // console.log("response"+response);
+        // setPins(prev => [...prev, ...response.pins]); //pin 
+        setLoading(false);
+    } //pin 을 복제해서 축적하는 함수
+
+    useEffect(()=>{
+        // setPage(location.search.slice(6))
+        fetchPins(page);
+    }, [page]);  //page 넘버 바뀔 때마다 pin 을 복제해서 축적
+
+    useEffect(()=>{
+        if (loading) {
+            const observer = new IntersectionObserver(
+                entries => {
+                    if (entries[0].isIntersecting) {
+                        loadMore();
+                    }
+                },
+                { threshold: 1}
+            );
+            observer.observe(pageEnd.current);
+        }
+    },[loading]);
 
     useEffect(()=>{
         const connect = () => {
@@ -34,12 +74,12 @@ const ChatRoom = () => {
                 return new SockJS("http://localhost:8080/ws");
             })
             stompClient.connect({},()=> {
-                onConnected(categoryId);
+                onConnected(category);
             }, onError);
         };
 
-        const onConnected = (categoryid) => {
-            stompClient.subscribe(`/chat/room/${categoryid}`, onChatlogReceived);
+        const onConnected = (category) => {
+            stompClient.subscribe(`/chat/room/${category}`, onChatlogReceived);
         }; 
 
         const onError = (error) => {
@@ -100,43 +140,28 @@ const ChatRoom = () => {
                 });
             }
         }
-    }, [categoryId, navigate, token])
+    }, [category,token])
 
-    useEffect(() => {
-        setChatlogs(ChatApi.chatRoom(categoryId));
-        if (chatsRef.current) {
-            chatsRef.current.addEventListener('scroll', handleScroll);
-        }
-        return () => {
-            if (chatsRef.current) {
-                chatsRef.current.removeEventListener('scroll', handleScroll);
-            }
-        }        
-    }, [chatsRef]);
+    // useEffect(() => {
+    //     setPins(ChatApi.chatScroll(categoryId,page));   
+    // }, [chatsRef]);
 
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
 
         const user = {
-            // kakaoId: ,
-            // name: ,
-            // email: ,
-            // birthday: ,
-            // nickname: ,
-            // profileUrl: ,
-            // role: 
-            //유저를 불러와야함
+            
         }
 
         const chatlog = {
             user: userId,
-            categoryId: categoryId,
+            category: category,
             content: chatContent,
             regDate: new Date(),
         };
 
         try {
-            const response = await ChatApi.sendChatlog(categoryId, chatlog);
+            const response = await ChatApi.sendChatlog(category, chatlog);
             onChatlogReceived(response);
         } catch (error) {
             console.error("채팅 전송 실패:", error);
@@ -144,31 +169,12 @@ const ChatRoom = () => {
         setChatContent("");
     };
 
-    const handleScroll = () => {
-        const ref = chatsRef.current;
-        if (Math.abs(ref.scrollTop) > ref.scrollHeight - ref.clentHeight -100) {
-            //다음 페이지 요청
-            //ChatApi.chatScroll: (categoryId, page, size) 에서 categoryId는 let {categoryId} = useParams(); 에서 불러온 친구, page는 기존 페이지 번호보다 +1, size는 15
-        }
-        if (ref.scrollTop < -50) {
-            //스크롤이 맨 아래가 아닌 경우 프리뷰 버튼, 버튼 클릭하면 pageDown함수 실행
-        }
-        if (ref.scrollTop > - 10) {
-            //스크롤이 맨 아래가 아닌 경우 프리뷰 제거?
-        }
-    }
-
-    const pageDown = () => {
-        const ref = chatsRef.current;
-        ref.scrollTop = 0;
-    };
-    
-
     return (
         <div>
-            <h2>채팅 카테고리 = {categoryId}</h2>
+            <h2>채팅 카테고리 = {category}</h2>
+            <div ref={pageEnd}/>
             <div>           
-            {recentPage.length > 0 ? (
+            {pins.length > 0 ? (
             // <ul>
             //     {recentPage.map((chatlog) => ( 
             //         <li key={chatlog.chatlogId}>
@@ -184,20 +190,23 @@ const ChatRoom = () => {
                             <p>채팅이 존재하지 않습니다.</p>
                         )}
             </div>
+            <div></div>
             <div>
                 {
                     isLogin === true ?
                     <div>
-                    {/* <form name="chatform" > */}
-                        <textarea name="chat-insert" id="chatContent" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} required></textarea>
+                        <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
                         <button type="submit" onClick={sendChat}>submit</button>
-                    {/* </form> */}
                     </div>
                     :
                     <div>
                         로그인이 필요한 서비스입니다.
                     </div>
                 }
+            </div>
+            <div>
+            <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
+                        <button type="submit" onClick={sendChat}>submit</button>
             </div>
         </div>
     );

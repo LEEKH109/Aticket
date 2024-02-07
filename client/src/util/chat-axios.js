@@ -9,13 +9,13 @@ const apiClient = axios.create({
 
 const ChatApi = {
 
-    sendChatlog: (categoryId, chatlog) => apiClient.post(`/send/${categoryId}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
+    sendChatlog: (category, chatlog) => apiClient.post(`/send/${category}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
 
-    preview: (categoryId) => apiClient.get(`/preview/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
+    preview: (category) => apiClient.get(`/preview/${category}`).then(response=>response.data).catch(error=>console.error(error)),
     
-    chatRoom: (categoryId) => apiClient.get(`/room/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
+    // chatRoom: (categoryId) => apiClient.get(`/room/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
 
-    chatScroll: (categoryId, page, size) => apiClient.get(`/paging/${categoryId}?page=${page}&size=${size}`).then(response => response.data).catch(error=> console.error(error)),
+    chatScroll: (category, page) => apiClient.get(`/room/${category}?page=${page}`).then(response => response.data).catch(error=> console.error(error)),
 
     // chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),//임시
 

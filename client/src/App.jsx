@@ -42,9 +42,9 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "/chat/room/:categoryId",
-          element: <ChatRoomPage />,
-          errorElement: <ErrorPage />,
+          path: "/chat/room/:category",
+          element: <ChatRoomPage/>,
+          errorElement: <ErrorPage/>,
         },
         {
           path: "/user",
