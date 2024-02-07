@@ -1,6 +1,5 @@
 package me.articket.server.billing.controller;
 
-import com.amazonaws.Response;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.billing.data.BillingApproveRequest;
 import me.articket.server.billing.data.BillingApproveResponse;
@@ -10,7 +9,6 @@ import me.articket.server.billing.data.BillingPaymentCreatedResponse;
 import me.articket.server.billing.service.BillingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,18 +32,18 @@ public class BillingController {
 
   @Transactional
   @PostMapping("/reservation/seat/{id}")
-  public ResponseEntity<BillingPaymentCreatedResponse> billingPaymentCreateForSeat(@PathVariable Long id, @RequestBody
+  public BillingPaymentCreatedResponse billingPaymentCreateForSeat(@PathVariable Long id, @RequestBody
   BillingCreateSeatRequest request){
     BillingPaymentCreatedResponse response = billingService.createBillingForSeat(id, request);
-    return ResponseEntity.ok(response);
+    return response;
   }
 
   @Transactional
   @PostMapping("/approve/{reservationId}")
-  public ResponseEntity<BillingApproveResponse> requestBillingApprove(@PathVariable String reservationId, @RequestBody BillingApproveRequest request ){
+  public BillingApproveResponse requestBillingApprove(@PathVariable String reservationId, @RequestBody BillingApproveRequest request ){
     BillingApproveResponse response= billingService.requestApprovePayment(reservationId, request);
     System.out.println("hello");
-    return ResponseEntity.ok(response);
+    return response;
   }
 
 }
