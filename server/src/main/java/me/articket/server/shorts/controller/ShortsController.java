@@ -7,11 +7,14 @@ import me.articket.server.like.data.ModifyLikeReq;
 import me.articket.server.like.service.LikeService;
 import me.articket.server.login.data.UserDetail;
 import me.articket.server.shorts.data.AddShortsReq;
+import me.articket.server.shorts.data.LikedShortsInfoRes;
 import me.articket.server.shorts.data.ModifyShortsReq;
 import me.articket.server.shorts.data.ShortsInfoRes;
 import me.articket.server.shorts.service.ShortsService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/shorts")
@@ -47,5 +50,8 @@ public class ShortsController {
         return new SuccessResponse<>(likeService.setLikeState(id, userDetail.getId(), req));
     }
 
-
+    @GetMapping("/shorts/collection")
+    public SuccessResponse<List<LikedShortsInfoRes>> getLikedShorts(@AuthenticationPrincipal UserDetail userDetail) {
+        return new SuccessResponse<>(shortsService.getLikedShorts(userDetail.getId()));
+    }
 }
