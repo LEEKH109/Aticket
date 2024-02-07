@@ -1,5 +1,7 @@
 package me.articket.server.chat.service;
 
+import lombok.RequiredArgsConstructor;
+import me.articket.server.art.data.ArtCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,37 +15,26 @@ import me.articket.server.chat.domain.Chatlog;
 import me.articket.server.chat.repository.ChatlogRepository;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
     private final ChatlogRepository chatlogRepository;
-
-    public ChatService(ChatlogRepository chatlogRepository) {
-        this.chatlogRepository = chatlogRepository;
-    }
-
+    
     public void saveChatlog(Chatlog chatlog) {
         chatlogRepository.save(chatlog);
     }
 
-    public List<ChatlogRes> findTop5ByCategoryId(int categoryId) {
-        List<Chatlog> chatlogs = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId);
+    public List<ChatlogRes> findTop5ByCategory(ArtCategory category) {
+        List<Chatlog> chatlogs = chatlogRepository.findByCategoryOrderByRegDateDesc(category);
         return chatlogs.stream()
                 .limit(5)
                 .map(ChatlogRes::of)
                 .toList();
     }
 
-    public List<ChatlogRes> findTop15ByCategoryId(int categoryId) {
-        List<Chatlog> chatlogs = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId);
-        return chatlogs.stream()
-                .limit(15)
-                .map(ChatlogRes::of)
-                .toList();
-    }
-
-    public Page<ChatlogRes> getChatlogs(int categoryId, int page, int size) {
+    public Page<ChatlogRes> getChatlogs(ArtCategory category, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("regDate").descending());
-        Page<Chatlog> chatlogs = chatlogRepository.findByCategoryIdOrderByRegDateDesc(categoryId, pageable);
+        Page<Chatlog> chatlogs = chatlogRepository.findByCategoryOrderByRegDateDesc(category, pageable);
         return chatlogs.map(ChatlogRes::of);
     }
 
