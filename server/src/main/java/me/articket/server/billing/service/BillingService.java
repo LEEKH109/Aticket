@@ -72,7 +72,7 @@ public class BillingService {
     requestVendor.setBookerName(user.getName());
     requestVendor.setTickets(request.getTickets());
     // 5단계) Billing 객체 DB 등록
-    billingRepository.save(billing);
+    billing = billingRepository.save(billing);
     // 6단계) 벤더 서버에 결제 사전 준비 요청
     String url = externalServiceUrl + "/billing/reservation/ticket";
     ResponseEntity<BillingPaymentCreatedResponse> response = restTemplate.postForEntity(url,
@@ -127,7 +127,7 @@ public class BillingService {
     requestVendor.setBookerName(user.getName());
     requestVendor.setSeats(request.getSeats());
     // 5단계) Billing 객체 DB 등록
-    billingRepository.save(billing);
+    billing = billingRepository.save(billing);
     // 6단계) 벤더 서버에 결제 사전 준비 요청
     String url = externalServiceUrl + "/billing/reservation/seat";
     ResponseEntity<BillingPaymentCreatedResponse> response = restTemplate.postForEntity(url,
