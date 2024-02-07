@@ -1,4 +1,4 @@
-import KakaoOAuth from "../components/OAuth";
+import KakaoOAuth from "../util/oauth";
 const MyPage = () => {
   return (
     <>

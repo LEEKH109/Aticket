@@ -36,8 +36,9 @@ function Footer() {
             value="user"
             icon={<Avatar sx={{ width: 36, height: 36 }} />}
             label="마이페이지"
-            onClick={() => navigate("/user/collection")}
-          ></BottomNavigationAction>
+            onClick={() => navigate("/user/collection")}>
+            
+            </BottomNavigationAction>
         ) : (
           <BottomNavigationAction
             value="user"

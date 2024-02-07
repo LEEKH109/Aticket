@@ -14,18 +14,17 @@ import UserPage from "./pages/UserPage";
 import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
-import CollectionList from "./components/CollectionList";
-import BookHistoryList from "./components/BookHistoryList";
+import CollectionList from "./components/profile/CollectionList";
+import BookHistoryList from "./components/profile/BookHistoryList";
 import BillingApprovePage from "./pages/book/BillingApprovePage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
 
 function App() {
-
-  if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+  if (typeof window !== "undefined" && typeof window.global === "undefined") {
     window.global = window;
   }
-  
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -129,7 +128,6 @@ function App() {
     </>
   );
 }
-
 
 if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
