@@ -5,8 +5,7 @@ import { Link, useNavigate, useParams  } from "react-router-dom";
 
 const ChatList = () => {
   const navigate = useNavigate();
-  let { categoryId } = useParams();
-
+  let { categoryId, page } = useParams();
   const categories = [
     {
       categoryId: 1,
@@ -39,7 +38,7 @@ const ChatList = () => {
             <li key={category.categoryName} className="p-4 bg-white shadow-md mb-2 rounded-lg">
               <h2>{category.categoryName} 채팅방</h2>
               <ChatPreview categoryid={category.categoryId}/>
-              <Link to={`/chat/room/${category.categoryId}`}>채팅방 바로가기</Link>
+              <Link to={`/chat/room/${category.categoryId}?page=${0}`}>채팅방 바로가기</Link>
             </li>
           ))}
         </ul>
