@@ -11,14 +11,13 @@ const LoginLoad = () => {
   const LoginProgress = async () => {
     await axios({
       method: "GET",
-      url: `http://localhost:8080${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
+      url: `http://i10a704.p.ssafy.io:8081/${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
       headers: {
         "Content-Type": "application/json;charset=utf-8",
         "Access-Control-Allow-Origin": "*", // cors 에러 방지
       },
     })
       .then((res) => {
-        console.log("login", res);
         localStorage.setItem("userId", res.data.data.userId);
         localStorage.setItem("accessToken", res.data.data.accessToken);
         localStorage.setItem("refreshToken", res.data.data.refreshToken);
