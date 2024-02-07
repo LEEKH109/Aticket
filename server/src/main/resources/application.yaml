@@ -24,6 +24,4 @@ cloud:
 
 default-profile-url: https://articketbuket.s3.ap-northeast-2.amazonaws.com/defaultProfile.jpg
 
-external:
-  service:
-    url: http://i10a704.p.ssafy.io:8082
+external-service-url: http://i10a704.p.ssafy.io:8082

@@ -26,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class BillingService {
 
-  @Value("${external.service.url}")
+  @Value("${external-service-url}")
   private String externalServiceUrl;
 
   private final ArtRepository artRepository;
