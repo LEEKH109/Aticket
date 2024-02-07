@@ -162,7 +162,7 @@ public class BillingService {
           BillingDetail detail = new BillingDetail();
           // 생성시 필수 정보 삽입
           detail.setBillingId(billing.getBillingId());
-          detail.setTimetableId(ticketInfo.getTimetableTd());
+          detail.setTimetableId(ticketInfo.getTimetableId());
           detail.setTicketTypeId(ticket.getTicketTypeId());
           detail.setSeatTimetableId(null);
           detail.setSeatNumber(null);

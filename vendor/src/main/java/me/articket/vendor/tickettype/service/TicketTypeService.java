@@ -66,7 +66,7 @@ public class TicketTypeService {
     // timetable 조회
     Timetable timetableDetail = timetableRepository.findTimetableByTimetableId(requestDto.getTimetableTd());
     // timetableId, 시작 시간, 종료시간 설정
-    infoDto.setTimetableTd(timetableDetail.getTimetableId());
+    infoDto.setTimetableId(timetableDetail.getTimetableId());
     infoDto.setStartTime(timetableDetail.getStartTime());
     infoDto.setEndTime(timetableDetail.getEndTime());
     // ticketTypeId 추출
