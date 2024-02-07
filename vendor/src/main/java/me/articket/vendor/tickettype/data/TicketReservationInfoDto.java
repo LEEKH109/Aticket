@@ -15,7 +15,7 @@ public class TicketReservationInfoDto {
   private String artTitle;
   private String reservationId;
   private String bookerName;
-  private int timetableTd;
+  private int timetableId;
   private Time startTime;
   private Time endTime;
   private int totalTicketAmounts;
