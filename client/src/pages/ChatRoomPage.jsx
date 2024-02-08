@@ -105,7 +105,7 @@ const ChatRoom = () => {
     useEffect(()=>{
         const connect = () => {
             stompClient = Stomp.over(function(){
-                return new SockJS("http://localhost:8080/ws");
+                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");
             })
             stompClient.connect({"token" : token },()=> {
                 onConnected(category);
