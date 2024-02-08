@@ -14,12 +14,12 @@ const ChatRoom = () => {
     const location = useLocation();
     const initialPage = location.state?.page??0;
 
-    const chatlog = {
-        nickname: userId,
-        category: category,
-        content: chatContent,
-        regDate: new Date(),
-    };
+    // const chatlog = {
+    //     nickname: userId,
+    //     category: category,
+    //     content: chatContent,
+    //     regDate: new Date(),
+    // };
 
     const [pins, setPins] = useState([]); //처음 chatlog부터 이어져야 하니 => 데이터를 담고 있는 state인 pins를 operator 연산자로 복제
     const [page, setPage] = useState(initialPage);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
@@ -33,6 +33,40 @@ const ChatRoom = () => {
     const token = useContext(LoginContext);
     const chatsRef = useRef(null);
     let stompClient = null;
+
+
+    //chatlogRes.chatlogId = chatlog.getId();
+    //chatlogRes.nickname = chatlog.getUser().getNickname();
+    //chatlogRes.content = chatlog.getContent();
+    //chatlogRes.regDate = chatlog.getRegDate();
+
+    const onChatlogReceived = (payload) => {
+        console.log(payload);
+        // const newChatlog = JSON.parse(payload.body); // 서버로부터 받은 데이터를 파싱
+        // const chatlogElement = document.createElement('li');
+        
+        // chatlogElement.classList.add('chat-message'); // 채팅 메시지에 대한 CSS 클래스 추가
+    
+        // // 사용자 닉네임을 표시하는 요소 생성
+        // const usernameElement = document.createElement('span');
+        // usernameElement.textContent = newChatlog.nickname; // 사용자 닉네임 사용
+        // chatlogElement.appendChild(usernameElement);
+    
+        // // 채팅 메시지 내용을 표시하는 요소 생성
+        // const textElement = document.createElement('p');
+        // textElement.textContent = newChatlog.content; // 채팅 내용 사용
+        // chatlogElement.appendChild(textElement);
+    
+        // // 메시지 등록 날짜를 포맷팅하여 표시
+        // const dateElement = document.createElement('span');
+        // dateElement.textContent = new Date(newChatlog.regDate).toLocaleString(); // 'regDate'를 포맷팅하여 사용
+        // chatlogElement.appendChild(dateElement);
+    
+        // // 채팅 메시지를 채팅 영역에 추가하고 스크롤 조정
+        // chatArea.appendChild(chatlogElement);
+        // chatArea.scrollTop = chatArea.scrollHeight; // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
+    };
+
 
     const fetchPins = async () => {
         setLoading(true);
@@ -73,7 +107,7 @@ const ChatRoom = () => {
             stompClient = Stomp.over(function(){
                 return new SockJS("http://localhost:8080/ws");
             })
-            stompClient.connect({},()=> {
+            stompClient.connect({"token" : token },()=> {
                 onConnected(category);
             }, onError);
         };
@@ -100,38 +134,7 @@ const ChatRoom = () => {
 
 
         
-        const onChatlogReceived = (payload) => {
-            const newChatlog = JSON.parse(payload.body); // 서버로부터 받은 데이터를 파싱
-            const chatlogElement = document.createElement('li');
-            
-            chatlogElement.classList.add('chat-message'); // 채팅 메시지에 대한 CSS 클래스 추가
         
-            // 사용자 프로필 이미지를 생성하고 속성 설정
-            const avatarElement = document.createElement('img');
-            avatarElement.src = newChatlog.user.profileUrl; // 사용자 프로필 URL 사용
-            avatarElement.alt = `Avatar of ${newChatlog.nickname}`; // 대체 텍스트로 'nickname' 사용
-            chatlogElement.appendChild(avatarElement);
-        
-            // 사용자 닉네임을 표시하는 요소 생성
-            const usernameElement = document.createElement('span');
-            usernameElement.textContent = newChatlog.nickname; // 사용자 닉네임 사용
-            chatlogElement.appendChild(usernameElement);
-        
-            // 채팅 메시지 내용을 표시하는 요소 생성
-            const textElement = document.createElement('p');
-            textElement.textContent = newChatlog.content; // 채팅 내용 사용
-            chatlogElement.appendChild(textElement);
-        
-            // 메시지 등록 날짜를 포맷팅하여 표시
-            const dateElement = document.createElement('span');
-            dateElement.textContent = new Date(newChatlog.regDate).toLocaleString(); // 'regDate'를 포맷팅하여 사용
-            chatlogElement.appendChild(dateElement);
-        
-            // 채팅 메시지를 채팅 영역에 추가하고 스크롤 조정
-            chatArea.appendChild(chatlogElement);
-            chatArea.scrollTop = chatArea.scrollHeight; // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
-        };
-
         return()=>{
             if (stompClient && stompClient.connected) {
                 // stompClient.disconnect();
@@ -159,6 +162,7 @@ const ChatRoom = () => {
             content: chatContent,
             regDate: new Date(),
         };
+        console.log(chatlog);
 
         try {
             const response = await ChatApi.sendChatlog(category, chatlog);
@@ -171,7 +175,7 @@ const ChatRoom = () => {
 
     return (
         <div>
-            <h2>채팅 카테고리 = {category}</h2>
+            <h2>{category} 단체 채팅방</h2>
             <div ref={pageEnd}/>
             <div>           
             {pins.length > 0 ? (
@@ -203,10 +207,6 @@ const ChatRoom = () => {
                         로그인이 필요한 서비스입니다.
                     </div>
                 }
-            </div>
-            <div>
-            <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
-                        <button type="submit" onClick={sendChat}>submit</button>
             </div>
         </div>
     );
