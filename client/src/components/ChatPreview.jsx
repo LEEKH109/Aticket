@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { ChatApi } from "../util/chat-axios";
 
-const ChatPreview = ({ categoryid}) => {
+const ChatPreview = ({ category}) => {
 
     const [chatPreviews, setChatPreviews] = useState([]);
 
     useEffect(() => { 
-        setChatPreviews(ChatApi.preview(categoryid));
+        setChatPreviews(ChatApi.preview(category));
         // if (!categoryid) {
         //     navigate("/chat");
         //     return;
         // }
-      }, [categoryid]);
+        console.log(chatPreviews);
+      }, [category, chatPreviews]);
 
     return (
         <div>
@@ -20,7 +21,7 @@ const ChatPreview = ({ categoryid}) => {
                     {chatPreviews.map((preview) => (
                         <li key={preview.chatlogId}>
                             {preview.content}&nbsp;&nbsp;
-                            {preview.user.nickname}
+                            {preview.nickname}
                             &nbsp;&nbsp;<span>({new Date(preview.regDate).toLocaleString()})</span>
                         </li>
                     ))}
