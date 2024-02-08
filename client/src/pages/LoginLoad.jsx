@@ -51,7 +51,7 @@ const LoginLoad = () => {
 
   return (
     <>
-      <Dialog open={openAlert} close={()=>{navigate('/loginpage');}}>
+      <Dialog open={openAlert} onClose={()=>{navigate('/loginpage');}}>
         <DialogTitle>
           {"오류"}
         </DialogTitle>
