@@ -1,7 +1,7 @@
 import axios from "axios";
 import ErrorPage from "../pages/ErrorPage";
 
-const BASE_URL = "http://i10a704.p.ssafy.io:8080/chat";
+const BASE_URL = "http://i10a704.p.ssafy.io:8081/chat";
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
