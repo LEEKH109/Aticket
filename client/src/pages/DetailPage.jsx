@@ -155,7 +155,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
-            {/* <ChatPreview categoryId={shortInfo.categoryId}/> */}
+            <ChatPreview category={shortInfo.category}/>
         </div>
         </div>
       </div>
