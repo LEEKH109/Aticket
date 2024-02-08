@@ -19,7 +19,7 @@ const LoginLoad = () => {
   const LoginProgress = async () => {
     await axios({
       method: "GET",
-      url: `http://localhost:8080${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
+      url: `http://localhost:8081${import.meta.env.VITE_REDIRECT_URI}?code=${code}`,
       headers: {
         "Content-Type": "application/json;charset=utf-8",
         "Access-Control-Allow-Origin": "*", // cors 에러 방지
@@ -50,7 +50,7 @@ const LoginLoad = () => {
 
   return (
     <>
-      <Dialog open={openAlert} close={()=>{navigate('/loginpage');}}>
+      <Dialog open={openAlert} onClose={()=>{navigate('/loginpage');}}>
         <DialogTitle>
           {"오류"}
         </DialogTitle>

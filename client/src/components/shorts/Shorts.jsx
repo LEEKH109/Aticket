@@ -6,29 +6,25 @@ import ShortsInfo from "./ShortsInfo";
 import DetailPage from "../../pages/DetailPage";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="left" ref={ref} {...props} />;
+});
 
 const Shorts = ({ items, itemWidth, itemHeight }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [displayDialog, setDisplayDialog] = useState('none');
   const [curIndex, setCurIndex] = useState(0);
   const navigate = useNavigate();
-  
-  const Transition = forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />;
-  });
 
   const handleCloseDialog = () => {
     setIsDragging(false);
     setOpenDialog(false);
-    setTimeout(() => setDisplayDialog('none'), 500);
   }
   
   const handleMouseUp = (shortsId) => {
     if (!isDragging) {
       setCurIndex(shortsId);
       setOpenDialog(true);
-      setDisplayDialog('inline');
 
       // navigate("/art", {
       //   state: {
@@ -54,9 +50,9 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
         open={openDialog}
         onClose={handleCloseDialog}
         TransitionComponent={Transition}
-        sx={{display:displayDialog, marginBottom:'64px'}}
+        sx={{marginBottom:'64px'}}
         maxWidth="xs"
-        hideBackdrop="true"
+        hideBackdrop={true}
         PaperProps={{
           style: {
             boxShadow: 'none'
