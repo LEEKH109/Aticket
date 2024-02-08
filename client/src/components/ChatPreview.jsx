@@ -11,8 +11,9 @@ const ChatPreview = ({ category}) => {
         //     navigate("/chat");
         //     return;
         // }
-        console.log(chatPreviews);
-      }, [category, chatPreviews]);
+        ChatApi.preview(category).then(res => setChatPreviews(res.data.data)).catch(err => console.log(err))
+        // console.log(ChatApi.preview(category));
+      }, []);
 
     return (
         <div>
