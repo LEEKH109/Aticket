@@ -18,12 +18,15 @@ const MyPage = () => {
   const location = useLocation();
   const path = location.pathname.slice(6);
   const navigate = useNavigate();
-  const { setLogin, userId, setUserId } = useContext(LoginContext);
+  const { setLogin, userId, setUserId, setProfileImg } = useContext(LoginContext);
 
   const logout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("profileImg");
+    setUserId('');
+    setProfileImg('');
     setLogin(false);
     setUserId(undefined);
     navigate("/");

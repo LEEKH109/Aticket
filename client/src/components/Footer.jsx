@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -11,11 +11,28 @@ import { useLoginState } from "./LoginContext";
 function Footer() {
   const [value, setValue] = useState("");
   const navigate = useNavigate();
-  const { isLogin } = useLoginState();
+  const { isLogin, profileImg } = useLoginState();
+  const [loginState, setLoginState] = useState();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  useEffect(()=>{
+    if(isLogin) {
+      setLoginState(<BottomNavigationAction
+        value="user"
+        icon={<Avatar 
+        src={profileImg} 
+        sx={{ width: 36, height: 36}} />}
+        label="마이페이지"
+        onClick={() => navigate("/user/collection")} />);
+    } else {
+      setLoginState(<BottomNavigationAction
+        value="user"
+        label="로그인"
+        icon={<AccountCircleIcon fontSize="large" color="disabled" />}
+        onClick={() => navigate("/loginpage")}/>);
+    }
+  },[isLogin])
   return (
     <div className="flex w-full h-16 bottom-0">
       <BottomNavigation showLabels sx={{ width: "100%", height: "100%" }} value={value} onChange={handleChange}>
@@ -31,22 +48,7 @@ function Footer() {
           icon={<ForumIcon fontSize="large" />}
           onClick={() => navigate("/chat")}
         />
-        {isLogin != null && isLogin ? (
-          <BottomNavigationAction
-            value="user"
-            icon={<Avatar sx={{ width: 36, height: 36 }} />}
-            label="마이페이지"
-            onClick={() => navigate("/user/collection")}>
-            
-            </BottomNavigationAction>
-        ) : (
-          <BottomNavigationAction
-            value="user"
-            label="로그인"
-            icon={<AccountCircleIcon fontSize="large" color="disabled" />}
-            onClick={() => navigate("/loginpage")}
-          />
-        )}
+        {loginState}
       </BottomNavigation>
     </div>
   );

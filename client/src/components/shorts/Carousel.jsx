@@ -3,7 +3,7 @@ import Shorts from "./Shorts";
 
 const ITEM_WIDTH = 412;
 
-const Carousel = ({ shortList, height }) => {
+const Carousel = ({ shortList, height}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [transY, setTransY] = useState(0);

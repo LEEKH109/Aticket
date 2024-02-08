@@ -3,10 +3,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { LoginContext } from "../components/LoginContext";
-
+import { UserApi } from "../util/user-axios";
+import Button from "@mui/material/Button";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 const LoginLoad = () => {
-  const { setLogin, setUserId } = useContext(LoginContext);
+  const { setLogin, setUserId, setProfileImg } = useContext(LoginContext);
   const navigate = useNavigate();
+  const [openAlert, setOpenAlert] = useState(false); // 로딩 실패시 alert 출력
+  
   const code = new URL(window.location.href).searchParams.get("code");
   const LoginProgress = async () => {
     await axios({
@@ -18,15 +26,23 @@ const LoginLoad = () => {
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
       },
     })
-      .then((res) => {
-        localStorage.setItem("userId", res.data.data.userId);
+      .then(async (res) => {
         localStorage.setItem("accessToken", res.data.data.accessToken);
         localStorage.setItem("refreshToken", res.data.data.refreshToken);
-        setLogin(true);
-        setUserId(res.data.data.userId);
-        navigate("/");
+        await UserApi.getUserInfo(res.data.data.userId)
+        .then((userRes) => {
+          const data = userRes.data.data;
+          console.log('Login Info', [res, userRes]);
+          localStorage.setItem("userId", res.data.data.userId);
+          localStorage.setItem("profileImg", data.profileUrl);
+          setLogin(true);
+          setUserId(res.data.data.userId);
+          setProfileImg(data.profileUrl);
+          navigate("/");
+        })
+        .catch((err) => setOpenAlert(true));
       })
-      .catch((err) => console.error(err));
+      .catch((err) => setOpenAlert(true));
   };
 
   useEffect(() => {
@@ -35,13 +51,28 @@ const LoginLoad = () => {
 
   return (
     <>
-      <div className="h-[calc(100%_-_64px)] flex-col align-middle content-center justify-center items-center bg-slate-100 text-center">
+      <Dialog open={openAlert} close={()=>{navigate('/loginpage');}}>
+        <DialogTitle>
+          {"오류"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            로그인 도중 오류가 발생하였습니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{navigate('/loginpage');}}>확인</Button>
+        </DialogActions>
+      </Dialog>
+      <div className="h-[calc(100%_-_64px)] align-middle flex justify-center items-center bg-slate-100 text-center">
+        <div className="items-center">
         <div className="pt-20 pb-10 m-auto">
-          <CircularProgress />
+          <CircularProgress size={60} />
         </div>
         <div className="m-auto">
           <h1>로그인 중 입니다.</h1>
           <h1>잠시만 기다려주세요...</h1>
+        </div>
         </div>
       </div>
     </>

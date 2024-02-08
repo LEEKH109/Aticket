@@ -4,24 +4,32 @@ import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
+import ChatPreview from "../components/ChatPreview";
 import { DetailApi } from "../util/details-axios";
 import { dateFormmatterWithTime } from "../util/dateFormatter";
 import { IconButton } from "@mui/material";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-const DetailPage = () => {
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useCallback } from "react";
+const DetailPage = ({shortsId, backIconClick}) => {
   const location = useLocation();
-  const { shortsId } = location.state;
+  // const { shortsId } = location.state;
   const navigate = useNavigate();
   const isLogin = useLoginState();
   const scrollRef = useRef(null);
 
   const [openPoster, setOpenPoster] = useState(false); // 포스터 클릭시 확대
-  const [scorllPos, setScrollPos] = useState(0); // 스크롤 감지
+  const [openAlert, setOpenAlert] = useState(false); // 로딩 실패시 alert 출력
+  const [scorllPos, setScrollPos] = useState(false); // 스크롤 감지
   const [category, setCategory] = useState();
   const [shortInfo, setShortInfo] = useState({actors:['-'], infoUrls:[], startDate:'1900-01-01', endDate:'1900-01-01'});
   const [infoLoad, setInfoLoad] = useState(
-    <div className="absolute w-full h-full bg-gray-300 opacity-70 flex justify-center">
+    <div className="absolute w-full h-full bg-gray-300 opacity-70 flex justify-center z-10">
       <CircularProgress
       sx={{alignSelf:"center"}}
       />
@@ -33,29 +41,34 @@ const DetailPage = () => {
   const handleClosePoster = () => setOpenPoster(false);
  
   /* 전시 및 공연 정보 세팅 */
-  const getShortsInfo = (shortsId) => {
-    DetailApi.getDetail(shortsId).then((res)=>{
-      if(res.data.category==="MUSICAL") {
-        setCategory("뮤지컬");
-      } else if(res.date.category==="SHOW") {
-        setCategory("전시");
-      } else if(res.data.category==="PLAY") {
-        setCategory("공연");
-      }
-      setShortInfo(res.data);
-      if(res.data.actors[0] === '') {
-        res.data.actors[0] = '-';
-      }
-      setInfoLoad([]);
-     });
+  const getShortsInfo = async (shortsId) => {
+    try {
+      await DetailApi.getDetail(shortsId).then((res)=>{
+        if(res.data.category==="MUSICAL") {
+          setCategory("뮤지컬");
+        } else if(res.data.category==="SHOW") {
+          setCategory("전시");
+        } else if(res.data.category==="PLAY") {
+          setCategory("공연");
+        }
+        setShortInfo(res.data);
+        if(res.data.actors[0] === '') {
+          res.data.actors[0] = '-';
+        }
+        setInfoLoad([]);
+       });
+    } catch (error) {
+      setOpenAlert(true);
+    }
   };
+  /* 스크롤 감지 */
+  const updateScroll = useCallback((event) => {
+    if(event.target.scrollTop > 650) setScrollPos(true);
+    else setScrollPos(false);
+  }, []);
 
   useEffect(() => {
     getShortsInfo(shortsId); // 전시 및 공연 정보 가져오기
-    /* 스크롤 감지 */
-    const updateScroll = (event) => {
-      setScrollPos(event.target.scrollTop);
-    };
     const scrollElement = scrollRef.current;
     if(scrollElement) {
       scrollElement.addEventListener('scroll', updateScroll);
@@ -70,6 +83,19 @@ const DetailPage = () => {
 
   return (
     <main className="relative h-[calc(100vh_-_64px)] mx-auto bg-slate-300">
+      <Dialog open={openAlert}>
+        <DialogTitle>
+          {"오류"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            불러오는 도중 오류가 발생하였습니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{backIconClick()}}>확인</Button>
+        </DialogActions>
+      </Dialog>
       <Modal
         open={openPoster}
         onClose={handleClosePoster}
@@ -87,18 +113,18 @@ const DetailPage = () => {
         sx={{":hover":{backgroundColor:'#000000'}, backgroundColor:'#666666', 
         width:'5vh', height:'5vh', marginLeft:'0.6vh', marginTop:'0.6vh'}}
         onClick={() => {
-          navigate(-1);
+          backIconClick();
         }}
         >
         <KeyboardBackspaceIcon sx={{color:'white'}}/>
         </IconButton>
       </div>
-      <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-gray-500 flex items-center justify-between 
-      transition-opacity ease-in-out duratino-500 ${scorllPos > 650 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-[#397D54] flex items-center justify-between drop-shadow-lg
+      transition-opacity ease-in-out duration-300 ${scorllPos ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
       <IconButton
       sx={{ width:'5vh', height:'5vh', marginLeft:'0.6vh', marginTop:'0.2vh'}}
       onClick={() => {
-        navigate(-1);
+        backIconClick();
       }}
       >
       <KeyboardBackspaceIcon sx={{color:'white'}}/>
@@ -112,7 +138,7 @@ const DetailPage = () => {
         <div className="h-[68vh]" onClick={handleOpenPoster}>
         </div>
         <div className="bg-white w-full rounded-tl-2xl rounded-tr-2xl p-5 pb-20 leading-8">
-        <h1 className="font-bold text-xl">{shortInfo.title}</h1>
+        <h1 className="font-bold text-2xl">{shortInfo.title}</h1>
         <h2 className="text-gray-400 text-lg">{category}</h2>
         <hr className="my-[2vh]"/>
         <h2 className="font-bold text-lg">장소</h2>
@@ -137,12 +163,16 @@ const DetailPage = () => {
 
       <div className="h-13 w-full relative bottom-[5.2vh]">
         {
-          isLogin!=null && isLogin ?
+          isLogin.isLogin ?
           <Button
           sx={{width:"100%", height:"5.25vh"}}
           variant="contained"
           onClick={() => {
-            navigate(-1);
+            navigate("/book", {
+              state: {
+                shortInfo
+              },
+            });
           }}
           >예매하기</Button>
           :
