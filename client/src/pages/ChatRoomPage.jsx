@@ -14,13 +14,6 @@ const ChatRoom = () => {
     const location = useLocation();
     const initialPage = location.state?.page??0;
 
-    // const chatlog = {
-    //     nickname: userId,
-    //     category: category,
-    //     content: chatContent,
-    //     regDate: new Date(),
-    // };
-
     const [pins, setPins] = useState([]); //처음 chatlog부터 이어져야 하니 => 데이터를 담고 있는 state인 pins를 operator 연산자로 복제
     const [page, setPage] = useState(initialPage);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
     const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
@@ -42,6 +35,7 @@ const ChatRoom = () => {
 
     const onChatlogReceived = (payload) => {
         console.log(payload);
+        
         // const newChatlog = JSON.parse(payload.body); // 서버로부터 받은 데이터를 파싱
         // const chatlogElement = document.createElement('li');
         
@@ -71,9 +65,12 @@ const ChatRoom = () => {
     const fetchPins = async () => {
         setLoading(true);
         try {
-            const response = await ChatApi.chatScroll(category,page);
-            const newPins = response.content || [];
-            setPins(prev => [...prev, ...newPins]);
+            console.log((await ChatApi.chatScroll(category, page)).data.data.content);
+            const response = (await ChatApi.chatScroll(category, page)).data.data.content;
+            
+            // const newPins = response || [];
+            
+            setPins([...pins, ...response]);
         } catch (error) {
             console.error(error);
         }
@@ -105,7 +102,7 @@ const ChatRoom = () => {
     useEffect(()=>{
         const connect = () => {
             stompClient = Stomp.over(function(){
-                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");
+                return new SockJS("http://localhost:8080/ws");//http://i10a704.p.ssafy.io:8081/ws
             })
             stompClient.connect({"token" : token },()=> {
                 onConnected(category);
@@ -152,10 +149,6 @@ const ChatRoom = () => {
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
 
-        const user = {
-            
-        }
-
         const chatlog = {
             user: userId,
             category: category,
@@ -179,17 +172,15 @@ const ChatRoom = () => {
             <div ref={pageEnd}/>
             <div>           
             {pins.length > 0 ? (
-            // <ul>
-            //     {recentPage.map((chatlog) => ( 
-            //         <li key={chatlog.chatlogId}>
-            //             <img src={chatlog.profileUrl} alt="profile" />
-            //             <span>{chatlog.nickname}: </span>
-            //             <span>{chatlog.content}</span>
-            //             <span> ({new Date(chatlog.regDate).toLocaleString()})</span>
-            //         </li>
-            //     ))}
-            // </ul>
-            <div ref={chatsRef}></div>
+            <ul>
+                {pins.map((chatlog) => ( 
+                    <li key={chatlog.chatlogId}>
+                        <span>{chatlog.nickname}: </span>
+                        <span>{chatlog.content}</span>
+                        <span> ({new Date(chatlog.regDate).toLocaleString()})</span>
+                    </li>
+                ))}
+            </ul>
                         ) : (
                             <p>채팅이 존재하지 않습니다.</p>
                         )}
@@ -213,3 +204,4 @@ const ChatRoom = () => {
 };
 
 export default ChatRoom;
+//<div ref={chatsRef}></div>
