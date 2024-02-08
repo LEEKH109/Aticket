@@ -1,5 +1,6 @@
 import axios from "axios";
 import ErrorPage from "../pages/ErrorPage";
+import instance from "./interceptor";
 
 const BASE_URL = "http://i10a704.p.ssafy.io:8081/chat";
 
@@ -9,7 +10,7 @@ const apiClient = axios.create({
 
 const ChatApi = {
 
-    sendChatlog: (category, chatlog) => apiClient.post(`/send/${category}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
+    sendChatlog: (category, chatlog) => instance.post(`/send/${category}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
 
     preview: (category) => apiClient.get(`/preview/${category}`).then(response=>response.data).catch(error=>console.error(error)),
     
