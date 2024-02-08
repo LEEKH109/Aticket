@@ -14,10 +14,6 @@ const Shorts = () => {
     // });
     setShortList([
       {
-        id: 0,
-        type: "start",
-      },
-      {
         id: 3,
         download_url: "https://cdn.pixabay.com/photo/2023/07/04/08/31/cats-8105667_960_720.jpg",
         author: "artellliii72",

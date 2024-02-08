@@ -1,20 +1,40 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, forwardRef } from "react";
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
 import ShortsInfo from "./ShortsInfo";
+import DetailPage from "../../pages/DetailPage";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
 
 const Shorts = ({ items, itemWidth, itemHeight }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [displayDialog, setDisplayDialog] = useState('none');
+  const [curIndex, setCurIndex] = useState(0);
   const navigate = useNavigate();
+  
+  const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="left" ref={ref} {...props} />;
+  });
 
+  const handleCloseDialog = () => {
+    setIsDragging(false);
+    setOpenDialog(false);
+    setTimeout(() => setDisplayDialog('none'), 500);
+  }
+  
   const handleMouseUp = (shortsId) => {
     if (!isDragging) {
-      navigate("/art", {
-        state: {
-          shortsId,
-        }
-      });
+      setCurIndex(shortsId);
+      setOpenDialog(true);
+      setDisplayDialog('inline');
+
+      // navigate("/art", {
+      //   state: {
+      //     shortsId,
+      //   }
+      // });
     }
   };
 
@@ -26,15 +46,28 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
     setIsDragging(false);
   };
 
+
   return (
     <>
+      <Dialog
+        fullScreen
+        open={openDialog}
+        onClose={handleCloseDialog}
+        TransitionComponent={Transition}
+        sx={{display:displayDialog, marginBottom:'64px'}}
+        maxWidth="xs"
+        hideBackdrop="true"
+        PaperProps={{
+          style: {
+            boxShadow: 'none'
+          },
+        }}
+      >
+      <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog}/>
+      </Dialog>
       {items.map((image) => (
         <div key={image.id} className="relative w-full flex-shrink-0" style={{ height: `${itemHeight}px` }}>
-          {image.type == "start" ? (
-            <div className="h-full w-full bg-slate-600 flex justify-center items-center">
-            <h1 className="text-white text-2xl"> 시작페이지입니다.</h1>
-          </div>
-          ) : (
+          {
             image.type == "video" ? (
               <video
             autoPlay
@@ -57,12 +90,8 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
           onMouseDown={handleMouseDown}
         />
             )
-          )
-           }
-          {
-            image.type=='start' ? ('') : (<ShortsInfo info={image.author} />)
           }
-          
+          <ShortsInfo info={image.author} />
         </div>
       ))}
     </>

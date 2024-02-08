@@ -16,9 +16,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useCallback } from "react";
-const DetailPage = () => {
+const DetailPage = ({shortsId, backIconClick}) => {
   const location = useLocation();
-  const { shortsId } = location.state;
+  // const { shortsId } = location.state;
   const navigate = useNavigate();
   const isLogin = useLoginState();
   const scrollRef = useRef(null);
@@ -93,7 +93,7 @@ const DetailPage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{navigate(-1);}}>확인</Button>
+          <Button onClick={()=>{backIconClick()}}>확인</Button>
         </DialogActions>
       </Dialog>
       <Modal
@@ -113,18 +113,18 @@ const DetailPage = () => {
         sx={{":hover":{backgroundColor:'#000000'}, backgroundColor:'#666666', 
         width:'5vh', height:'5vh', marginLeft:'0.6vh', marginTop:'0.6vh'}}
         onClick={() => {
-          navigate(-1);
+          backIconClick();
         }}
         >
         <KeyboardBackspaceIcon sx={{color:'white'}}/>
         </IconButton>
       </div>
-      <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-gray-500 flex items-center justify-between 
-      transition-opacity ease-in-out duration-500 ${scorllPos ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-[#397D54] flex items-center justify-between drop-shadow-lg
+      transition-opacity ease-in-out duration-300 ${scorllPos ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
       <IconButton
       sx={{ width:'5vh', height:'5vh', marginLeft:'0.6vh', marginTop:'0.2vh'}}
       onClick={() => {
-        navigate(-1);
+        backIconClick();
       }}
       >
       <KeyboardBackspaceIcon sx={{color:'white'}}/>
@@ -138,7 +138,7 @@ const DetailPage = () => {
         <div className="h-[68vh]" onClick={handleOpenPoster}>
         </div>
         <div className="bg-white w-full rounded-tl-2xl rounded-tr-2xl p-5 pb-20 leading-8">
-        <h1 className="font-bold text-xl">{shortInfo.title}</h1>
+        <h1 className="font-bold text-2xl">{shortInfo.title}</h1>
         <h2 className="text-gray-400 text-lg">{category}</h2>
         <hr className="my-[2vh]"/>
         <h2 className="font-bold text-lg">장소</h2>

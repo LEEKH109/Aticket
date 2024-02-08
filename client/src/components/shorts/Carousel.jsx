@@ -70,7 +70,6 @@ const Carousel = ({ shortList, height}) => {
     if (currentIndex !== nextIndex) {
       console.log(currentIndex, "번 쇼츠 ", (new Date() - startTime) / 1000, "초 봤음");
       setStartTime(new Date());
-      onIndexReceive(currentIndex); // 부모 컴포넌트로 현재 페이지 index 전달하기
     }
 
     window.removeEventListener("mousemove", handleMouseMove);
