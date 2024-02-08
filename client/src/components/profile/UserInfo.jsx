@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Modal from "../Modal";
-import { UserApi } from "../../util/user-axios";
+import PhotoSizeSelectActualIcon from "@mui/icons-material/PhotoSizeSelectActual";
 
 const UserInfo = ({
   nickname,
@@ -12,17 +12,14 @@ const UserInfo = ({
   onChangeProfileImage,
   onChangeNickname,
   onDeleteProfileImage,
-  onSubmitUserInfo,
+  onSubmitNickname,
+  onSubmitProfileImage,
 }) => {
   const [previewImage, setPreviewImage] = useState();
   const [validNickname, setValidNickname] = useState(true);
   const imgRef = useRef();
-  const dialog = useRef();
-
-  // 수정하는 모달 여는 이벤트
-  const handleButtonClick = () => {
-    dialog.current.open();
-  };
+  const nicknameDialogRef = useRef();
+  const profileImageDialogRef = useRef();
 
   // 닉네임 유효성 검사
   const handleChangeNickname = (e) => {
@@ -47,34 +44,27 @@ const UserInfo = ({
     onChangeProfileImage(file);
   };
 
-  const handleDeleteProfileImage = () => {
-    onDeleteProfileImage();
-  };
-
   // 수정에 성공했을 때 모달 닫기
   useEffect(() => {
     if (updateSuccess) {
-      dialog.current.close();
+      nicknameDialogRef.current.close();
+      profileImageDialogRef.current.close();
     }
   }, [updateSuccess]);
 
+  useEffect(() => {
+    setPreviewImage(profileImage.prev);
+  }, [profileImage.prev]);
+
   return (
     <>
-      <Modal ref={dialog}>
+      <Modal ref={nicknameDialogRef}>
         <section className="flex flex-col items-center gap-4">
-          <p className="font-bold text-xl">프로필 편집</p>
-          <div className="w-24 h-24 overflow-hidden border-2 rounded-full">
-            <img src={previewImage} className="h-full object-cover" />
-          </div>
-          <div className="flex gap-4">
-            <div>
-              <label htmlFor="profile-img">이미지 수정하기</label>
-              <input type="file" className="hidden" id="profile-img" ref={imgRef} onChange={handleChangeProfileImg} />
-            </div>
-            <button onClick={handleDeleteProfileImage}>이미지 삭제하기</button>
-          </div>
+          <p className="font-bold text-xl">닉네임 수정</p>
           <div className="w-full">
-            <label htmlFor="nickname">닉네임</label>
+            <label htmlFor="nickname" className="hidden">
+              닉네임
+            </label>
             <input
               type="text"
               id="nickname"
@@ -88,21 +78,45 @@ const UserInfo = ({
           </div>
           <button
             className={`${!validNickname ? "text-gray-300" : ""}`}
-            onClick={onSubmitUserInfo}
+            onClick={onSubmitNickname}
             disabled={!validNickname}
           >
             수정하기
           </button>
         </section>
       </Modal>
+      <Modal ref={profileImageDialogRef}>
+        <section className="flex flex-col items-center gap-4">
+          <p className="font-bold text-xl">프로필 이미지 편집</p>
+          <div className="w-24 h-24 overflow-hidden border-2 rounded-full">
+            <img src={previewImage} className="h-full object-cover" />
+          </div>
+          <div className="flex flex-col">
+            <div className="flex gap-12">
+              <div>
+                <label htmlFor="profile-img">변경하기</label>
+                <input type="file" className="hidden" id="profile-img" ref={imgRef} onChange={handleChangeProfileImg} />
+              </div>
+              <button onClick={onDeleteProfileImage}>삭제하기</button>
+            </div>
+            <button onClick={onSubmitProfileImage}>저장하기</button>
+          </div>
+        </section>
+      </Modal>
       <section className="flex px-6 py-4 gap-6 items-center ">
-        <div className="w-24 h-24 flex-shrink-0 border rounded-full overflow-hidden">
+        <div className="relative w-24 h-24 flex-shrink-0 border rounded-full overflow-hidden">
           <img src={profileImage.prev} />
+          <button
+            className="absolute w-full py-1 bottom-0 bg-gray-500/50 text-white"
+            onClick={() => profileImageDialogRef.current.open()}
+          >
+            <PhotoSizeSelectActualIcon />
+          </button>
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-2xl">{nickname.prev}</h3>
-            <IconButton size="small" onClick={handleButtonClick}>
+            <IconButton size="small" onClick={() => nicknameDialogRef.current.open()}>
               <EditIcon fontSize="small" />
             </IconButton>
           </div>
