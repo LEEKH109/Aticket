@@ -1,36 +1,32 @@
-import { useNavigate } from "react-router-dom";
-import { useState, forwardRef } from "react";
-import Dialog from '@mui/material/Dialog';
-import Slide from '@mui/material/Slide';
+import { useState, useEffect, forwardRef } from "react";
 import ShortsInfo from "./ShortsInfo";
 import DetailPage from "../../pages/DetailPage";
+import { ShortsAPI } from "../../util/shorts-axios";
+import { DetailApi } from "../../util/details-axios";
+import Dialog from "@mui/material/Dialog";
+import Slide from "@mui/material/Slide";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const Shorts = ({ items, itemWidth, itemHeight }) => {
+const Shorts = ({ shorts, itemHeight }) => {
+  const [artId, setArtId] = useState();
+  const [art, setArt] = useState();
+  const [curIndex, setCurIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [curIndex, setCurIndex] = useState(0);
-  const navigate = useNavigate();
 
   const handleCloseDialog = () => {
     setIsDragging(false);
     setOpenDialog(false);
-  }
-  
-  const handleMouseUp = (shortsId) => {
-    if (!isDragging) {
-      setCurIndex(shortsId);
-      setOpenDialog(true);
+  };
 
-      // navigate("/art", {
-      //   state: {
-      //     shortsId,
-      //   }
-      // });
+  const handleMouseUp = (artId) => {
+    if (!isDragging) {
+      setCurIndex(artId);
+      setOpenDialog(true);
     }
   };
 
@@ -42,6 +38,23 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
     setIsDragging(false);
   };
 
+  useEffect(() => {
+    ShortsAPI.getShorts(shorts.shortsId)
+      .then(({ data }) => {
+        setArtId(data.data.artId);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    if (artId != undefined) {
+      DetailApi.getDetail(artId)
+        .then(({ data }) => {
+          setArt(data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [artId]);
 
   return (
     <>
@@ -50,47 +63,42 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
         open={openDialog}
         onClose={handleCloseDialog}
         TransitionComponent={Transition}
-        sx={{marginBottom:'64px'}}
+        sx={{ marginBottom: "64px" }}
         maxWidth="xs"
         hideBackdrop={true}
         PaperProps={{
           style: {
-            boxShadow: 'none',
-            maxWidth:'412px',
+            boxShadow: "none",
+            maxWidth: "412px",
           },
         }}
       >
-      <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog}/>
+        <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog} />
       </Dialog>
-      {items.map((image) => (
-        <div key={image.id} className="relative w-full flex-shrink-0" style={{ height: `${itemHeight}px` }}>
-          {
-            image.type == "video" ? (
-              <video
+      <div className="relative w-full flex-shrink-0" style={{ height: `${itemHeight}px` }}>
+        {shorts.type == "VIDEO" ? (
+          <video
             autoPlay
             loop
-            className="h-full object-cover"
-            onMouseUp={() => handleMouseUp(image.id)}
+            muted
+            className="w-full h-full object-cover"
+            onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
           >
-            <source src={image.download_url} type="video/mp4" />
+            <source src={shorts.mediaUrl} type="video/mp4" />
           </video>
-            )
-            :
-            (
-              <img
-          src={image.download_url}
-          className="h-full object-cover"
-          onMouseUp={() => handleMouseUp(image.id)}
-          onMouseMove={handleMouseMove}
-          onMouseDown={handleMouseDown}
-        />
-            )
-          }
-          <ShortsInfo info={image.author} />
-        </div>
-      ))}
+        ) : (
+          <img
+            src={shorts.mediaUrl}
+            className="w-full h-full object-cover"
+            onMouseUp={() => handleMouseUp(shorts.shortsId)}
+            onMouseMove={handleMouseMove}
+            onMouseDown={handleMouseDown}
+          />
+        )}
+        {art && <ShortsInfo title={art.title} shortsId={shorts.shortsId} />}
+      </div>
     </>
   );
 };

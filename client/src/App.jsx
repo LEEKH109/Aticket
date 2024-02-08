@@ -43,8 +43,8 @@ function App() {
         },
         {
           path: "/chat/room/:category",
-          element: <ChatRoomPage/>,
-          errorElement: <ErrorPage/>,
+          element: <ChatRoomPage />,
+          errorElement: <ErrorPage />,
         },
         {
           path: "/user",
@@ -120,7 +120,7 @@ function App() {
 
   return (
     <>
-      <div className="relative mx-auto max-w-[412px] h-[100vh]">
+      <div className="relative mx-auto max-w-[412px] h-[100svh]">
         <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </IsLoginProvider>
