@@ -26,7 +26,7 @@ public class ChatlogController {
 
     @MessageMapping("/send/{category}")
     @SendTo("/room/{category}")
-    public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable ArtCategory category, @Payload Chatlog chatlog) {
+    public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable String category, @Payload Chatlog chatlog) {
         chatService.saveChatlog(chatlog);
         ChatlogRes chatlogRes = ChatlogRes.of(chatlog);
         return new SuccessResponse<>(chatlogRes);
@@ -39,7 +39,10 @@ public class ChatlogController {
 
     @GetMapping("/room/{category}")
     public SuccessResponse<Page<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable ArtCategory category, @RequestParam int page) {
+        System.out.println(category+"채팅방 입장");
+//        System.out.println(page);
         Page<ChatlogRes> chatlogs = chatService.getChatlogs(category, page, 15);
+        System.out.println(page+" "+chatlogs.getContent());
         return new SuccessResponse<>(chatlogs);
     }
 }

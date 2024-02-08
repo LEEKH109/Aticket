@@ -18,5 +18,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/chat");
         registry.enableSimpleBroker("/room");
+//        System.out.println("메시지 브로커 설정");
     }
 }
