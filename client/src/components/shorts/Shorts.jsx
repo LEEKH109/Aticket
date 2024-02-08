@@ -55,7 +55,8 @@ const Shorts = ({ items, itemWidth, itemHeight }) => {
         hideBackdrop={true}
         PaperProps={{
           style: {
-            boxShadow: 'none'
+            boxShadow: 'none',
+            maxWidth:'412px',
           },
         }}
       >

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import CloseIcon from '@mui/icons-material/Close';
 import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
 import ChatPreview from "../components/ChatPreview";
@@ -116,7 +116,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
           backIconClick();
         }}
         >
-        <KeyboardBackspaceIcon sx={{color:'white'}}/>
+        <CloseIcon sx={{color:'white'}}/>
         </IconButton>
       </div>
       <div className={`fixed w-full max-w-[412px] container h-[6vh] bg-[#397D54] flex items-center justify-between drop-shadow-lg
@@ -127,7 +127,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
         backIconClick();
       }}
       >
-      <KeyboardBackspaceIcon sx={{color:'white'}}/>
+      <CloseIcon sx={{color:'white'}}/>
       </IconButton>
       <div className="text-white text-xl flex-1 mx-4 truncate text-center">{shortInfo.title}</div>
       <div className="w-12"></div>
@@ -151,7 +151,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
         <h3 className="text-base">{shortInfo.actors}</h3>
         <p className="my-3"/>
         <hr className="my-[2vh]"/>
-        <h1 className="font-bold text-lg pb-4">작품 상세설명</h1>
+        <h1 className="font-bold text-lg pb-4">상세설명</h1>
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
