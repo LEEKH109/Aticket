@@ -18,6 +18,7 @@ const ChatRoom = () => {
     const [page, setPage] = useState(initialPage);//스크롤이 닿았을 때 새롭게 데이터 페이지를 바꾸는 state
     const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
     const pageEnd = useRef(null);
+    const [hasMoreLogs, setHasMoreLogs] = useState(true);//추가 로그
 
     const loadMore = () => {
         setPage(prev => prev + 1);
@@ -63,14 +64,16 @@ const ChatRoom = () => {
 
 
     const fetchPins = async () => {
+        if (!hasMoreLogs) return; 
         setLoading(true);
         try {
-            console.log((await ChatApi.chatScroll(category, page)).data.data.content);
+            console.log(page+"페이지 채팅 로그: "+(await ChatApi.chatScroll(category, page)).data.data.content);
             const response = (await ChatApi.chatScroll(category, page)).data.data.content;
             
             // const newPins = response || [];
             
             setPins([...pins, ...response]);
+            setHasMoreLogs(response.length === 15);
         } catch (error) {
             console.error(error);
         }
@@ -86,7 +89,7 @@ const ChatRoom = () => {
     }, [page]);  //page 넘버 바뀔 때마다 pin 을 복제해서 축적
 
     useEffect(()=>{
-        if (loading) {
+        if (loading && hasMoreLogs) {
             const observer = new IntersectionObserver(
                 entries => {
                     if (entries[0].isIntersecting) {
@@ -96,13 +99,14 @@ const ChatRoom = () => {
                 { threshold: 1}
             );
             observer.observe(pageEnd.current);
+            return () => observer.disconnect(); 
         }
-    },[loading]);
+    },[loading,hasMoreLogs]);
 
     useEffect(()=>{
         const connect = () => {
             stompClient = Stomp.over(function(){
-                return new SockJS("http://localhost:8080/ws");//http://i10a704.p.ssafy.io:8081/ws
+                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws
             })
             stompClient.connect({"token" : token },()=> {
                 onConnected(category);

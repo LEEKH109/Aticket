@@ -156,6 +156,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
         <p className="h-[4vh]"></p>
         <div className="text-center bg-slate-400 w-full h-[20vh]">
             <ChatPreview category={shortInfo.category}/>
+            <Link to={`/chat/room/${shortInfo.category}?page=${0}`}>채팅방 바로가기</Link>
         </div>
         </div>
       </div>
