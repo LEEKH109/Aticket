@@ -1,20 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DialButton from "../components/shorts/DialButton";
 import Carousel from "../components/shorts/Carousel";
 import { ShortsAPI } from "../util/shorts-axios";
+import { LoginContext } from "../components/LoginContext";
 
 const Shorts = () => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
   const [category, setCategory] = useState("");
   const [shortList, setShortList] = useState([]);
-
-  const getShortsList = () => {
-    ShortsAPI.getShortsList(category)
-      .then(({ data }) => {
-        setShortList(data.data);
-      })
-      .catch((err) => console.error(err));
-  };
+  const { userId } = useContext(LoginContext);
 
   const handleClickCategory = (category) => {
     setCategory(category);
@@ -25,7 +19,19 @@ const Shorts = () => {
   };
 
   useEffect(() => {
-    getShortsList(category);
+    if (userId) {
+      ShortsAPI.getRecommendShortsList(category)
+        .then(({ data }) => {
+          setShortList(data.data);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      ShortsAPI.getShortsList(category)
+        .then(({ data }) => {
+          setShortList(data.data);
+        })
+        .catch((err) => console.error(err));
+    }
   }, [category]);
 
   useEffect(() => {
