@@ -23,9 +23,7 @@ const regenerateRefreshToken = async () => {
 
 instance.interceptors.request.use(
   (config) => {
-    if (localStorage.getItem("accessToken")) {
-      config.headers["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
-    }
+    config.headers["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
     return config;
   },
   (error) => {
@@ -61,7 +59,7 @@ instance.interceptors.response.use(
         localStorage.removeItem("userId");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.replace("/loginPage");
+        window.location.replace("/loginpage");
       }
     }
 
