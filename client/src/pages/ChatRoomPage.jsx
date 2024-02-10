@@ -55,8 +55,7 @@ const ChatRoom = () => {
 
     const token = useContext(LoginContext);
     const chatAreaRef  = useRef(null);
-    // let stompClient = null;
-    let [stompClient, setstompClient] = useState(null);
+    let stompClient = null;
 
     const onChatlogReceived = (payload) => {
         console.log(payload); //형식을 보고 밑부분 수정
@@ -182,12 +181,9 @@ const ChatRoom = () => {
 
     useEffect(()=>{
         const connect = () => {
-            // stompClient = Stomp.over(function(){
-            //     return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
-            // })
-            setstompClient(Stomp.over(function(){
-                    return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
-                }))
+            stompClient = Stomp.over(function(){
+                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
+            })
             stompClient.connect({"token" : token },()=> {
                 onConnected(category);
             }, onError);
@@ -260,7 +256,7 @@ const ChatRoom = () => {
                 "Authorization": token,
             };
 
-            stompClient.send(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
+            stompClient.publish(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
             setChatContent("");
         } else {
             console.error('Not connected to WebSocket.')
