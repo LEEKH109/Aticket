@@ -133,7 +133,7 @@ const ChatRoom = () => {
         };
 
         const onConnected = (category) => {
-            stompClient.subscribe(`/chat/room/${category}`, onChatlogReceived);
+            stompClient.subscribe(`/room/${category}`, onChatlogReceived);
         }; 
 
         const onError = (error) => {
@@ -149,7 +149,6 @@ const ChatRoom = () => {
         };
             
         if (!stompClient || !stompClient.connect) {
-            console.log("첫 연결?")
             connect();
         };
 
