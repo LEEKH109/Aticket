@@ -12,7 +12,7 @@ public class TicketReservationRequestDto {
 
   private int artId;
   private String reservationId;
-  private int timetableTd;
+  private int timetableId;
   private String bookerName;
   private List<BookedTickets> tickets;
 

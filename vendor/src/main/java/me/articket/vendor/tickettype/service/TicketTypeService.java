@@ -42,7 +42,7 @@ public class TicketTypeService {
     if(ticketTypeRepository.countSeatByArtId(request.getArtId()) == 0){
       throw new IllegalArgumentException("Invalid artId.");
     }
-    if(ticketTypeRepository.countTimetableId(request.getTimetableTd()) == 0){
+    if(ticketTypeRepository.countTimetableId(request.getTimetableId()) == 0){
       throw new IllegalArgumentException("Invalid timetableId.");
     }
     if (request.getTickets().stream().anyMatch(ticket -> ticketTypeRepository.countTicketTypeId(
@@ -64,7 +64,7 @@ public class TicketTypeService {
     infoDto.setReservationId(requestDto.getReservationId());
     infoDto.setBookerName(requestDto.getBookerName());
     // timetable 조회
-    Timetable timetableDetail = timetableRepository.findTimetableByTimetableId(requestDto.getTimetableTd());
+    Timetable timetableDetail = timetableRepository.findTimetableByTimetableId(requestDto.getTimetableId());
     // timetableId, 시작 시간, 종료시간 설정
     infoDto.setTimetableId(timetableDetail.getTimetableId());
     infoDto.setStartTime(timetableDetail.getStartTime());
