@@ -12,7 +12,7 @@ const ChatApi = {
     // sendChatlog: (category, chatlog) => instance.post(`/send/${category}`, chatlog).then(response=>response.data).catch(error=>console.error(error)),
 
     preview: (category) => {
-        return apiClient.get(`preview/${category}`)
+        return apiClient.get(`/preview/${category}`)
     },
     
     // chatRoom: (categoryId) => apiClient.get(`/room/${categoryId}`).then(response=>response.data).catch(error=>console.error(error)),
@@ -20,7 +20,7 @@ const ChatApi = {
     // chatScroll: (category, page) => apiClient.get(`/room/${category}?page=${page}`).then(response => response.data.data).catch(error=> console.error(error)),
 
     chatScroll: (category, page) => {
-        return apiClient.get(`room/${category}?page=${page}`)
+        return apiClient.get(`/room/${category}?page=${page}`)
     }
 
     // chatList: () => apiClient.get("").then(response=>response.data).catch(error=>console.error(error)),//임시
