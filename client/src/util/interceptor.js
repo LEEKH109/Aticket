@@ -59,7 +59,7 @@ instance.interceptors.response.use(
         localStorage.removeItem("userId");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.replace("/");
+        window.location.replace("/loginpage");
       }
     }
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-const BASE_URL = `http://localhost:8080`;
+const BASE_URL = `http://localhost:8081`;
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,

@@ -11,7 +11,9 @@ const ChatPreview = ({ category}) => {
         //     navigate("/chat");
         //     return;
         // }
-      }, [category]);
+        ChatApi.preview(category).then(res => setChatPreviews(res.data.data)).catch(err => console.log(err))
+        // console.log(ChatApi.preview(category));
+      }, []);
 
     return (
         <div>
@@ -20,7 +22,7 @@ const ChatPreview = ({ category}) => {
                     {chatPreviews.map((preview) => (
                         <li key={preview.chatlogId}>
                             {preview.content}&nbsp;&nbsp;
-                            {preview.user.nickname}
+                            {preview.nickname}
                             &nbsp;&nbsp;<span>({new Date(preview.regDate).toLocaleString()})</span>
                         </li>
                     ))}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Shorts from "./Shorts";
+import ShortsList from "./ShortsList";
 
 const ITEM_WIDTH = 412;
 
@@ -13,7 +13,8 @@ const Carousel = ({ shortList, height }) => {
   const maxLen = useRef(0);
 
   const isTouchScreen =
-    typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
   const inRange = (value, min, max) => {
     if (value < min) {
@@ -142,7 +143,10 @@ const Carousel = ({ shortList, height }) => {
 
   useEffect(() => {
     if (carouselItemsRef.current)
-      carouselItemsRef.current.style.transform = `translateY(${-(currentIndex * height + transY)}px)`;
+      carouselItemsRef.current.style.transform = `translateY(${-(
+        currentIndex * height +
+        transY
+      )}px)`;
   }, [transY]);
 
   return (
@@ -152,7 +156,7 @@ const Carousel = ({ shortList, height }) => {
         className="flex flex-col"
         style={{ transition: `transform ${transY ? 0 : 300}ms ease-in-out 0s` }}
       >
-        <Shorts items={shortList} itemWidth={ITEM_WIDTH} itemHeight={height} />
+        <ShortsList shortsList={shortList} itemWidth={ITEM_WIDTH} itemHeight={height} />
       </div>
     </div>
   );

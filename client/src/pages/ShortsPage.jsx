@@ -1,48 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DialButton from "../components/shorts/DialButton";
 import Carousel from "../components/shorts/Carousel";
 import { ShortsAPI } from "../util/shorts-axios";
+import { LoginContext } from "../components/LoginContext";
 
 const Shorts = () => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
-  const [collected, setCollected] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [category, setCategory] = useState("");
   const [shortList, setShortList] = useState([]);
-
-  const getShortsList = () => {
-    // ShortsAPI.getShorts().then((res) => {
-    //   setShortList(res.data);
-    // });
-    setShortList([
-      {
-        id: 3,
-        download_url: "https://cdn.pixabay.com/photo/2023/07/04/08/31/cats-8105667_960_720.jpg",
-        author: "artellliii72",
-        type: "image",
-      },
-      {
-        id: 4,
-        download_url: "https://cdn.pixabay.com/photo/2023/11/17/12/46/cat-8394224_960_720.jpg",
-        author: "DusoSK",
-        type: "image",
-      },
-      {
-        id: 1,
-        download_url: "/media/video1.mp4",
-        author: "newjeans_nangman",
-        type: "video",
-      },
-      {
-        id: 2,
-        download_url: "/media/video2.mp4",
-        author: "im_nabelt",
-        type: "video",
-      },
-    ]);
-  };
+  const { userId } = useContext(LoginContext);
 
   const handleClickCategory = (category) => {
-    setSelectedCategory(category);
+    setCategory(category);
   };
 
   const handleHeightResize = () => {
@@ -50,18 +19,20 @@ const Shorts = () => {
   };
 
   useEffect(() => {
-    getShortsList();
-  }, []);
-
-  useEffect(() => {
-    // 해당 쇼츠 컬렉션 저장 유무 확인 로직
-    setCollected(false);
-  }, []);
-
-  useEffect(() => {
-    console.log(selectedCategory);
-    // 카테고리 선택 로직
-  }, [selectedCategory]);
+    if (userId) {
+      ShortsAPI.getRecommendShortsList(category)
+        .then(({ data }) => {
+          setShortList(data.data);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      ShortsAPI.getShortsList(category)
+        .then(({ data }) => {
+          setShortList(data.data);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [category]);
 
   useEffect(() => {
     window.addEventListener("resize", handleHeightResize);
@@ -74,7 +45,7 @@ const Shorts = () => {
   return (
     <>
       <div className="absolute z-50 top-4 left-4 flex gap-4">
-        <DialButton handleClickCategory={handleClickCategory} selectedCategory={selectedCategory} />
+        <DialButton handleClickCategory={handleClickCategory} selectedCategory={category} />
       </div>
       <Carousel shortList={shortList} height={innerHeight} />
     </>
