@@ -3,8 +3,8 @@ import ShortsList from "./ShortsList";
 
 const ITEM_WIDTH = 412;
 
-const Carousel = ({ shortList, height }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const Carousel = ({ shortList, height, index = 0 }) => {
+  const [currentIndex, setCurrentIndex] = useState(Number(index));
   const [isDragging, setIsDragging] = useState(false);
   const [transY, setTransY] = useState(0);
   const [startTime, setStartTime] = useState(new Date());
@@ -142,11 +142,7 @@ const Carousel = ({ shortList, height }) => {
   }, [isDragging]);
 
   useEffect(() => {
-    if (carouselItemsRef.current)
-      carouselItemsRef.current.style.transform = `translateY(${-(
-        currentIndex * height +
-        transY
-      )}px)`;
+    carouselItemsRef.current.style.transform = `translateY(${-(currentIndex * height + transY)}px)`;
   }, [transY]);
 
   return (
