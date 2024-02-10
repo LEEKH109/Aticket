@@ -5,8 +5,36 @@ import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
 import { UserApi } from "../util/user-axios";
-
+const useGlobalStyles = () => {
+    useEffect(() => {
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = `
+        ::-webkit-scrollbar {
+          width: 4px;
+          height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #E2E2E2;
+          border-radius: 2px;
+        }
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: #E2E2E2 transparent;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style);
+      };
+    }, []);
+};
+  
 const ChatRoom = () => {
+    useGlobalStyles();
     const { isLogin, userId } = useContext(LoginContext);
     let {category} = useParams();
     const [chatContent, setChatContent] = useState("");
@@ -19,6 +47,7 @@ const ChatRoom = () => {
     const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
     const pageEnd = useRef(null);
     const [hasMoreLogs, setHasMoreLogs] = useState(true);//추가 로그
+    const [websocketConnect, setWebsocketConnect] = useState(false);
 
     const loadMore = () => {
         setPage(prev => prev + 1);
@@ -26,7 +55,8 @@ const ChatRoom = () => {
 
     const token = useContext(LoginContext);
     const chatAreaRef  = useRef(null);
-    let stompClient = null;
+    // let stompClient = null;
+    let [stompClient, setstompClient] = useState(null);
 
     const onChatlogReceived = (payload) => {
         console.log(payload); //형식을 보고 밑부분 수정
@@ -67,66 +97,97 @@ const ChatRoom = () => {
     };
 
 
+    // const fetchPins = async () => {
+    //     if (!hasMoreLogs || loading) return; //loading 추가 
+    //     setLoading(true);
+    //     try {
+    //         console.log(page+"페이지 채팅 로그: "+(await ChatApi.chatScroll(category, page)).data.data.content);
+    //         const response = (await ChatApi.chatScroll(category, page)).data.data.content;
+    //         const sortedResponse = response.sort((a, b) => a.chatlogId - b.chatlogId);
+    //         // const newPins = response || [];
+            
+    //         setPins(pins => [...sortedResponse, ...pins]);
+    //         setHasMoreLogs(response.length === 15);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    //     // console.log("page:"+page);
+    //     // console.log("response"+response);
+    //     // setPins(prev => [...prev, ...response.pins]); //pin 
+    //     setLoading(false);
+    // } //pin 을 복제해서 축적하는 함수 = 원래 코드!!
     const fetchPins = async () => {
-        if (!hasMoreLogs || loading) return; //loading 추가 
+        if (!hasMoreLogs || loading) return;
         setLoading(true);
         try {
-            console.log(page+"페이지 채팅 로그: "+(await ChatApi.chatScroll(category, page)).data.data.content);
+            console.log("chatScroll-response: "+(await ChatApi.chatScroll(category, page)).data);
             const response = (await ChatApi.chatScroll(category, page)).data.data.content;
-            const sortedResponse = response.sort((a, b) => a.chatlogId - b.chatlogId);
-            // const newPins = response || [];
-            
-            setPins(pins => [...sortedResponse, ...pins]);
+            setPins(pins => [...response.sort((a, b) => a.chatlogId - b.chatlogId), ...pins]);
             setHasMoreLogs(response.length === 15);
         } catch (error) {
             console.error(error);
+        } finally {
+            setLoading(false);
         }
-        // console.log("page:"+page);
-        // console.log("response"+response);
-        // setPins(prev => [...prev, ...response.pins]); //pin 
-        setLoading(false);
-    } //pin 을 복제해서 축적하는 함수
+    };
+
 
     useEffect(()=>{
         // setPage(location.search.slice(6))
-        // fetchPins(page);
         if (page === initialPage) {
             fetchPins(); // Only fetch on initial load
         }
     }, [page, initialPage]);  //page 넘버 바뀔 때마다 pin 을 복제해서 축적
 
-    useEffect(()=>{
-        // if (loading && hasMoreLogs) {
-        //     const observer = new IntersectionObserver(
-        //         entries => {
-        //             if (entries[0].isIntersecting) {
-        //                 loadMore();
-        //             }
-        //         },
-        //         { threshold: 1}
-        //     );
-        //     observer.observe(pageEnd.current);
-        //     return () => observer.disconnect(); 
-        // }
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries[0].isIntersecting) {
-                    loadMore();
-                }
-            },
-            { threshold: 0.1 }
-        );
-        if (chatAreaRef.current?.firstChild) {
-            observer.observe(chatAreaRef.current.firstChild); // Observe the first child for intersection
+    // useEffect(()=>{
+    //     // if (loading && hasMoreLogs) {
+    //     //     const observer = new IntersectionObserver(
+    //     //         entries => {
+    //     //             if (entries[0].isIntersecting) {
+    //     //                 loadMore();
+    //     //             }
+    //     //         },
+    //     //         { threshold: 1}
+    //     //     );
+    //     //     observer.observe(pageEnd.current);
+    //     //     return () => observer.disconnect(); 
+    //     // }
+    //     const observer = new IntersectionObserver(
+    //         entries => {
+    //             if (entries[0].isIntersecting) {
+    //                 loadMore();
+    //             }
+    //         },
+    //         { threshold: 0.1 }
+    //     );
+    //     if (chatAreaRef.current?.firstChild) {
+    //         observer.observe(chatAreaRef.current.firstChild); // Observe the first child for intersection
+    //     }
+    //     return () => observer.disconnect();
+    // },[loading,hasMoreLogs]); // 원래 코드!!!!
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMoreLogs) {
+                loadMore();
+            }
+        }, { threshold: 0.1 });
+        
+        if (chatAreaRef.current?.firstChild && hasMoreLogs) {
+            observer.observe(chatAreaRef.current.firstChild);
         }
+    
         return () => observer.disconnect();
-    },[loading,hasMoreLogs]);
+    }, [loading, hasMoreLogs]);
+    
 
     useEffect(()=>{
         const connect = () => {
-            stompClient = Stomp.over(function(){
-                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
-            })
+            // stompClient = Stomp.over(function(){
+            //     return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
+            // })
+            setstompClient(Stomp.over(function(){
+                    return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
+                }))
             stompClient.connect({"token" : token },()=> {
                 onConnected(category);
             }, onError);
@@ -148,15 +209,17 @@ const ChatRoom = () => {
             }, 5000);
         };
             
-        if (!stompClient || !stompClient.connect) {
+        if (!stompClient || !websocketConnect) {
             connect();
+            setWebsocketConnect(true);
         };
 
         return()=>{
-            if (stompClient && stompClient.connected) {
+            if (stompClient && websocketConnect) {
                 // stompClient.disconnect();
                 stompClient.disconnect(() => {
                     console.log('Disconnected on component unmount.');
+                    setWebsocketConnect(false);
                 });
             }
         }
@@ -169,38 +232,39 @@ const ChatRoom = () => {
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
 
-        const chatlog = {
-            user: userId,
-            category: category,
-            content: chatContent,
-            regDate: new Date(),
-        };
-        console.log(chatlog); //이건 잘 들어감
+        // const chatlog = {
+        //     user: userId,
+        //     category: category,
+        //     content: chatContent,
+        //     regDate: new Date(),
+        // };
+        // console.log(stompClient);
+        // console.log(stompClient.connect());
+        // const stompHeaders = {
+        //     "Authorization": token,
+        // };
 
-        const stompHeaders = {
-            "Authorization": token,
-        };
+        // stompClient.send(`/chat/send/${category}`,stompHeaders, JSON.stringify(chatlog));
+        // setChatContent("");
+        console.log("stompClient의 지금 상태: "+stompClient);
+        console.log("stompClient의 연결 상태: "+websocketConnect);
+        if (stompClient && websocketConnect) {
+            const chatlog = {
+                user: userId,
+                category: category,
+                content: chatContent,
+                regDate: new Date(),
+            };
+            
+            const stompHeaders = {
+                "Authorization": token,
+            };
 
-        stompClient.send(`/chat/send/${category}`,stompHeaders, JSON.stringify(chatlog));
-        setChatContent("");
-        // if (stompClient && stompClient.connected) {
-        //     const chatlog = {
-        //         user: userId,
-        //         category: category,
-        //         content: chatContent,
-        //         regDate: new Date(),
-        //     };
-        //     console.log(chatlog); //이건 잘 들어감
-
-        //     const stompHeaders = {
-        //         "Authorization": token,
-        //     };
-
-        //     stompClient.send(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
-        //     setChatContent("");
-        // } else {
-        //     console.error('Not connected to WebSocket.')
-        // }
+            stompClient.send(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
+            setChatContent("");
+        } else {
+            console.error('Not connected to WebSocket.')
+        }
 
         // ChatApi.sendChatlog(category, chatlog).then(res=>console.log(res))
         // ChatApi.sendChatlog(category, chatlog).then(res=>onChatlogReceived(res.data.data).catch(err=>console.error(err)))
@@ -247,7 +311,7 @@ const ChatRoom = () => {
             {pins.length > 0 ? (
                 <div>
                     {pins.map((chatlog) => (
-                        <div
+                        <div 
                             key={chatlog.chatlogId}
                             className={`flex ${
                                 chatlog.userId === userId ? 'justify-end' : 'justify-start'
