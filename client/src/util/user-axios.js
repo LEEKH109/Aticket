@@ -26,8 +26,8 @@ const UserApi = {
   },
 
   // collection 리스트 받아오기
-  getCollections: (userId) => {
-    return instance.get(`/user/${userId}/collection`);
+  getCollections: () => {
+    return instance.get(`/shorts/collection`);
   },
 };
 

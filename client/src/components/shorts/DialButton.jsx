@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
-const DialButton = ({ handleClickCategory, selectedCategory }) => {
+const DialButton = ({ onClickCategory, selectedCategory }) => {
   const [open, setOpen] = useState(false);
   const categories = [
     {
@@ -24,13 +24,9 @@ const DialButton = ({ handleClickCategory, selectedCategory }) => {
     },
   ];
 
-  const handleClickEvent = () => {
-    setOpen(!open);
-  };
-
   return (
     <>
-      <Button variant="contained" onClick={handleClickEvent}>
+      <Button variant="contained" onClick={() => setOpen(!open)}>
         {open ? <ArrowBackIosNewIcon /> : <ArrowForwardIosIcon />}
       </Button>
       {open && (
@@ -40,7 +36,7 @@ const DialButton = ({ handleClickCategory, selectedCategory }) => {
               <Button
                 variant="contained"
                 color={selectedCategory == category.categoryId ? "primary" : "error"}
-                onClick={() => handleClickCategory(category.categoryId)}
+                onClick={() => onClickCategory(category.categoryId)}
               >
                 {category.name}
               </Button>

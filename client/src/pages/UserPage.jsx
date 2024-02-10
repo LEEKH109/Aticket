@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
-import UserInfo from "../components/profile/UserInfo";
-import { Link, Outlet, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import UserInfo from "../components/profile/UserInfo";
+import CollectionList from "../components/profile/CollectionList";
+import BookHistoryList from "../components/profile/BookHistoryList";
 import { LoginContext } from "../components/LoginContext";
 import { UserApi } from "../util/user-axios";
 
@@ -14,9 +15,6 @@ const MyPage = () => {
   const [email, setEmail] = useState();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [nowCollectionTab, setNowCollectionTab] = useState(true);
-
-  const location = useLocation();
-  const path = location.pathname.slice(6);
   const navigate = useNavigate();
   const { setLogin, userId, setUserId, setProfileImg } = useContext(LoginContext);
 
@@ -25,8 +23,8 @@ const MyPage = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("profileImg");
-    setUserId('');
-    setProfileImg('');
+    setUserId("");
+    setProfileImg("");
     setLogin(false);
     setUserId(undefined);
     navigate("/");
@@ -85,12 +83,6 @@ const MyPage = () => {
     setUpdateSuccess(false);
   };
 
-  useEffect(() => {
-    if (path === "bookhistory") {
-      setNowCollectionTab(false);
-    }
-  }, []);
-
   // 로그인 유저 정보 받아오기
   useEffect(() => {
     UserApi.getUserInfo(userId)
@@ -120,23 +112,21 @@ const MyPage = () => {
         onSubmitProfileImage={handleSubmitProfileImage}
       />
       <div className="flex justify-around py-2 border-b-[1px] border-gray-300 text-gray-400">
-        {}
-        <Link
-          to="/user/collection"
+        <button
           className={`${nowCollectionTab ? tabBarClass : ""} `}
           onClick={() => setNowCollectionTab(true)}
         >
           컬렉션
-        </Link>
-        <Link
-          to="/user/bookhistory"
+        </button>
+        <button
           className={`${!nowCollectionTab ? tabBarClass : ""} `}
           onClick={() => setNowCollectionTab(false)}
         >
           예매 내역
-        </Link>
+        </button>
       </div>
-      <Outlet />
+      {nowCollectionTab && <CollectionList />}
+      {!nowCollectionTab && <BookHistoryList />}
     </main>
   );
 };

@@ -24,7 +24,7 @@ function Footer() {
         src={profileImg} 
         sx={{ width: 36, height: 36}} />}
         label="마이페이지"
-        onClick={() => navigate("/user/collection")} />);
+        onClick={() => navigate("/user")} />);
     } else {
       setLoginState(<BottomNavigationAction
         value="user"
