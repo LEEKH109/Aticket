@@ -31,14 +31,14 @@ const ChatList = () => {
 // };
 
   return (
-  <div className="h-[calc(100%_-_64px)] text-white">
+  <div>
     <div id="chat-list">
       <ul>
           {categories.map((art) => (
             <li key={art.category} className="p-4 bg-white shadow-md mb-2 rounded-lg">
               <h2>{art.category} 채팅방</h2>
-              <ChatPreview category={art.category}/>
               <Link to={`/chat/room/${art.category}?page=${0}`}>채팅방 바로가기</Link>
+              <ChatPreview category={art.category}/>   
             </li>
           ))}
         </ul>

@@ -170,14 +170,26 @@ const ChatRoom = () => {
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
 
-        const chatlog = {
-            user: userId,
-            category: category,
-            content: chatContent,
-            regDate: new Date(),
-        };
-        console.log(chatlog); //이건 잘 들어감
-        ChatApi.sendChatlog(category, chatlog).then(res=>console.log(res))
+        if (stompClient && stompClient.connected) {
+            const chatlog = {
+                user: userId,
+                category: category,
+                content: chatContent,
+                regDate: new Date(),
+            };
+            console.log(chatlog); //이건 잘 들어감
+
+            const stompHeaders = {
+                "Authorization": token,
+            };
+
+            stompClient.send(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
+            setChatContent("");
+        } else {
+            console.error('Not connected to WebSocket.')
+        }
+
+        // ChatApi.sendChatlog(category, chatlog).then(res=>console.log(res))
         // ChatApi.sendChatlog(category, chatlog).then(res=>onChatlogReceived(res.data.data).catch(err=>console.error(err)))
         // try {
         //     const response = await ChatApi.sendChatlog(category, chatlog);

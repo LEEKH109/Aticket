@@ -16,14 +16,14 @@ const ChatPreview = ({ category}) => {
       }, []);
 
     return (
-        <div>
+        <div >
             {chatPreviews.length > 0 ? (
                 <ul>
                     {chatPreviews.map((preview) => (
                         <li key={preview.chatlogId}>
-                            {preview.content}&nbsp;&nbsp;
-                            {preview.nickname}
-                            &nbsp;&nbsp;<span>({new Date(preview.regDate).toLocaleString()})</span>
+                            <span>{preview.content}</span>&nbsp;&nbsp;
+                            <span>{preview.nickname}</span>
+                            {/* &nbsp;&nbsp;<span>({new Date(preview.regDate).toLocaleString()})</span> */}
                         </li>
                     ))}
                 </ul>
