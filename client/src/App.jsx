@@ -14,11 +14,11 @@ import UserPage from "./pages/UserPage";
 import LoginLoad from "./pages/LoginLoad";
 import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
-import CollectionList from "./components/profile/CollectionList";
-import BookHistoryList from "./components/profile/BookHistoryList";
+import CollectionPage from "./pages/CollectionPage";
 import BillingApprovePage from "./pages/book/BillingApprovePage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
+import BookHistoryList from "./components/profile/BookHistoryList";
 
 function App() {
   if (typeof window !== "undefined" && typeof window.global === "undefined") {
@@ -50,18 +50,16 @@ function App() {
           path: "/user",
           element: <UserPage />,
           errorElement: <ErrorPage />,
-          children: [
-            {
-              path: "collection",
-              element: <CollectionList />,
-              errorElement: <ErrorPage />,
-            },
-            {
-              path: "bookhistory",
-              element: <BookHistoryList />,
-              errorElement: <ErrorPage />,
-            },
-          ],
+        },
+        {
+          path: "/collection",
+          element: <CollectionPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "bookhistory",
+          element: <BookHistoryList />,
+          errorElement: <ErrorPage />,
         },
         {
           path: "/book",
