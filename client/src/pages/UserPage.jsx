@@ -15,7 +15,7 @@ const MyPage = () => {
   const [email, setEmail] = useState();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [nowCollectionTab, setNowCollectionTab] = useState(true);
-  const { userId } = useContext(LoginContext);
+  const { userId, setProfileImg } = useContext(LoginContext);
 
   // 유저가 이미지 바꿀 때
   const handleChangeProfileImage = (value) => {
@@ -52,6 +52,7 @@ const MyPage = () => {
       UserApi.deleteProfileImgae(userId)
         .then(({ data }) => {
           setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+          setProfileImg(data.data.profileUrl);
           setUpdateSuccess(true);
         })
         .catch((err) => {
@@ -68,6 +69,7 @@ const MyPage = () => {
     UserApi.updateProfileImage(userId, fd)
       .then(({ data }) => {
         setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+        setProfileImg(data.data.profileUrl);
         setUpdateSuccess(true);
       })
       .catch((err) => {
