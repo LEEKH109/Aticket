@@ -35,7 +35,7 @@ const useGlobalStyles = () => {
 
 const ChatRoom = () => {
   useGlobalStyles();
-  const { isLogin, userId } = useContext(LoginContext);
+  const { isLogin, userId, token } = useContext(LoginContext);
   const { category } = useParams();
   const [chatContent, setChatContent] = useState("");
   const location = useLocation();
@@ -48,12 +48,14 @@ const ChatRoom = () => {
 
   const chatAreaRef = useRef(null);
   const client = useRef(null);
-  const token = useContext(LoginContext);
 
   const onChatlogReceived = (message) => {
     const newChatlog = JSON.parse(message.body);
     setPins((prevPins) => [...prevPins, newChatlog]);
-    // Optionally, scroll to the new message if needed
+    if (chatAreaRef.current) {
+        const chatArea = chatAreaRef.current;
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
   };
 
   const fetchPins = async () => {
@@ -62,7 +64,7 @@ const ChatRoom = () => {
     try {
       const response = await ChatApi.chatScroll(category, page);
       const newPins = response.data.data.content.sort((a, b) => a.chatlogId - b.chatlogId);
-      setPins((prevPins) => [...newPins, ...prevPins]);
+      setPins((prevPins) => [...prevPins, ...newPins.reverse()]);
       setHasMoreLogs(newPins.length === 15);
     } catch (error) {
       console.error(error);
@@ -73,12 +75,12 @@ const ChatRoom = () => {
 
   useEffect(() => {
     fetchPins();
-    // This useEffect will trigger every time 'pins' changes
     if (chatAreaRef.current) {
       const chatArea = chatAreaRef.current;
       chatArea.scrollTop = chatArea.scrollHeight;
     }
-  }, [pins,page]);
+  }, [pins, page]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -127,10 +129,13 @@ const ChatRoom = () => {
         user: userId,
         category: category,
         content: chatContent,
-        regDate: new Date(),
+        regDate: new Date().toISOString(),
       };
+      console.log("전송할 채팅: ")
+      console.log(chatlog)
       client.current.send(`/chat/send/${category}`, { "Authorization": token }, JSON.stringify(chatlog));
       setChatContent("");
+      console.log("채팅 보내짐")
     }
   };
 
