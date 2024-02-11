@@ -78,7 +78,6 @@ const UserInfo = ({
 
   useEffect(() => {
     setPreviewImage(profileImage.new);
-    setProfileImg(profileImage.new);
   }, [profileImage.new]);
 
   useEffect(() => {

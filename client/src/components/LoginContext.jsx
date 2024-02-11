@@ -19,7 +19,10 @@ export function IsLoginProvider({ children }) {
   const [userId, setUserId] = useState(loginId);
   const [profileImg, setProfileImg] = useState(loginProfileImg);
   // useMemo로 캐싱하지 않으면 value가 바뀔 때마다 state를 사용하는 모든 컴포넌트가 매번 리렌더링됨
-  const value = useMemo(() => ({ isLogin, setLogin, userId, setUserId, profileImg, setProfileImg }), [isLogin, setLogin]);
+  const value = useMemo(
+    () => ({ isLogin, setLogin, userId, setUserId, profileImg, setProfileImg }),
+    [isLogin, profileImg]
+  );
   return <LoginContext.Provider value={value}>{children}</LoginContext.Provider>;
 }
 export const useLoginState = () => {
@@ -28,4 +31,4 @@ export const useLoginState = () => {
     throw new Error("Cannot find LoginProvider");
   }
   return context;
-}
+};
