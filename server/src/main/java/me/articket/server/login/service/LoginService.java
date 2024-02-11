@@ -39,8 +39,8 @@ public class LoginService {
     @Value("${spring.security.oauth2.provider.kakao.client-id}")
     private String CLIENT_ID;
 
-    private final String REDIRECT_URI = "http://i10a704.p.ssafy.io/login/oauth2/code/kakao";
-
+    private final String REDIRECT_URI = "http://localhost:4173/login/oauth2/code/kakao";
+    // i10a704.p.ssafy.io
     @Value("${spring.security.oauth2.provider.kakao.client-secret}")
     private String CLIENT_SECRET;
 

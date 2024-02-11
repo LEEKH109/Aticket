@@ -59,4 +59,12 @@ public class ShortsController {
             @AuthenticationPrincipal UserDetail userDetail) {
         return new SuccessResponse<>(shortsService.recommendShorts(userDetail == null ? null : userDetail.getId(), category));
     }
+
+    @PostMapping("/{id}/viewlog")
+    public SuccessResponse<ViewlogRes> addViewlog(
+            @PathVariable Long id,
+            @RequestBody AddViewlogReq req,
+            @AuthenticationPrincipal UserDetail userDetail) {
+        return new SuccessResponse<>(userDetail == null ? null : shortsService.addViewLog(id, userDetail.getId(), req));
+    }
 }
