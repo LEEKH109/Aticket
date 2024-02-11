@@ -30,7 +30,7 @@ const CollectionList = () => {
         ) : (
           <section className={`${HEIGHT} flex flex-col justify-center items-center gap-6`}>
             <div className="p-4 rounded-full border-2 border-gray-300">
-              <BookmarkAddIcon color="disabled" />
+              <BookmarkAddIcon color="disabled" fontSize="large" />
             </div>
             <p className="text-gray-400">저장한 미디어가 없습니다.</p>
           </section>

@@ -15,20 +15,7 @@ const MyPage = () => {
   const [email, setEmail] = useState();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [nowCollectionTab, setNowCollectionTab] = useState(true);
-  const navigate = useNavigate();
-  const { setLogin, userId, setUserId, setProfileImg } = useContext(LoginContext);
-
-  const logout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("profileImg");
-    setUserId("");
-    setProfileImg("");
-    setLogin(false);
-    setUserId(undefined);
-    navigate("/");
-  };
+  const { userId } = useContext(LoginContext);
 
   // 유저가 이미지 바꿀 때
   const handleChangeProfileImage = (value) => {
@@ -52,13 +39,30 @@ const MyPage = () => {
         setUpdateSuccess(true);
       })
       .catch((err) => {
+        setUpdateSuccess(false);
         console.err(err);
       });
+
     setUpdateSuccess(false);
   };
 
   // 프로필 이미지 수정하기 버튼 눌렀을 때
-  const handleSubmitProfileImage = () => {
+  const handleSubmitProfileImage = (isDeleting) => {
+    if (isDeleting) {
+      UserApi.deleteProfileImgae(userId)
+        .then(({ data }) => {
+          setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+          setUpdateSuccess(true);
+        })
+        .catch((err) => {
+          setUpdateSuccess(false);
+          console.error(err);
+        });
+
+      setUpdateSuccess(false);
+      return;
+    }
+
     const fd = new FormData();
     fd.append("file", profileImage.new);
     UserApi.updateProfileImage(userId, fd)
@@ -67,19 +71,10 @@ const MyPage = () => {
         setUpdateSuccess(true);
       })
       .catch((err) => {
+        setUpdateSuccess(false);
         console.error(err);
       });
-    setUpdateSuccess(false);
-  };
 
-  // 프로필 이미지 삭제했을 때
-  const handleDeleteProfileImage = () => {
-    UserApi.deleteProfileImgae(userId)
-      .then(({ data }) => {
-        setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
-        setUpdateSuccess(true);
-      })
-      .catch((err) => console.error(err));
     setUpdateSuccess(false);
   };
 
@@ -98,8 +93,7 @@ const MyPage = () => {
     "relative text-gray-900 after:w-full after:h-1 after:bg-black after:bottom-[-0.5rem] after:absolute after:left-0";
 
   return (
-    <main className="w-full h-[calc(100vh_-_64px)] pt-10">
-      <button onClick={logout}>로그아웃</button>
+    <main className="w-full h-[calc(100vh_-_64px)] pt-2">
       <UserInfo
         nickname={nickname}
         profileImage={profileImage}
@@ -107,7 +101,6 @@ const MyPage = () => {
         updateSuccess={updateSuccess}
         onChangeProfileImage={handleChangeProfileImage}
         onChangeNickname={handleChangeNickname}
-        onDeleteProfileImage={handleDeleteProfileImage}
         onSubmitNickname={handleSubmitNickname}
         onSubmitProfileImage={handleSubmitProfileImage}
       />
