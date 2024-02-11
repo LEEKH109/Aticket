@@ -2,36 +2,32 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
 import SockJS from "sockjs-client";
-import { Stomp } from '@stomp/stompjs'; // Note: Importing only Stomp as CompatClient is not directly used.
+import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
 
 const useGlobalStyles = () => {
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = `
-      ::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #E2E2E2;
-        border-radius: 2px;
-      }
-      * {
-        scrollbar-width: thin;
-        scrollbar-color: #E2E2E2 transparent;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-};
+    useEffect(() => {
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = `
+        ::-webkit-scrollbar {
+          display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+        }
+        * {
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+        }
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        *::-webkit-scrollbar {
+          display: none;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style);
+      };
+    }, []);
+  };
 
 const ChatRoom = () => {
   useGlobalStyles();
