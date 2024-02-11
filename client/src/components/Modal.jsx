@@ -36,9 +36,9 @@ const Modal = forwardRef(function Modal({ children }, ref) {
   }, []);
 
   return createPortal(
-    <dialog ref={dialog} className="w-80 px-6 pt-2 pb-6 rounded-lg">
-      <form method="dialog" className="text-end">
-        <button>
+    <dialog ref={dialog} className="w-80 p-6 rounded-lg">
+      <form method="dialog" className="reltive text-end">
+        <button className="absolute top-2 right-2">
           <CloseIcon color="disabled" />
         </button>
       </form>
