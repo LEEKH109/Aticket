@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
 import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
 import { UserApi } from "../util/user-axios";
 const useGlobalStyles = () => {
@@ -35,37 +35,10 @@ const useGlobalStyles = () => {
   
 const ChatRoom = () => {
     useGlobalStyles();
-    const client = new Client({
-        brokerURL: '/ws',
-        debug: function (str) {
-          console.log(str);
-        },
-        reconnectDelay: 5000, //자동 재 연결
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-    });
-
-    if (typeof WebSocket !== 'function') {
-        client.webSocketFactory = function () {
-          return new SockJS('http://i10a704.p.ssafy.io:8081/ws');
-        };
-    }
-
-    client.onConnect = function (frame, category) {
-        client.subscribe(`/room/${category}`, onChatlogReceived);
-    };
-
-    client.onStompError = function (frame) {
-        console.log('Broker reported error: ' + frame.headers['message']);
-        console.log('Additional details: ' + frame.body);
-    };
-
-    client.activate();
-
-
     const { isLogin, userId } = useContext(LoginContext);
     let {category} = useParams();
     const [chatContent, setChatContent] = useState("");
+    // const [chatlogs, setChatlogs] = useState([]);
     const location = useLocation();
     const initialPage = location.state?.page??0;
 
@@ -74,6 +47,7 @@ const ChatRoom = () => {
     const [loading, setLoading] = useState(false); //로딩 성공 여부 state  
     const pageEnd = useRef(null);
     const [hasMoreLogs, setHasMoreLogs] = useState(true);//추가 로그
+    const [websocketConnect, setWebsocketConnect] = useState(false);
 
     const loadMore = () => {
         setPage(prev => prev + 1);
@@ -81,6 +55,7 @@ const ChatRoom = () => {
 
     const token = useContext(LoginContext);
     const chatAreaRef  = useRef(null);
+    let stompClient = null;
 
     const onChatlogReceived = (payload) => {
         console.log(payload); //형식을 보고 밑부분 수정
@@ -120,6 +95,26 @@ const ChatRoom = () => {
 
     };
 
+
+    // const fetchPins = async () => {
+    //     if (!hasMoreLogs || loading) return; //loading 추가 
+    //     setLoading(true);
+    //     try {
+    //         console.log(page+"페이지 채팅 로그: "+(await ChatApi.chatScroll(category, page)).data.data.content);
+    //         const response = (await ChatApi.chatScroll(category, page)).data.data.content;
+    //         const sortedResponse = response.sort((a, b) => a.chatlogId - b.chatlogId);
+    //         // const newPins = response || [];
+            
+    //         setPins(pins => [...sortedResponse, ...pins]);
+    //         setHasMoreLogs(response.length === 15);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    //     // console.log("page:"+page);
+    //     // console.log("response"+response);
+    //     // setPins(prev => [...prev, ...response.pins]); //pin 
+    //     setLoading(false);
+    // } //pin 을 복제해서 축적하는 함수 = 원래 코드!!
     const fetchPins = async () => {
         if (!hasMoreLogs || loading) return;
         setLoading(true);
@@ -135,6 +130,7 @@ const ChatRoom = () => {
         }
     };
 
+
     useEffect(()=>{
         // setPage(location.search.slice(6))
         if (page === initialPage) {
@@ -142,6 +138,32 @@ const ChatRoom = () => {
         }
     }, [page, initialPage]);  //page 넘버 바뀔 때마다 pin 을 복제해서 축적
 
+    // useEffect(()=>{
+    //     // if (loading && hasMoreLogs) {
+    //     //     const observer = new IntersectionObserver(
+    //     //         entries => {
+    //     //             if (entries[0].isIntersecting) {
+    //     //                 loadMore();
+    //     //             }
+    //     //         },
+    //     //         { threshold: 1}
+    //     //     );
+    //     //     observer.observe(pageEnd.current);
+    //     //     return () => observer.disconnect(); 
+    //     // }
+    //     const observer = new IntersectionObserver(
+    //         entries => {
+    //             if (entries[0].isIntersecting) {
+    //                 loadMore();
+    //             }
+    //         },
+    //         { threshold: 0.1 }
+    //     );
+    //     if (chatAreaRef.current?.firstChild) {
+    //         observer.observe(chatAreaRef.current.firstChild); // Observe the first child for intersection
+    //     }
+    //     return () => observer.disconnect();
+    // },[loading,hasMoreLogs]); // 원래 코드!!!!
     useEffect(() => {
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting && hasMoreLogs) {
@@ -155,31 +177,133 @@ const ChatRoom = () => {
     
         return () => observer.disconnect();
     }, [loading, hasMoreLogs]);
+    
+
+    useEffect(()=>{
+        const connect = () => {
+            stompClient = Stomp.over(function(){
+                return new SockJS("http://i10a704.p.ssafy.io:8081/ws");// http://localhost:8080/ws http://i10a704.p.ssafy.io:8081/ws
+            })
+            stompClient.connect({"token" : token },()=> {
+                onConnected(category);
+            }, onError);
+        };
+
+        const onConnected = (category) => {
+            stompClient.subscribe(`/room/${category}`, onChatlogReceived);
+        }; 
+
+        const onError = (error) => {
+            console.error('STOMP error', error);
+            reconnect();
+        };
+
+        const reconnect = () => {
+            setTimeout(() => {
+                console.log('Attempting to reconnect...');
+                connect();
+            }, 5000);
+        };
+            
+        if (!stompClient || !websocketConnect) {
+            connect();
+            setWebsocketConnect(true);
+        };
+
+        return()=>{
+            if (stompClient && websocketConnect) {
+                // stompClient.disconnect();
+                stompClient.disconnect(() => {
+                    console.log('Disconnected on component unmount.');
+                    setWebsocketConnect(false);
+                });
+            }
+        }
+    }, [category,token])
+
+    // useEffect(() => {
+    //     setPins(ChatApi.chatScroll(categoryId,page));   
+    // }, [chatsRef]);
 
     const sendChat = async (event) => {
         event.preventDefault(); // Form의 기본 제출 동작 방지
-        console.log("stompClient의 지금 상태: "+client);
-        const stompHeaders = {
-            "Authorization": token,
-        };
-        const chatlog = {
-            user: userId,
-            category: category,
-            content: JSON.stringify(chatContent),
-            regDate: new Date(),
-        };
-        client.publish({
-            destination: `/chat/send/${category}`,
-            body: chatlog,
-            headers: stompHeaders,
-        });
+
+        // const chatlog = {
+        //     user: userId,
+        //     category: category,
+        //     content: chatContent,
+        //     regDate: new Date(),
+        // };
+        // console.log(stompClient);
+        // console.log(stompClient.connect());
+        // const stompHeaders = {
+        //     "Authorization": token,
+        // };
+
+        // stompClient.send(`/chat/send/${category}`,stompHeaders, JSON.stringify(chatlog));
+        // setChatContent("");
+        console.log("stompClient의 지금 상태: "+stompClient);
+        console.log("stompClient의 연결 상태: "+websocketConnect);
+        if (stompClient && websocketConnect) {
+            const chatlog = {
+                user: userId,
+                category: category,
+                content: chatContent,
+                regDate: new Date(),
+            };
+            
+            const stompHeaders = {
+                "Authorization": token,
+            };
+
+            stompClient.publish(`/chat/send/${category}`,stompHeaders,stringify(chatlog));
+            setChatContent("");
+        } else {
+            console.error('Not connected to WebSocket.')
+        }
+
+        // ChatApi.sendChatlog(category, chatlog).then(res=>console.log(res))
+        // ChatApi.sendChatlog(category, chatlog).then(res=>onChatlogReceived(res.data.data).catch(err=>console.error(err)))
+        // try {
+        //     const response = await ChatApi.sendChatlog(category, chatlog);
+        //     onChatlogReceived(response);
+        // } catch (error) {
+        //     console.error("채팅 전송 실패:", error);
+        // }
         setChatContent("");
     };
 
     return (
         <div>
             <h1 className="font-bold">{category} 단체 채팅방</h1>
-            <div ref={chatAreaRef} className="flex flex-col-reverse overflow-auto" style={{ height: 'calc(100vh - 150px)' }}>
+            {/* <div ref={chatAreaRef} className="flex flex-col-reverse overflow-auto" style={{ height: 'calc(100vh - 150px)' }}>           
+                <div ref={pageEnd}/>
+            {pins.length > 0 ? (
+            // <ul>
+            //     {pins.map((chatlog) => ( 
+            //         <li key={chatlog.chatlogId}>
+            //             <span>{chatlog.nickname}: </span>
+            //             <span>{chatlog.content}</span>
+            //             <span> ({new Date(chatlog.regDate).toLocaleString()})</span>
+            //         </li>
+            //     ))}
+            // </ul>
+                <div>
+                    {pins.map((chatlog) => (
+                        <div className="flex items-start gap-2.5">
+                            <div className="flex flex-col gap-1 w-full max-w-[320px]">
+                                <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{chatlog.nickname}</span>
+                                </div>
+                                <div className="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
+                                    <p className="text-sm font-normal text-gray-900 dark:text-white">{chatlog.content}</p>
+                                </div>
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{new Date(chatlog.regDate).toLocaleString()}</span>
+                            </div>                   
+                        </div>
+                    ))}
+                </div> */}
+                        <div ref={chatAreaRef} className="flex flex-col-reverse overflow-auto" style={{ height: 'calc(100vh - 150px)' }}>
             {pins.length > 0 ? (
                 <div>
                     {pins.map((chatlog) => (
