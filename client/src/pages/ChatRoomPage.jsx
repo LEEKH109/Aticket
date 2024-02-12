@@ -128,19 +128,27 @@ const ChatRoom = () => {
   const sendChat = async (event) => {
     event.preventDefault();
     if (client.current && chatContent.trim()) {
-      const chatlog = {
-        user: UserApi.getUserInfo(userId),
-        category: category,
-        content: chatContent,
-        regDate: new Date().toISOString(),
-      };
-      console.log("전송할 채팅: ")
-      console.log(chatlog)
+        try {
+            const response = await UserApi.getUserInfo(userId);
+            const user = response.data;
+            console.log(user);
+            const chatlog = {
+                user: user,
+                category: category,
+                content: chatContent,
+                regDate: new Date().toISOString(),
+            };
+            console.log("전송할 채팅: ");
+            console.log(chatlog);
+            client.current.send(`/chat/send/${category}`, {} , JSON.stringify(chatlog));
+            setChatContent("");
+            console.log("채팅 보내짐");
+        } catch (error) {
+            console.error("유저정보 가져오기 실패", error);
+        }
+      
     //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
     //   client.current.send(`/chat/send/${category}`, headers , JSON.stringify(chatlog));
-    client.current.send(`/chat/send/${category}`, {} , JSON.stringify(chatlog));
-      setChatContent("");
-      console.log("채팅 보내짐")
     }
   };
 
