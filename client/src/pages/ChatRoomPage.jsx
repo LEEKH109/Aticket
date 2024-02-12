@@ -130,7 +130,7 @@ const ChatRoom = () => {
     if (client.current && chatContent.trim()) {
         try {
             const response = await UserApi.getUserInfo(userId);
-            const user = response.data;
+            const user = response.data.data;
             console.log(user);
             const chatlog = {
                 user: user,
