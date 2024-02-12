@@ -21,6 +21,9 @@ const timetableApi = {
   getTicketTypes: (timetableId) => {
     return axiosInstance.get(`/time/${timetableId}/tickets`);
   },
+  getSeats: (timetableId) => {
+    return axiosInstance.get(`/time/${timetableId}/seats`);
+  },
 };
 
 export { timetableApi };
