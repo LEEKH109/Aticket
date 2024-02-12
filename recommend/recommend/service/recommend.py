@@ -1,14 +1,12 @@
 import random
 from typing import Optional, Tuple
 
+from pyspark.ml.recommendation import ALSModel
+
 from recommend.common.config import config
 from recommend.data.art import Art
 from recommend.db.connect import get_spark_session, get_mysql_connection
-from pyspark.ml.recommendation import ALSModel
-
 from recommend.db.repository import get_art_count, get_all_arts
-
-MODEL_PATH = config['model']['path']
 
 spark = get_spark_session('articket_app')
 
@@ -26,6 +24,7 @@ def update_context():
     global als_model
     global count
     global arts
+    MODEL_PATH = config['model']['path']
     (als_model, count, arts) = _load_recommendations(MODEL_PATH)
 
 
