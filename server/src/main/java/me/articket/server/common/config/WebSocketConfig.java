@@ -1,7 +1,6 @@
 package me.articket.server.common.config;
 
 import lombok.RequiredArgsConstructor;
-import me.articket.server.common.jwt.StompHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
