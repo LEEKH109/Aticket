@@ -104,7 +104,7 @@ const ChatRoom = () => {
       const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
     //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
       stompClient.connect({}, () => {
-        stompClient.subscribe(`/chat/room/${category}`, onChatlogReceived);
+        stompClient.subscribe(`/room/${category}`, onChatlogReceived);
         console.log("구독");
       }, error => {
         console.error("Connection error: ", error);
@@ -140,7 +140,7 @@ const ChatRoom = () => {
             };
             console.log("전송할 채팅: ");
             console.log(chatlog);
-            client.current.send(`/chat/send/${category}`, {} , JSON.stringify(chatlog));
+            client.current.send(`/send/${category}`, {} , JSON.stringify(chatlog));
             setChatContent("");
             console.log("채팅 보내짐");
         } catch (error) {
