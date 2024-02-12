@@ -24,8 +24,8 @@ public class ChatlogController {
 
     private final ChatService chatService;
 
-    @MessageMapping("/send/{category}") //프론트에서 채팅 보낼때는 setApplicationDestinationPrefixes에 따라 /chat/send/{category}로 보냄
-    @SendTo("/room/{category}") //enableSimpleBroker 때문에 /room/{category}를 구독한 사람은 해당 채팅을 받는다
+    @MessageMapping("/chat/send/{category}") //프론트에서 채팅 보낼때는 setApplicationDestinationPrefixes에 따라 /chat/send/{category}로 보냄
+    @SendTo("/chat/room/{category}") //enableSimpleBroker 때문에 /room/{category}를 구독한 사람은 해당 채팅을 받는다
     public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable ArtCategory category, @Payload Chatlog chatlog) {
         System.out.println("category:"+category+", chatlog: "+chatlog.getUser().getNickname()+"가 "+chatlog.getContent()+"라고 보냄");
         chatService.saveChatlog(chatlog);
@@ -40,8 +40,6 @@ public class ChatlogController {
 
     @GetMapping("/room/{category}")
     public SuccessResponse<Page<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable ArtCategory category, @RequestParam int page) {
-        System.out.println(category+"채팅방 입장");
-//        System.out.println(page);
         Page<ChatlogRes> chatlogs = chatService.getChatlogs(category, page, 15);
         System.out.println(page+" "+chatlogs.getContent());
         return new SuccessResponse<>(chatlogs);
