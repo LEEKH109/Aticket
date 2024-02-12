@@ -2,9 +2,7 @@ import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
 import SelectDateTimePage from "./pages/book/SelectDateTimePage";
-import TicketBookingPage from "./pages/book/TicketBookingPage";
 import SeatBookingPage from "./pages/book/SeatBookingPage";
-import BookLayout from "./pages/book/BookLayout";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
@@ -70,11 +68,6 @@ function App() {
             {
               path: "",
               element: <SelectDateTimePage />,
-              errorElement: <ErrorPage />,
-            },
-            {
-              path: "ticket",
-              element: <TicketBookingPage />,
               errorElement: <ErrorPage />,
             },
             {

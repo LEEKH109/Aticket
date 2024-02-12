@@ -1,30 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { timetableApi } from "../../util/timetable-axios";
 import dayjs from "dayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import theme from "../../util/theme";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TextField } from "@mui/material";
 import TimeTable from "../../components/TimeTable";
+import { LoginContext } from "../../components/LoginContext";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-const SelectDateTimePage = () => {
+const SelectDateTimePage = ({}) => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [availableDates, setAvailableDates] = useState([]);
   const [timetable, setTimetable] = useState([]);
+  const { userId } = useContext(LoginContext);
   const navigate = useNavigate();
-  
-  const location = useLocation();
-  const { shortInfo } = location.state;
+
+  const themePicker = createTheme({
+    palette: {
+      primary: {
+        light: theme.dark.point,
+        main: theme.dark.point,
+        dark: theme.dark.point,
+      },
+    },
+  });
+
+  const shortInfo = {
+    artId: 2,
+    category: "PLAY",
+    title: "［서울 대학로］연극 라면",
+    startDate: "2023-03-20T00:00:00Z",
+    endDate: "2024-02-25T00:00:00Z",
+    location: "해피씨어터",
+    actors: ["-"],
+    rate: 12,
+    posterUrl:
+      "https://cdnticket.melon.co.kr/resource/image/upload/product/2023/03/202303171047117fdc060a-8274-4ab8-ab99-990489e4f652.jpg/melon/resize/180x254/strip/true/quality/90/optimize",
+    infoUrls: [
+      "https://cdnticket.melon.co.kr/resource/image/upload/product/2023/12/202312110910592027af30-1a56-47ab-b5b2-8d4e2f808c89.jpg/melon/quality/90/optimize",
+      " https://cdnticket.melon.co.kr/resource/image/upload/product/2024/01/202401021424523977b6bf-0971-4de2-94ea-5289318e0d7d.jpg/melon/quality/90/optimize",
+      " https://cdnticket.melon.co.kr/resource/image/upload/product/2023/10/202310100905085286b3fb-45d5-4981-b859-4f65218dbf36.jpg/melon/quality/90/optimize",
+    ],
+  };
 
   useEffect(() => {
-    // if (!artId || artId < 1) {
-    //   navigate("/");
-    //   return;
-    // }
-    console.log(shortInfo);
     timetableApi
-      .getAvailableDates(1)
+      .getAvailableDates(shortInfo.artId)
       .then((response) => {
         console.log("dates", response);
         const dates = response.data
@@ -51,7 +75,7 @@ const SelectDateTimePage = () => {
   useEffect(() => {
     const formattedDate = selectedDate.format("YYYY-MM-DD");
     timetableApi
-      .getTimetables(1, formattedDate)
+      .getTimetables(shortInfo.artId, formattedDate)
       .then((response) => setTimetable(response.data))
       .catch((error) => console.error("Error fetching timetable:", error));
   }, [selectedDate]);
@@ -60,18 +84,41 @@ const SelectDateTimePage = () => {
     availableDates.some((availableDate) => availableDate.isSame(date, "day"));
 
   return (
-    <div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <StaticDatePicker
-          displayStaticWrapperAs="desktop"
-          openTo="day"
-          value={selectedDate}
-          onChange={setSelectedDate}
-          shouldDisableDate={(date) => !isDateAvailable(date)}
-        />
-      </LocalizationProvider>
-      <TimeTable timeList={timetable} />
-    </div>
+    <ThemeProvider theme={themePicker}>
+      <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
+        <div className="w-full">
+          <div className="flex gap-0 px-5">
+            <ArrowBackIosIcon />
+            <div>Aːticket</div>
+          </div>
+          <div className="flex gap-0 px-5 text-xs font-bold text-center text-white mb-4">
+            <div className="grow justify-center px-12 py-2 bg-black rounded-md border border-white border-solid">
+              1. 관람일/인원 선택
+            </div>
+            <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
+              2.
+            </div>
+            <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
+              3.
+            </div>
+          </div>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <StaticDatePicker
+              displayStaticWrapperAs="desktop"
+              openTo="day"
+              value={selectedDate}
+              onChange={setSelectedDate}
+              shouldDisableDate={(date) => !isDateAvailable(date)}
+            />
+          </LocalizationProvider>
+          <TimeTable
+            timeList={timetable}
+            userId={userId}
+            shortInfo={shortInfo}
+          />
+        </div>
+      </div>
+    </ThemeProvider>
   );
 };
 
