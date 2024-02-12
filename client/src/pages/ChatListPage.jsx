@@ -21,28 +21,21 @@ const ChatList = () => {
     }
   ];
 
-//   const navigateToChatRoom = (categoryid) => {
-//     console.log(categoryid);
-//     navigate(`/chat/room/${categoryid}`, {
-//       state: {
-//         categoryid,
-//       }
-//     });
-// };
-
   return (
   <div>
-    <div id="chat-list">
-      <ul>
-          {categories.map((art) => (
-            <li key={art.category} className="p-4 bg-white shadow-md mb-2 rounded-lg">
-              <h2>{art.category} 채팅방</h2>
-              <Link to={`/chat/room/${art.category}?page=${0}`}>채팅방 바로가기</Link>
-              <ChatPreview category={art.category}/>   
-            </li>
-          ))}
-        </ul>
-    </div>  
+<div id="chat-list">
+  <ul>
+    {categories.map((art) => (
+      <li key={art.category} className="p-4 bg-white shadow-md mb-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">{art.category} 채팅방</h2>
+          <Link to={`/chat/room/${art.category}?page=${0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">바로가기</Link>
+        </div>
+        <ChatPreview category={art.category}/>   
+      </li>
+    ))}
+  </ul>
+</div>
   </div>
   );
 };

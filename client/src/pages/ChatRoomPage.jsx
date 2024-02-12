@@ -153,40 +153,95 @@ const ChatRoom = () => {
   };
 
   return (
-    <div>
-      <h1 className="font-bold">{category} 단체 채팅방</h1>
-      <div ref={chatAreaRef} className="flex flex-col-reverse overflow-auto" style={{ height: 'calc(100vh - 150px)' }}>
-        {pins.length > 0 ? (
-          pins.map((chatlog) => (
-            <div key={chatlog.chatlogId} className={`flex ${chatlog.userId === userId ? 'justify-end' : 'justify-start'} items-start gap-2.5`}>
-              <div className="flex flex-col gap-1 w-full max-w-[320px]">
-                {chatlog.userId !== userId && (
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{chatlog.nickname}</span>
-                  </div>
-                )}
-                <div className={`flex flex-col leading-1.5 p-4 ${chatlog.userId === userId ? 'border-blue-300 bg-blue-100 rounded-l-xl rounded-br-xl dark:bg-blue-600' : 'border-gray-200 bg-gray-100 rounded-r-xl rounded-bl-xl dark:bg-gray-700'}`}>
-                  <p className="text-sm font-normal text-gray-900 dark:text-white">{chatlog.content}</p>
-                </div>
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{new Date(chatlog.regDate).toLocaleString()}</span>
+<div>
+<div>
+<h1 className="text-xl font-bold text-center py-3 rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-400 text-white">
+  {category} 단체 채팅방
+</h1>
+  <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: 'calc(100vh - 170px)' }}>
+    {pins.length > 0 ? (
+      pins.map((chatlog) => (
+        <div key={chatlog.chatlogId} className={`flex ${chatlog.userId === userId ? 'justify-end' : 'justify-start'} mb-4`}>
+          <div className="max-w-md">
+            {chatlog.userId !== userId && (
+              <div className="mb-1">
+                <span className="text-sm font-semibold text-gray-800">{chatlog.nickname}</span>
               </div>
+            )}
+            <div className={`p-4 rounded-lg ${chatlog.userId === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+              <p>{chatlog.content}</p>
             </div>
-          ))
-        ) : (
-          <p>채팅이 존재하지 않습니다.</p>
-        )}
-      </div>
-      <div>
-        {isLogin ? (
-          <div>
-            <textarea name="chat-insert" id="chatContent" className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" placeholder="채팅을 입력해주세요" value={chatContent} onChange={(e) => setChatContent(e.target.value)} maxLength="100" required></textarea>
-            <button type="submit" onClick={sendChat}>submit</button>
+            <div className="text-right">
+              <span className="text-xs text-gray-500">{new Date(chatlog.regDate).toLocaleString()}</span>
+            </div>
           </div>
-        ) : (
-          <div>로그인이 필요한 서비스입니다.</div>
-        )}
-      </div>
+        </div>
+      ))
+    ) : (
+      <p className="text-center text-gray-500">채팅이 존재하지 않습니다.</p>
+    )}
+  </div>
+  {isLogin ? (
+    <div className="flex items-center px-4">
+<textarea
+  className="flex-1 py-2 px-4 bg-white border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out resize-none"
+  placeholder="채팅을 입력해주세요"
+  value={chatContent}
+  onChange={(e) => setChatContent(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // 엔터 키 기본 동작 방지
+      sendChat(); // 채팅 전송 함수 호출
+    }
+  }}
+  maxLength="100"
+  required
+  rows="1"
+></textarea>
+<button
+  type="submit"
+  onClick={sendChat}
+  className="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+  </svg>
+</button>
+
     </div>
+  ) : (
+    <p className="text-center text-gray-500">로그인이 필요한 서비스입니다.</p>
+  )}
+</div>
+<div className="flex items-center px-4">
+<textarea
+  className="flex-1 py-2 px-4 bg-white border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out resize-none"
+  placeholder="채팅을 입력해주세요"
+  value={chatContent}
+  onChange={(e) => setChatContent(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // 엔터 키 기본 동작 방지
+      sendChat(); // 채팅 전송 함수 호출
+    }
+  }}
+  maxLength="100"
+  required
+  rows="1"
+></textarea>
+<button
+  type="submit"
+  onClick={sendChat}
+  className="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+  </svg>
+</button>
+
+    </div>
+</div>
+
   );
 };
 
