@@ -130,8 +130,9 @@ const ChatRoom = () => {
       };
       console.log("전송할 채팅: ")
       console.log(chatlog)
-      let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
-      client.current.send(`/chat/send/${category}`, headers , JSON.stringify(chatlog));
+    //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
+    //   client.current.send(`/chat/send/${category}`, headers , JSON.stringify(chatlog));
+    client.current.send(`/chat/send/${category}`, {} , JSON.stringify(chatlog));
       setChatContent("");
       console.log("채팅 보내짐")
     }
