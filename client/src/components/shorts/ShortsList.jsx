@@ -5,11 +5,17 @@ import Shorts from "./Shorts";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
 
-const ShortsList = ({ shortsList, itemWidth, itemHeight }) => {
+const ShortsList = ({ viewDetailLog, closeDetail, shortsList, itemWidth, itemHeight }) => {
   return (
     <>
       {shortsList.map((shorts) => (
-        <Shorts key={shorts.shortsId} shorts={shorts} itemHeight={itemHeight} />
+        <Shorts
+          key={shorts.shortsId}
+          shorts={shorts}
+          itemHeight={itemHeight}
+          viewDetailLog={viewDetailLog}
+          closeDetail={closeDetail}
+        />
       ))}
     </>
   );

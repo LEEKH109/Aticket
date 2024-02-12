@@ -47,7 +47,11 @@ const Shorts = () => {
       <div className="absolute z-50 top-4 left-4 flex gap-4">
         <DialButton onClickCategory={handleClickCategory} selectedCategory={category} />
       </div>
-      <Carousel shortList={shortList} height={innerHeight} />
+      {shortList?.length > 0 ? (
+        <Carousel shortList={shortList} height={innerHeight} />
+      ) : (
+        <p>Loading...</p>
+      )}
     </>
   );
 };
