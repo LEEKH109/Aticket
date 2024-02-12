@@ -29,17 +29,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     return value;
   };
 
-  // const viewlog = (idx, viewDetail) => {
-  //   let viewTime = (new Date() - startTime) / 1000;
-  //   console.log(idx, "번 쇼츠 ", viewTime, "초 봤음", shortList[idx]);
-  //   ShortsAPI.viewLog(shortList[idx].shortsId,
-  //     {
-  //       viewDetail : viewDetail,
-  //       viewTime: viewTime,
-  //     });
-  //   setStartTime(new Date());
-  // }
-
   const handleMouseDown = (clickEvent) => {
     clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
@@ -185,8 +174,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
             handleViewLog(currentIndex, -1, 1);
           }}
           closeDetail={() => {
-            const newStartTime = new Date();
-            setStartTime(newStartTime);
+            setStartTime(new Date());
           }}
           shortsList={shortList}
           itemWidth={ITEM_WIDTH}

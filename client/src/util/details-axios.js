@@ -9,14 +9,12 @@ const apiClient = axios.create({
 const DetailApi = {
   getDetail: async (id) => {
     try {
-      // const response = await apiClient.get("/"+id);
-      const response = null;
+      const response = await apiClient.get("/"+id);
       return response.data;
     } catch (error) {
       console.error(error);
     }
   },
-
 };
 
 export { DetailApi };
