@@ -24,7 +24,6 @@ import me.articket.server.common.response.SuccessResponse;
 public class ChatlogController {
 
     private final ChatService chatService;
-    private final UserService userService;
 
     @MessageMapping("/{category}") //프론트에서 채팅 보낼때는 setApplicationDestinationPrefixes에 따라 /chat/send/{category}로 보냄
     @SendTo("/{category}") //enableSimpleBroker 때문에 /room/{category}를 구독한 사람은 해당 채팅을 받는다
