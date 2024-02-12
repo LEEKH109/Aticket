@@ -8,11 +8,14 @@ import me.articket.server.common.exception.CustomException;
 import me.articket.server.common.exception.ErrorCode;
 import me.articket.server.shorts.data.*;
 import me.articket.server.shorts.domain.Shorts;
+import me.articket.server.shorts.domain.Viewlog;
 import me.articket.server.shorts.repository.ShortsRepository;
+import me.articket.server.shorts.repository.ViewlogRepository;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,8 @@ public class ShortsService {
     private final ArtRepository artRepository;
 
     private final UserRepository userRepository;
+
+    private final ViewlogRepository viewlogRepository;
 
     public ShortsInfoRes getShortsInfo(Long id) {
         Optional<Shorts> optionalShorts = shortsRepository.findById(id);
@@ -61,5 +66,21 @@ public class ShortsService {
 //        User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
         List<Shorts> shorts = category == null ? shortsRepository.findAll() : shortsRepository.findAllByArt_Category(category);
         return shorts.stream().map(RecommendedShortsInfoRes::of).toList();
+    }
+
+    @Transactional
+    public ViewlogRes addViewLog(Long shortsId, Long userId, AddViewlogReq req) {
+        Optional<Shorts> optionalShorts = shortsRepository.findById(shortsId);
+        Shorts shorts = optionalShorts.orElseThrow(() -> new CustomException(ErrorCode.SHORTS_NOT_FOUND_ERROR));
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
+        Viewlog viewlog = Viewlog.builder()
+                .shorts(shorts)
+                .user(user)
+                .viewDetail(req.getViewDetail())
+                .viewTime(req.getViewTime())
+                .build();
+        viewlog = viewlogRepository.save(viewlog);
+        return ViewlogRes.of(viewlog);
     }
 }
