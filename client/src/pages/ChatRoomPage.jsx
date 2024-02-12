@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
+import { UserApi } from "../util/user-axios";
 import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
@@ -103,7 +104,8 @@ const ChatRoom = () => {
       const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
     //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
       stompClient.connect({}, () => {
-        stompClient.subscribe(`/room/${category}`, onChatlogReceived);
+        stompClient.subscribe(`/chat/room/${category}`, onChatlogReceived);
+        console.log("구독");
       }, error => {
         console.error("Connection error: ", error);
       });
@@ -127,7 +129,7 @@ const ChatRoom = () => {
     event.preventDefault();
     if (client.current && chatContent.trim()) {
       const chatlog = {
-        userId: userId,
+        user: UserApi.getUserInfo(userId),
         category: category,
         content: chatContent,
         regDate: new Date().toISOString(),
