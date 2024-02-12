@@ -49,8 +49,8 @@ USER appuser
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5000
+EXPOSE 8083
 
 # Run the application.
-# CMD gunicorn 'recommend.app:app' --bind=0.0.0.0:5000
+# CMD gunicorn 'recommend.app:app' --bind=0.0.0.0:8083
 CMD python -m recommend.app
