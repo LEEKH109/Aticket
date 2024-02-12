@@ -97,8 +97,8 @@ const ChatRoom = () => {
   useEffect(() => {
     const connect = () => {
       const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
-      let headers = {"Authorization": localStorage.getItem("accessToken")};
-      stompClient.connect(headers, () => {
+    //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
+      stompClient.connect({}, () => {
         stompClient.subscribe(`/room/${category}`, onChatlogReceived);
       }, error => {
         console.error("Connection error: ", error);
@@ -130,7 +130,7 @@ const ChatRoom = () => {
       };
       console.log("전송할 채팅: ")
       console.log(chatlog)
-      let headers = {"Authorization": localStorage.getItem("accessToken")};
+      let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
       client.current.send(`/chat/send/${category}`, headers , JSON.stringify(chatlog));
       setChatContent("");
       console.log("채팅 보내짐")
