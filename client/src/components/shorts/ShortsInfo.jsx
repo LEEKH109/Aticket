@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ShortsAPI } from "../../util/shorts-axios";
 import { LoginContext } from "../LoginContext";
 import { Button } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import Swal from "sweetalert2";
 
 const ShortsInfo = ({ title, shortsId }) => {
@@ -50,9 +50,9 @@ const ShortsInfo = ({ title, shortsId }) => {
       <p className="ms-4 text-white text-xl">{title}</p>
       <Button onClick={handleClickCollectionButton}>
         {collected ? (
-          <StarIcon fontSize="large" className=" text-white" />
+          <StarRoundedIcon fontSize="large" className=" text-white" />
         ) : (
-          <StarBorderIcon fontSize="large" className=" text-white" />
+          <StarBorderRoundedIcon fontSize="large" className=" text-white" />
         )}
       </Button>
     </div>
