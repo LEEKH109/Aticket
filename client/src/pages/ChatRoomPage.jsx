@@ -46,7 +46,11 @@ const ChatRoom = () => {
   const client = useRef(null);
 
   const onChatlogReceived = (message) => {
+    console.log("새 채팅이 들어왔다");
+    console.log("message: ");
+    console.log(message);
     const newChatlog = JSON.parse(message.body);
+    console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
     if (chatAreaRef.current) {
         const chatArea = chatAreaRef.current;
