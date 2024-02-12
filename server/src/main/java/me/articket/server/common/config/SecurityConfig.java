@@ -43,6 +43,7 @@ public class SecurityConfig {
                         "/chat/preview/**",
                         "/chat/room/**",
                         "/ws/**",
+                        "/chat/send/**",
                         "/art/{:\\d+}",
                         "/time/**",
                         "/billing/**"
