@@ -25,6 +25,10 @@ const ShortsAPI = {
   postLike: (shortsId, data) => {
     return instance.post(`shorts/${shortsId}/like`, data);
   },
+
+  viewLog: (shortsId, data) => {
+    return shortsInstance.put(`shorts/${shortsId}/viewlog`, data);
+  },
 };
 
 export { ShortsAPI };

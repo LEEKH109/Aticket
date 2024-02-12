@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ShortsList from "./ShortsList";
+import { ShortsAPI } from "../../util/shorts-axios";
 
 const ITEM_WIDTH = 412;
 
@@ -27,6 +28,17 @@ const Carousel = ({ shortList, height, index = 0 }) => {
 
     return value;
   };
+
+  // const viewlog = (idx, viewDetail) => {
+  //   let viewTime = (new Date() - startTime) / 1000;
+  //   console.log(idx, "번 쇼츠 ", viewTime, "초 봤음", shortList[idx]);
+  //   ShortsAPI.viewLog(shortList[idx].shortsId,
+  //     {
+  //       viewDetail : viewDetail,
+  //       viewTime: viewTime,
+  //     });
+  //   setStartTime(new Date());
+  // }
 
   const handleMouseDown = (clickEvent) => {
     clickEvent.preventDefault();
@@ -67,12 +79,10 @@ const Carousel = ({ shortList, height, index = 0 }) => {
 
     setTransY(0);
     setIsDragging(false);
-
+    
     if (currentIndex !== nextIndex) {
-      console.log(currentIndex, "번 쇼츠 ", (new Date() - startTime) / 1000, "초 봤음");
-      setStartTime(new Date());
+      handleViewLog(currentIndex, nextIndex, 0);
     }
-
     window.removeEventListener("mousemove", handleMouseMove);
   };
 
@@ -102,18 +112,36 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const handleTouchEnd = (moveEvent) => {
     const move = moveEvent.changedTouches[0];
     const deltaY = positionYRef.current - move.pageY;
+    let nextIndex = currentIndex;
 
     if (deltaY < -150) {
-      setCurrentIndex(inRange(currentIndex - 1, 0, maxLen.current - 1));
+      nextIndex = inRange(currentIndex - 1, 0, maxLen.current - 1);
+      setCurrentIndex(nextIndex);
     }
     if (deltaY > 150) {
-      setCurrentIndex(inRange(currentIndex + 1, 0, maxLen.current - 1));
+      nextIndex = inRange(currentIndex + 1, 0, maxLen.current - 1);
+      setCurrentIndex(inRange(nextIndex));
     }
 
     setTransY(0);
     setIsDragging(false);
 
+    handleViewLog(currentIndex, nextIndex, 0);
+
     window.removeEventListener("touchmove", handleTouchMove);
+  };
+
+  const handleViewLog = (curIdx, nextIdx, viewDetail) => {
+    if (curIdx !== nextIdx) {
+      let viewTime = (new Date() - startTime) / 1000;
+      console.log(curIdx, "번 쇼츠 ", viewTime, "초 봤음");
+      ShortsAPI.viewLog(shortList[curIdx].shortsId,
+        {
+          viewDetail : viewDetail,
+          viewTime: viewTime,
+        });
+      setStartTime(new Date());
+    }
   };
 
   useEffect(() => {
@@ -152,10 +180,20 @@ const Carousel = ({ shortList, height, index = 0 }) => {
         className="flex flex-col"
         style={{ transition: `transform ${transY ? 0 : 300}ms ease-in-out 0s` }}
       >
-        <ShortsList shortsList={shortList} itemWidth={ITEM_WIDTH} itemHeight={height} />
+        <ShortsList
+          viewDetailLog={() => { 
+            handleViewLog(currentIndex, -1, 1);
+          }}
+          closeDetail={() => {
+            const newStartTime = new Date();
+            setStartTime(newStartTime);
+          }}
+          shortsList={shortList}
+          itemWidth={ITEM_WIDTH}
+          itemHeight={height}
+        />
       </div>
     </div>
   );
 };
-
 export default Carousel;

@@ -9,22 +9,13 @@ const apiClient = axios.create({
 const DetailApi = {
   getDetail: async (id) => {
     try {
-      const response = await apiClient.get("/"+id);
+      // const response = await apiClient.get("/"+id);
+      const response = null;
       return response.data;
     } catch (error) {
       console.error(error);
     }
   },
-
-// === 상세정보 조회 시 조회수 증가 ===
-//   updateHits: async (id) => {
-//     try {
-//       const response = await apiClient.get("/춭머ㅏ우너ㅏㅁㄴㅇㅁ", id);
-//       return response.data;
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   },
 
 };
 
