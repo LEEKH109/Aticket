@@ -163,24 +163,32 @@ const DetailPage = ({shortsId, backIconClick}) => {
 
 
       <div className="h-13 w-full relative bottom-[5.2vh]">
-        {
-          isLogin.isLogin ?
-          <Button
-          sx={{width:"100%", height:"5.25vh"}}
-          variant="contained"
-          onClick={() => {
-            navigate("/book", {
-              state: {
-                shortInfo
-              },
-            });
-          }}
-          >예매하기</Button>
-          :
+        {isLogin.isLogin ? (
+          dateFormmatterWithTime(new Date(shortInfo.endDate)) < new Date() ||
+          dateFormmatterWithTime(new Date(shortInfo.startDate)) > new Date() ? (
+            <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
+              예매하기
+            </div>
+          ) : (
+            <Button
+              sx={{ width: "100%", height: "5.25vh" }}
+              variant="contained"
+              onClick={() => {
+                navigate("/book", {
+                  state: {
+                    shortInfo,
+                  },
+                });
+              }}
+            >
+              예매하기
+            </Button>
+          )
+        ) : (
           <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
             로그인이 필요한 서비스입니다.
           </div>
-        }
+        )}
       </div>
     </main>
   );
