@@ -75,13 +75,17 @@ const Shorts = ({ shorts, itemHeight }) => {
       >
         <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog} />
       </Dialog>
-      <div className="relative w-full flex-shrink-0" style={{ height: `${itemHeight}px` }}>
+      <div
+        className="relative w-full  flex-shrink-0 bg-black "
+        style={{ height: `${itemHeight}px` }}
+      >
         {shorts.type == "VIDEO" ? (
           <video
             autoPlay
             loop
             muted
-            className="w-full h-full object-cover"
+            playsInline
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
             onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
@@ -91,7 +95,7 @@ const Shorts = ({ shorts, itemHeight }) => {
         ) : (
           <img
             src={shorts.mediaUrl}
-            className="w-full h-full object-cover"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
             onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
