@@ -31,7 +31,7 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
       viewDetailLog();
     }
   };
-6
+
   const handleMouseMove = () => {
     setIsDragging(true);
   };
