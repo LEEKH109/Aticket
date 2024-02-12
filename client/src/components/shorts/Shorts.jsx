@@ -11,7 +11,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const Shorts = ({ shorts, itemHeight }) => {
+const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   const [artId, setArtId] = useState();
   const [art, setArt] = useState();
   const [curIndex, setCurIndex] = useState(0);
@@ -21,12 +21,14 @@ const Shorts = ({ shorts, itemHeight }) => {
   const handleCloseDialog = () => {
     setIsDragging(false);
     setOpenDialog(false);
+    closeDetail();
   };
 
   const handleMouseUp = (artId) => {
     if (!isDragging) {
       setCurIndex(artId);
       setOpenDialog(true);
+      viewDetailLog();
     }
   };
 
@@ -64,7 +66,6 @@ const Shorts = ({ shorts, itemHeight }) => {
         onClose={handleCloseDialog}
         TransitionComponent={Transition}
         sx={{ marginBottom: "64px" }}
-        maxWidth="xs"
         hideBackdrop={true}
         PaperProps={{
           style: {
