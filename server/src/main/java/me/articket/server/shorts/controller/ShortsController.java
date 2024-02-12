@@ -60,7 +60,7 @@ public class ShortsController {
         return new SuccessResponse<>(shortsService.recommendShorts(userDetail == null ? null : userDetail.getId(), category));
     }
 
-    @PostMapping("/{id}/viewlog")
+    @PutMapping("/{id}/viewlog")
     public SuccessResponse<ViewlogRes> addViewlog(
             @PathVariable Long id,
             @RequestBody AddViewlogReq req,
