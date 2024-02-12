@@ -30,9 +30,20 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
+# Set permission for appuser to write model files
+RUN mkdir -p /data/recommend/model
+RUN chown -R appuser /data/recommend/model
+RUN chmod -R 755 /data/recommend/model
+
 RUN apt update
 # mysql-connector-python
-RUN apt install -y gcc pkg-config default-libmysqlclient-dev
+RUN apt install -y gcc pkg-config default-libmysqlclient-dev curl
+
+# Install java
+ENV PATH=$PATH:/opt/java/jdk-17.0.10/bin
+
+RUN mkdir /opt/java && \
+    curl https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz | tar -xz -C /opt/java/
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -50,6 +61,11 @@ COPY . .
 
 # Expose the port that the application listens on.
 EXPOSE 8083
+
+# Add train cron job
+COPY cronjob /etc/cron.d/cronjob
+
+CMD crontab /etc/cron.d/cronjob
 
 # Run the application.
 # CMD gunicorn 'recommend.app:app' --bind=0.0.0.0:8083

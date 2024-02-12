@@ -3,10 +3,12 @@ from typing import Optional, Tuple
 
 from pyspark.ml.recommendation import ALSModel
 
-from recommend.common.config import config
+from recommend.config import get_config
 from recommend.data.art import Art
 from recommend.db.connect import get_spark_session, get_mysql_connection
 from recommend.db.repository import get_art_count, get_all_arts
+
+config = get_config()
 
 spark = get_spark_session('articket_app')
 
@@ -24,8 +26,8 @@ def update_context():
     global als_model
     global count
     global arts
-    MODEL_PATH = config['model']['path']
-    (als_model, count, arts) = _load_recommendations(MODEL_PATH)
+    model_path = config['model']['path']
+    (als_model, count, arts) = _load_recommendations(model_path)
 
 
 def _load_recommendations(model_path: str) -> Tuple[ALSModel, int, dict[str | None, list[Art]]]:

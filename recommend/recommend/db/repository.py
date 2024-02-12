@@ -8,7 +8,7 @@ from recommend.data.art import Art
 def get_user_art_like_count(con: MySQLConnectionAbstract) -> list[tuple[int, int, float]]:
     cur = con.cursor()
     cur.execute('''
-        SELECT l.user_id, s.art_id, SUM(l.state) AS state_sum
+        SELECT l.user_id, s.art_id, CAST(SUM(l.state) AS FLOAT) AS state_sum
           FROM (SELECT user_id, shorts_id, MAX(id) AS latest
                 FROM likes
                 GROUP BY user_id, shorts_id) AS latest_likes
@@ -28,7 +28,7 @@ def get_user_art_like_count(con: MySQLConnectionAbstract) -> list[tuple[int, int
 def get_user_art_order_count(con: MySQLConnectionAbstract) -> list[tuple[int, int, float]]:
     cur = con.cursor()
     cur.execute('''
-        SELECT user_id, art_id, COUNT(*) AS sum_billing
+        SELECT user_id, art_id, CAST(COUNT(*) AS FLOAT) AS sum_billing
           FROM billing
          GROUP BY user_id, art_id;''')  # [user_id, art_id, order_count]
     result = cur.fetchall()
@@ -39,10 +39,10 @@ def get_user_art_order_count(con: MySQLConnectionAbstract) -> list[tuple[int, in
 def get_user_art_detail_click_count(con: MySQLConnectionAbstract) -> list[tuple[int, int, float]]:
     cur = con.cursor()
     cur.execute('''
-        SELECT v.user_id, s.art_id, SUM(view_detail) AS sum_detail 
+        SELECT v.user_id, s.art_id, CAST(SUM(view_detail) AS FLOAT) AS sum_detail 
           FROM viewlog v
                JOIN shorts s
-               ON v.shorts_id = s.id 
+               ON v.short_id = s.id 
          GROUP BY v.user_id, s.art_id;''')  # [user_id, art_id, click_count]
     result = cur.fetchall()
     cur.close()
@@ -52,10 +52,10 @@ def get_user_art_detail_click_count(con: MySQLConnectionAbstract) -> list[tuple[
 def get_user_art_shorts_watch_time_sqrt_sum(con: MySQLConnectionAbstract) -> list[tuple[int, int, float]]:
     cur = con.cursor()
     cur.execute('''
-        SELECT v.user_id, s.art_id, SUM(SQRT(view_time)) AS sum_time 
+        SELECT v.user_id, s.art_id, CAST(SUM(SQRT(view_time)) AS FLOAT) AS sum_time 
           FROM viewlog v
                JOIN shorts s
-               ON v.shorts_id = s.id 
+               ON v.short_id = s.id 
          GROUP BY v.user_id, s.art_id;''')  # [user_id, art_id, watch_time_sqrt_sum]
     result = cur.fetchall()
     cur.close()
