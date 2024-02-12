@@ -31,7 +31,7 @@ const useGlobalStyles = () => {
 
 const ChatRoom = () => {
   useGlobalStyles();
-  const { isLogin, userId, accessToken } = useContext(LoginContext);
+  const { isLogin, userId } = useContext(LoginContext);
   const { category } = useParams();
   const [chatContent, setChatContent] = useState("");
   const location = useLocation();
@@ -97,7 +97,7 @@ const ChatRoom = () => {
   useEffect(() => {
     const connect = () => {
       const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
-      let headers = {Authorization: localStorage.getItem("accessToken")};
+      let headers = {"Authorization": localStorage.getItem("accessToken")};
       stompClient.connect(headers, () => {
         stompClient.subscribe(`/room/${category}`, onChatlogReceived);
       }, error => {
@@ -113,7 +113,7 @@ const ChatRoom = () => {
     return () => {
       client.current?.disconnect();
     };
-  }, [category, accessToken]);
+  }, [category]);
 
   const loadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -130,7 +130,7 @@ const ChatRoom = () => {
       };
       console.log("전송할 채팅: ")
       console.log(chatlog)
-      let headers = {Authorization: localStorage.getItem("accessToken")};
+      let headers = {"Authorization": localStorage.getItem("accessToken")};
       client.current.send(`/chat/send/${category}`, headers , JSON.stringify(chatlog));
       setChatContent("");
       console.log("채팅 보내짐")
