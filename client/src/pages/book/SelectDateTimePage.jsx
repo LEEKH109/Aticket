@@ -7,7 +7,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import theme from "../../util/theme";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import TimeTable from "../../components/TimeTable";
+import TimeTable from "../../components/book/TimeTable";
 import { LoginContext } from "../../components/LoginContext";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
