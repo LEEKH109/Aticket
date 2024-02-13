@@ -9,9 +9,8 @@ const BookHistoryList = (userId) => {
   const [bookHistoryList, setBookHistoryList] = useState([]);
 
   useEffect(() => {
-    console.log(userId);
     billingApi
-      .retrieveReservationHistory(1)
+      .retrieveReservationHistory(userId.userId)
       .then((res) => setBookHistoryList(res.data))
       .catch((err) => console.error("load fail", err));
   }, [userId]);
