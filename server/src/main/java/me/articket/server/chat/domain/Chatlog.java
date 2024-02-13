@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import me.articket.server.common.entity.BaseEntity;
 import me.articket.server.user.domain.User;
 import me.articket.server.art.data.ArtCategory;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "chatlogs")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Chatlog extends BaseEntity {
