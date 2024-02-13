@@ -1,5 +1,6 @@
 import { useState, useEffect, forwardRef } from "react";
 import ShortsInfo from "./ShortsInfo";
+import ShortsInfoLoading from "./ShortsInfoLoading";
 import DetailPage from "../../pages/DetailPage";
 import { ShortsAPI } from "../../util/shorts-axios";
 import { DetailApi } from "../../util/details-axios";
@@ -76,10 +77,7 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
       >
         <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog} />
       </Dialog>
-      <div
-        className="relative w-full  flex-shrink-0 bg-black "
-        style={{ height: `${itemHeight}px` }}
-      >
+      <div className="relative w-full  flex-shrink-0 bg-black " style={{ height: `${itemHeight}px` }}>
         {shorts.type == "VIDEO" ? (
           <video
             autoPlay
@@ -102,7 +100,7 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
             onMouseDown={handleMouseDown}
           />
         )}
-        {art && <ShortsInfo title={art.title} shortsId={shorts.shortsId} />}
+        {art ? <ShortsInfo title={art.title} shortsId={shorts.shortsId} /> : <ShortsInfoLoading />}
       </div>
     </>
   );

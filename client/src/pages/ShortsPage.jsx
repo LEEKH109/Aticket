@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
+import ShortsLoading from "../components/shorts/ShortsLoading";
 import DialButton from "../components/shorts/DialButton";
 import Carousel from "../components/shorts/Carousel";
-import { ShortsAPI } from "../util/shorts-axios";
 import { LoginContext } from "../components/LoginContext";
+import { ShortsAPI } from "../util/shorts-axios";
 
 const Shorts = () => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
@@ -50,7 +51,7 @@ const Shorts = () => {
       {shortList?.length > 0 ? (
         <Carousel shortList={shortList} height={innerHeight} />
       ) : (
-        <p>Loading...</p>
+        <ShortsLoading height={innerHeight} />
       )}
     </>
   );

@@ -14,30 +14,29 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const carouselItemsRef = useRef(null);
   const positionYRef = useRef(0);
   const maxLen = useRef(0);
-  
+
   const isTouchScreen =
-  typeof window !== "undefined" &&
-  window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-  
+    typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
   const inRange = (value, min, max) => {
     if (value < min) {
       return min;
     }
-    
+
     if (value > max) {
       return max;
     }
-    
+
     return value;
   };
-  
+
   const handleMouseDown = (clickEvent) => {
     clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
-    
+
     setIsDragging(true);
     positionYRef.current = clickEvent.pageY;
-    
+
     window.addEventListener("mousemove", handleMouseMove);
     carouselItems?.addEventListener("mouseup", handleMouseUp, { once: true });
   };
@@ -59,18 +58,18 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     const deltaY = positionYRef.current - moveEvent.pageY;
     let nextIndex = currentIndex;
 
-    if (deltaY < -150) {
+    if (deltaY < -100) {
       nextIndex = inRange(currentIndex - 1, 0, maxLen.current - 1);
       setCurrentIndex(nextIndex);
     }
-    if (deltaY > 150) {
+    if (deltaY > 100) {
       nextIndex = inRange(currentIndex + 1, 0, maxLen.current - 1);
       setCurrentIndex(inRange(nextIndex));
     }
 
     setTransY(0);
     setIsDragging(false);
-    
+
     if (currentIndex !== nextIndex) {
       handleViewLog(currentIndex, nextIndex, 0);
     }
@@ -105,11 +104,11 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     const deltaY = positionYRef.current - move.pageY;
     let nextIndex = currentIndex;
 
-    if (deltaY < -150) {
+    if (deltaY < -100) {
       nextIndex = inRange(currentIndex - 1, 0, maxLen.current - 1);
       setCurrentIndex(nextIndex);
     }
-    if (deltaY > 150) {
+    if (deltaY > 100) {
       nextIndex = inRange(currentIndex + 1, 0, maxLen.current - 1);
       setCurrentIndex(inRange(nextIndex));
     }
@@ -126,11 +125,10 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     if (curIdx !== nextIdx && isLogin.isLogin) {
       let viewTime = (new Date() - startTime) / 1000;
       console.log(curIdx, "번 쇼츠 ", viewTime, "초 봤음");
-      ShortsAPI.viewLog(shortList[curIdx].shortsId,
-        {
-          viewDetail : viewDetail,
-          viewTime: viewTime,
-        });
+      ShortsAPI.viewLog(shortList[curIdx].shortsId, {
+        viewDetail: viewDetail,
+        viewTime: viewTime,
+      });
       setStartTime(new Date());
     }
   };
@@ -172,7 +170,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
         style={{ transition: `transform ${transY ? 0 : 300}ms ease-in-out 0s` }}
       >
         <ShortsList
-          viewDetailLog={() => { 
+          viewDetailLog={() => {
             handleViewLog(currentIndex, -1, 1);
           }}
           closeDetail={() => {
