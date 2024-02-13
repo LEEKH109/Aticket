@@ -31,94 +31,121 @@ const BillingPreviewPage = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
-      {showInfo && (
-        <>
-          <img
-            src={shortInfo?.posterUrl}
-            alt="Event Poster"
-            className="w-32 h-auto mx-auto" // 포스터 이미지 사이즈 조정 및 중앙 정렬
-          />
-          <div className="w-full text-xl font-black mt-4">결제 정보</div>
-          <div className="flex flex-col w-full mt-2.5">
-            <div className="border-t border-b border-black">
-              <div className="flex justify-between items-center py-3">
-                <div className="text-xs font-black">공연명</div>
-                <div className="text-xs font-black text-right">
-                  {shortInfo?.title || "-"}
-                </div>
-              </div>
-              <div className="flex justify-between items-center py-3">
-                <div className="text-xs font-black">관람일시</div>
-                <div className="text-xs font-semibold text-right">
-                  {shortInfo?.date || "-"}
-                </div>
-              </div>
-              <div className="flex justify-between items-center py-3">
-                <div className="text-xs font-black">장소</div>
-                <div className="text-xs font-semibold text-right">
-                  {shortInfo?.location || "-"}
-                </div>
-              </div>
-            </div>
+      <div className="w-full">
+        <div className="flex gap-0 px-5">
+          <ArrowBackIosIcon />
+          <div>Aːticket</div>
+        </div>
+        <div className="flex gap-0 px-5 text-xs font-bold text-center text-white mb-4">
+          <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
+            1.
           </div>
-        </>
-      )}
-
-      {showSelectedSeats && (
-        <div className="w-full mt-4">
-          <div className="text-xl font-black">선택된 좌석</div>
-          {selectedSeats.map((seat, index) => (
-            <div key={index} className="mt-2">
-              <span className="text-xs font-bold">좌석 번호:</span>
-              <span className="text-xs font-bold">{seat.seatNumber},</span>
-
-              <span className="text-xs font-bold"> 타입:</span>
-              <span className="text-xs font-bold">{seat.type},</span>
-
-              <span className="text-xs font-bold"> 가격:</span>
-              <span className="text-xs font-bold">
-                {(seat.price || 0).toLocaleString()}원
-              </span>
-            </div>
-          ))}
-          <div className="mt-2 font-semibold">
-            선택된 좌석의 총 가격: {totalSeatsPrice.toLocaleString()}원
+          <div className="grow justify-center px-12 py-2 bg-black rounded-md border border-white border-solid">
+            2. 결제 상세
+          </div>
+          <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
+            3.
           </div>
         </div>
-      )}
+        {showInfo && (
+          <>
+            <img
+              src={shortInfo?.posterUrl}
+              alt="Event Poster"
+              className="w-32 h-auto mx-auto"
+            />
+            <div className="w-full text-xl font-black mt-4">결제 정보</div>
+            <div className="flex flex-col w-full mt-2.5">
+              <div className="border-t border-b border-black">
+                <div className="flex justify-between items-center py-3">
+                  <div className="text-xs font-black">공연명</div>
+                  <div className="text-xs font-black text-right">
+                    {shortInfo?.title || "-"}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <div className="text-xs font-black">관람일시</div>
+                  <div className="text-xs font-semibold text-right">
+                    {shortInfo?.date || "-"}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <div className="text-xs font-black">장소</div>
+                  <div className="text-xs font-semibold text-right">
+                    {shortInfo?.location || "-"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
-      {showTickets && (
-        <>
+        {showSelectedSeats && (
           <div className="w-full mt-4">
-            <div className="text-xl font-black">티켓 선택</div>
-            {selectedTickets.map((ticket, index) => (
-              <div key={index} className="mt-2 flex justify-between">
-                <span className="text-xs font-bold">{ticket.userType}:</span>
-                <span className="text-xs ">
-                  {(ticket.price || 0).toLocaleString()}원 x {ticket.count}매
+            <div className="text-xl font-black">선택된 좌석</div>
+            {selectedSeats.map((seat, index) => (
+              <div key={index} className="mt-2">
+                <span className="text-xs font-bold">좌석 번호:</span>
+                <span className="text-xs font-bold">{seat.seatNumber},</span>
+
+                <span className="text-xs font-bold"> 타입:</span>
+                <span className="text-xs font-bold">{seat.type},</span>
+
+                <span className="text-xs font-bold"> 가격:</span>
+                <span className="text-xs font-bold">
+                  {(seat.price || 0).toLocaleString()}원
                 </span>
               </div>
             ))}
-          </div>
-          <div className="w-full mt-4 border-t pt-2">
-            <div className="flex justify-between">
-              <span className="text-xs font-bold">총 금액 / 매수:</span>
-              <span className="text-xs">
-                {(totalPrice || 0).toLocaleString()}원 /{" "}
-                {selectedTickets.reduce((acc, ticket) => acc + ticket.count, 0)}
-                매
-              </span>
+            <div className="mt-2 font-semibold">
+              선택된 좌석의 총 가격: {totalSeatsPrice.toLocaleString()}원
             </div>
           </div>
-        </>
-      )}
+        )}
 
-      <button
-        onClick={handlePaymentRedirect}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-      >
-        결제하기
-      </button>
+        {showTickets && (
+          <>
+            <div className="w-full mt-4">
+              <div className="text-xl font-black">티켓 선택</div>
+              {selectedTickets.map((ticket, index) => (
+                <div key={index} className="mt-2 flex justify-between">
+                  <span className="text-xs font-bold">{ticket.userType}:</span>
+                  <span className="text-xs ">
+                    {(ticket.price || 0).toLocaleString()}원 x {ticket.count}매
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="w-full mt-4 border-t pt-2">
+              <div className="flex justify-between">
+                <span className="text-xs font-bold">총 금액 / 매수:</span>
+                <span className="text-xs">
+                  {(totalPrice || 0).toLocaleString()}원 /{" "}
+                  {selectedTickets.reduce(
+                    (acc, ticket) => acc + ticket.count,
+                    0
+                  )}
+                  매
+                </span>
+              </div>
+            </div>
+          </>
+        )}
+
+        <div
+          className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+          onClick={handlePaymentRedirect}
+          style={{ width: "fit-content", padding: "8px 16px" }}
+        >
+          <img
+            loading="lazy"
+            src="https://newsimg.sedaily.com/2018/10/01/1S5QSELHHE_1.jpg"
+            className="max-w-full aspect-[3.03] w-[150px]"
+            alt="결제 이미지"
+          />
+          <div className="grow self-center ml-4">로 결제하기</div>
+        </div>
+      </div>
     </div>
   );
 };
