@@ -2,6 +2,7 @@ package me.articket.vendor.billing.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.articket.vendor.billing.data.BookHistoryDto;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
 import me.articket.vendor.billing.data.ReservationSeatDetailResponseDto;
 import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
@@ -113,6 +114,15 @@ public class BillingController {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(aggregatedDetails);
+  }
+
+  @GetMapping("/history/{bookerName}")
+  public ResponseEntity<List<BookHistoryDto>> getCompletedBookingsByBookerName(@PathVariable String bookerName) {
+    List<BookHistoryDto> history = billingService.getCompletedBookingsByBookerName(bookerName);
+    if (history.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(history);
   }
 
 }

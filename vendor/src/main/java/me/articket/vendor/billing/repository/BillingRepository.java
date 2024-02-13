@@ -2,6 +2,7 @@ package me.articket.vendor.billing.repository;
 
 import java.util.List;
 import java.util.Optional;
+import me.articket.vendor.billing.data.BookHistoryDto;
 import me.articket.vendor.billing.data.ReservationSeatDetailDto;
 import me.articket.vendor.billing.data.ReservationTicketDetailDto;
 import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
@@ -84,4 +85,25 @@ public interface BillingRepository {
       "GROUP BY bd.timetable_id, s.type")
   List<ReservationSeatDetailDto> findReservationDetailsByReservationId(@Param("reservationId") String reservationId);
 
+  @Select("""
+            SELECT 
+              a.art_id AS artId, 
+              b.reservation_id AS reservationId, 
+              a.title AS title, 
+              CONCAT(t.date, ' ', t.start_time) AS viewingDateTime, 
+              b.total_amount AS price 
+            FROM 
+              billing b 
+            JOIN 
+              billing_detail bd ON b.billing_id = bd.billing_id 
+            JOIN 
+              art a ON b.art_id = a.art_id 
+            JOIN 
+              timetable t ON bd.timetable_id = t.timetable_id 
+            WHERE 
+              b.status = 'PAYMENT_COMPLETED' 
+            AND 
+              b.booker_name = #{bookerName}
+            """)
+  List<BookHistoryDto> findCompletedBookingsByBookerName(@Param("bookerName") String bookerName);
 }

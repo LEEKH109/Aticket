@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import me.articket.vendor.art.repository.ArtRepository;
+import me.articket.vendor.billing.data.BookHistoryDto;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
 import me.articket.vendor.billing.data.ReservationSeatDetailDto;
 import me.articket.vendor.billing.data.ReservationSeatDetailResponseDto;
@@ -373,5 +374,9 @@ public class BillingService {
           return aggregated;
         })
         .collect(Collectors.toList());
+  }
+
+  public List<BookHistoryDto> getCompletedBookingsByBookerName(String bookerName) {
+    return billingRepository.findCompletedBookingsByBookerName(bookerName);
   }
 }
