@@ -66,7 +66,7 @@ const SeatBookingPage = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { state } = useLocation();
-  const { timetableId, artId, userId } = state || {};
+  const { timetableId, artId, userId, shortInfo } = state || {};
   const navigate = useNavigate();
 
   const MAX_SEAT_LIMIT = 4;
@@ -153,14 +153,16 @@ const SeatBookingPage = () => {
 
   const preparePayment = () => {
     const seats = selectedSeats.map((seat) => ({
-      timetableId, // 이 부분은 선택된 좌석마다 같을 것입니다.
+      timetableId,
       seatNumber: seat.seatNumber,
     }));
 
     billingApi
       .submitReservationForSeat(userId, artId, seats)
       .then((response) => {
-        navigate("/billing/preview", { state: { ...response.data } });
+        navigate("/billing/preview", {
+          state: { ...response.data, selectedSeats, shortInfo },
+        });
         console.log("결제 준비 응답:", response.data);
       })
       .catch((error) => {
