@@ -106,7 +106,7 @@ def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: in
                              ON s.id = v.short_id
                  GROUP BY s.art_id, s.id
                  ORDER BY orn ASC) AS sub
-         WHERE rn = 1;''')
+         WHERE sub.rn = 1 AND sub.id IS NOT NULL;''')
     result = cur.fetchall()
     cur.close()
     return [row[0] for row in result]
