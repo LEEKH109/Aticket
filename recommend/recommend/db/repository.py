@@ -79,11 +79,29 @@ def get_all_arts(con: MySQLConnectionAbstract, category: Optional[str] = None) -
             SELECT id, category
               FROM arts
              WHERE category = %s''',
-            category)
+                    category)
     else:
         cur.execute('''
             SELECT id, category
               FROM arts''')
+    result = cur.fetchone()
+    cur.close()
+    return result
+
+
+def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: int, arts: list[int]) -> list[int]:
+    cur = con.cursor()
+    cur.execute(f'''
+        SELECT sub.short_id
+          FROM (SELECT s.art_id, s.id as short_id,
+                       ROW_NUMBER() OVER (PARTITION BY s.art_id ORDER BY COUNT(v.id), RAND()) as rn
+                  FROM shorts s
+                       LEFT JOIN viewlog v
+                       ON s.id = v.short_id
+                          AND v.user_id = {user_id}
+                 WHERE s.art_id IN ({','.join(map(str, arts))})
+                 GROUP BY s.id) AS sub
+         WHERE sub.rn = 1''')
     result = cur.fetchone()
     cur.close()
     return result
