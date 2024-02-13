@@ -91,6 +91,7 @@ def get_all_arts(con: MySQLConnectionAbstract, category: Optional[str] = None) -
 
 def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: int, arts: list[int]) -> list[int]:
     cur = con.cursor()
+    arts_str = ','.join(map(str, arts)) if len(arts) > 0 else -1
     cur.execute(f'''
         SELECT sub.short_id
           FROM (SELECT s.art_id, s.id as short_id,
@@ -99,7 +100,7 @@ def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: in
                        LEFT JOIN viewlog v
                        ON s.id = v.short_id
                           AND v.user_id = {user_id}
-                 WHERE s.art_id IN ({','.join(map(str, arts))})
+                 WHERE s.art_id IN ({arts_str})
                  GROUP BY s.id) AS sub
          WHERE sub.rn = 1''')
     result = cur.fetchone()
