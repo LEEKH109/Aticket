@@ -51,7 +51,10 @@ const MyPage = () => {
     if (isDeleting) {
       UserApi.deleteProfileImgae(userId)
         .then(({ data }) => {
-          setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+          setProfileImage({
+            prev: data.data.profileUrl,
+            new: data.data.profileUrl,
+          });
           setProfileImg(data.data.profileUrl);
           setUpdateSuccess(true);
         })
@@ -68,7 +71,10 @@ const MyPage = () => {
     fd.append("file", profileImage.new);
     UserApi.updateProfileImage(userId, fd)
       .then(({ data }) => {
-        setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+        setProfileImage({
+          prev: data.data.profileUrl,
+          new: data.data.profileUrl,
+        });
         setProfileImg(data.data.profileUrl);
         setUpdateSuccess(true);
       })
@@ -85,7 +91,10 @@ const MyPage = () => {
     UserApi.getUserInfo(userId)
       .then(({ data }) => {
         setNickname({ prev: data.data.nickname, new: data.data.nickname });
-        setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+        setProfileImage({
+          prev: data.data.profileUrl,
+          new: data.data.profileUrl,
+        });
         setEmail(data.data.email);
       })
       .catch((err) => console.error(err));
@@ -121,7 +130,7 @@ const MyPage = () => {
         </button>
       </div>
       {nowCollectionTab && <CollectionList />}
-      {!nowCollectionTab && <BookHistoryList />}
+      {!nowCollectionTab && <BookHistoryList userId={userId} />}
     </main>
   );
 };
