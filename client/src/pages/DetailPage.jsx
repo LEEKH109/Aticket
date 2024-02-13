@@ -166,7 +166,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
 
 
       <div className="h-13 w-full absolute bottom-[0]">
-        {!isLogin.isLogin ? (
+        {isLogin.isLogin ? (
           new Date(shortInfo.endDate) < new Date() ||
           new Date(shortInfo.startDate) > new Date() ? (
             <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
