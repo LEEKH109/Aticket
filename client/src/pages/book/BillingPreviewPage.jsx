@@ -60,7 +60,7 @@ const BillingPreviewPage = () => {
                 >
                   <div className="text-xs font-black">{ticket.userType}</div>
                   <div className="flex gap-5 justify-between text-sm font-semibold text-right">
-                    <div>{ticket.price.toLocaleString()} 원</div>
+                    <div>{(ticket.price || 0).toLocaleString()} 원</div>
                     <div>{ticket.count} 매</div>
                   </div>
                 </div>
@@ -69,7 +69,7 @@ const BillingPreviewPage = () => {
               <div className="flex gap-5 justify-between p-3.5 w-full border-b border-solid bg-white bg-opacity-0 border-b-black">
                 <div className="text-xs font-black">총 금액 / 매수</div>
                 <div className="flex gap-5 justify-between text-sm font-semibold text-right">
-                  <div>{totalPrice.toLocaleString()} 원</div>
+                  <div>{(totalPrice || 0).toLocaleString()} 원</div>
                   <div>
                     {selectedTickets.reduce(
                       (acc, ticket) => acc + ticket.count,
