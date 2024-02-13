@@ -19,11 +19,11 @@ const TicketSelectionModal = ({
   timetableId,
   ticketTypes,
   userId,
+  shortInfo,
 }) => {
   const [selectedTickets, setSelectedTickets] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
-  console.log("userID");
   useEffect(() => {
     const initialTickets = ticketTypes.reduce((acc, ticketType) => {
       acc[ticketType.ticketTypeId] = 0;
@@ -72,7 +72,14 @@ const TicketSelectionModal = ({
       .then((response) => {
         console.log("Reservation success:", response.data);
         onClose();
-        navigate("/billing/preview", { state: { ...response.data } });
+        navigate("/billing/preview", {
+          state: {
+            ...response.data,
+            shortInfo,
+            selectedTickets: order.tickets,
+            totalPrice,
+          },
+        });
       })
       .catch((error) => console.error("Reservation failed:", error));
   };
