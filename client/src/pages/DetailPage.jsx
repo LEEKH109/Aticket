@@ -165,7 +165,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
       </div>
 
 
-      <div className="h-13 w-full relative bottom-[5.2vh]">
+      <div className="h-13 w-full absolute bottom-[0]">
         {isLogin.isLogin ? (
           dateFormmatterWithTime(new Date(shortInfo.endDate)) < new Date() ||
           dateFormmatterWithTime(new Date(shortInfo.startDate)) > new Date() ? (

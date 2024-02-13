@@ -20,6 +20,7 @@ const Shorts = () => {
   };
 
   useEffect(() => {
+    console.log("리스트를 ㅂ다앙ㅇ노머ㅏ용", shortList)
     if (userId) {
       ShortsAPI.getRecommendShortsList(category)
         .then(({ data }) => {
