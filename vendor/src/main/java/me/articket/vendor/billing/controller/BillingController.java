@@ -1,7 +1,10 @@
 package me.articket.vendor.billing.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
+import me.articket.vendor.billing.data.ReservationSeatDetailResponseDto;
+import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
 import me.articket.vendor.billing.service.BillingService;
 import me.articket.vendor.billing.data.PaymentApprovalResponse;
 import me.articket.vendor.seat.data.SeatReservationRequestDto;
@@ -10,6 +13,7 @@ import me.articket.vendor.tickettype.data.TicketReservationRequestDto;
 import me.articket.vendor.tickettype.service.TicketTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,6 +96,23 @@ public class BillingController {
   public ResponseEntity<?> cancelPayment(@PathVariable String reservationId) {
     billingService.updateBillingStatusToCancelled(reservationId);
     return ResponseEntity.ok().body("결제가 취소되었습니다.");
+  }
+
+  @GetMapping("/reservation/ticket/{reservationId}")
+  public ResponseEntity<List<ReservationTicketDetailResponseDto>> getTicketReservationInfo(@PathVariable String reservationId) {
+    List<ReservationTicketDetailResponseDto> response = billingService.getTicketReservationInfo(reservationId);
+    if (response.isEmpty()) {
+      return ResponseEntity.ok().body(response);
+    }
+    return ResponseEntity.ok(response);
+  }
+  @GetMapping("/reservation/seat/{reservationId}")
+  public ResponseEntity<List<ReservationSeatDetailResponseDto>> getAggregatedReservationDetails(@PathVariable String reservationId) {
+    List<ReservationSeatDetailResponseDto> aggregatedDetails = billingService.getSeatReservationDetails(reservationId);
+    if (aggregatedDetails.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(aggregatedDetails);
   }
 
 }

@@ -1,9 +1,18 @@
 package me.articket.vendor.billing.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import me.articket.vendor.art.repository.ArtRepository;
 import me.articket.vendor.billing.data.PaymentPreparationResDto;
+import me.articket.vendor.billing.data.ReservationSeatDetailDto;
+import me.articket.vendor.billing.data.ReservationSeatDetailResponseDto;
+import me.articket.vendor.billing.data.ReservationTicketDetailDto;
+import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.Billing.BillingStatus;
 import me.articket.vendor.billing.domain.BillingDetail;
@@ -300,4 +309,69 @@ public class BillingService {
     return response;
   }
 
+  public List<ReservationTicketDetailResponseDto> getTicketReservationInfo(String reservationId) {
+    // 데이터베이스에서 TicketReservationDto 리스트 조회
+    // billingRepository.findTicketReservationByReservationId(reservationId) 메소드는 예시이며,
+    // 실제로 해당 메소드를 구현해야 합니다.
+    List<ReservationTicketDetailDto> ticketReservationDtos = billingRepository.findTicketReservationByReservationId(reservationId);
+
+    Map<String, ReservationTicketDetailResponseDto> responseMap = new HashMap<>();
+
+    for (ReservationTicketDetailDto dto : ticketReservationDtos) {
+      String key = dto.getArtId() + "-" + dto.getTimetableId(); // ArtId와 TimetableId를 키로 사용
+      ReservationTicketDetailResponseDto responseDto = responseMap.computeIfAbsent(key, k -> new ReservationTicketDetailResponseDto(
+          dto.getArtId(),
+          dto.getTitle(),
+          dto.getTimetableId(),
+          dto.getViewingDateTime(),
+          new LinkedHashMap<>(),
+          0,
+          0));
+
+      // 티켓 유형과 수량을 맵에 추가
+      responseDto.getTicketType().merge(dto.getTicketType(), dto.getTotalCount(), Integer::sum);
+      // 총 금액과 총 수량 업데이트
+      responseDto.setTotalAmount(responseDto.getTotalAmount() + (dto.getTotalAmount() * dto.getTotalCount()));
+      responseDto.setTotalCount(responseDto.getTotalCount() + dto.getTotalCount());
+    }
+
+    return new ArrayList<>(responseMap.values());
+  }
+
+  public List<ReservationSeatDetailResponseDto> getSeatReservationDetails(String reservationId) {
+    List<ReservationSeatDetailDto> details = billingRepository.findReservationDetailsByReservationId(reservationId);
+
+    // 예약 ID별로 그룹화 후, 각 그룹을 AggregatedReservationDetailDto 객체로 변환
+    return details.stream()
+        .collect(Collectors.groupingBy(ReservationSeatDetailDto::getTimetableId))
+        .entrySet().stream()
+        .map(entry -> {
+          List<ReservationSeatDetailDto> groupedDetails = entry.getValue();
+
+          // 좌석 유형별로 카운팅
+          Map<String, Integer> seatTypes = groupedDetails.stream()
+              .collect(Collectors.toMap(
+                  ReservationSeatDetailDto::getSeatType,
+                  ReservationSeatDetailDto::getReservationCount,
+                  Integer::sum));
+
+          // 예약된 좌석 목록 생성
+          String reservedSeats = groupedDetails.stream()
+              .map(ReservationSeatDetailDto::getReservedSeats)
+              .collect(Collectors.joining(", "));
+
+          ReservationSeatDetailResponseDto aggregated = new ReservationSeatDetailResponseDto();
+          aggregated.setArtId(groupedDetails.get(0).getArtId());
+          aggregated.setTitle(groupedDetails.get(0).getTitle());
+          aggregated.setTimetableId(entry.getKey());
+          aggregated.setViewingDateTime(groupedDetails.get(0).getViewingDateTime());
+          aggregated.setReservedSeats(reservedSeats);
+          aggregated.setSeatTypes(seatTypes);
+          aggregated.setTotalAmount(groupedDetails.get(0).getTotalAmount());
+          aggregated.setTotalCount(groupedDetails.stream().mapToInt(ReservationSeatDetailDto::getTotalCount).sum());
+
+          return aggregated;
+        })
+        .collect(Collectors.toList());
+  }
 }
