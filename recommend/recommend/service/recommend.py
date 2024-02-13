@@ -58,11 +58,13 @@ def get_recommendations(user_id: int, category: Optional[str] = None) -> list[in
     recs = None
     if als_model is not None:
         recs = als_model.recommendForUserSubset(spark.createDataFrame([[user_id]], ['user_id']), count)
-    if recs is not None:
+    if recs is not None and len(recs) > 0:
         recs = list(map(lambda art: art.id, recs.select('recommendations').collect()))
     else:
         # 카테고리에서 랜덤 순서로 아트 선택
         recs = list(map(lambda art: art.id, random.sample(arts[category], len(arts[category]))))
+
+    print('recs:', recs)
 
     con = get_mysql_connection()
     shorts = get_min_viewed_shorts_for_each_art(con, user_id, recs)
