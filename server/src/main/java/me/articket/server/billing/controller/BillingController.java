@@ -62,7 +62,7 @@ public class BillingController {
   }
 
   @Transactional
-  @GetMapping("/hisotry/seat/{reservationId}")
+  @GetMapping("/history/seat/{reservationId}")
   public ResponseEntity<List<ReservationMainSeatResponseDto>> getReservationSeatDetails(@PathVariable String reservationId) {
     List<ReservationMainSeatResponseDto> response = billingService.getReservationSeatDetails(reservationId);
     if (response.isEmpty()) {
