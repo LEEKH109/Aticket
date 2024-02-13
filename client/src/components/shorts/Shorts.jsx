@@ -26,7 +26,7 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   };
 
   const handleMouseUp = (artId) => {
-    alert("move to detail");
+    // alert("move to detail");
     if (!isDragging) {
       setCurIndex(artId);
       setOpenDialog(true);
