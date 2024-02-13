@@ -3,7 +3,7 @@ import CollectionItem from "./CollectionItem";
 import { UserApi } from "../../util/user-axios";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 
-const HEIGHT = `h-[calc(100vh_-_2.5rem_-_128px_-_41px_-_64px)]`;
+const HEIGHT = `h-[calc(100svh_-_2.5rem_-_128px_-_41px_-_64px)]`;
 
 const CollectionList = () => {
   const [collectionList, setCollectionList] = useState();
@@ -20,8 +20,8 @@ const CollectionList = () => {
 
   return (
     <>
-      {isLoading &&
-        (collectionList.length > 0 ? (
+      {isLoading ? (
+        collectionList.length > 0 ? (
           <section className={`w-full ${HEIGHT} p-4 grid grid-cols-3 gap-4 overflow-y-scroll`}>
             {collectionList.map((collection, index) => (
               <CollectionItem key={collection.shortsId} collection={collection} index={index} />
@@ -34,7 +34,10 @@ const CollectionList = () => {
             </div>
             <p className="text-gray-400">저장한 미디어가 없습니다.</p>
           </section>
-        ))}
+        )
+      ) : (
+        <p>loading...</p>
+      )}
     </>
   );
 };
