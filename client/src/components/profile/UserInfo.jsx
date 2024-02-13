@@ -103,17 +103,11 @@ const UserInfo = ({
               onChange={handleChangeNickname}
               value={nickname.new}
             />
-            <p className="absolute top-3 right-2 text-end text-sm text-gray-400">
-              {nicknameLength} / 10
-            </p>
-            {!validNickname && (
-              <p className="text-red-500">2~10자의 한글, 영어, 숫자만 입력해주세요.</p>
-            )}
+            <p className="absolute top-3 right-2 text-end text-sm text-gray-400">{nicknameLength} / 10</p>
+            {!validNickname && <p className="text-red-500">2~10자의 한글, 영어, 숫자만 입력해주세요.</p>}
           </div>
           <button
-            className={`${
-              !validNickname ? "text-gray-300 bg-gray-100" : ""
-            } px-2 py-1 border  rounded-lg`}
+            className={`${!validNickname ? "text-gray-300 bg-gray-100" : ""} px-2 py-1 border  rounded-lg`}
             onClick={onSubmitNickname}
             disabled={!validNickname}
           >
@@ -126,35 +120,20 @@ const UserInfo = ({
           <p className="font-bold text-xl">이미지 등록</p>
           <div className="relative w-28 h-28 overflow-hidden border">
             <img src={previewImage} className="w-full h-full object-cover" />
-            <button
-              className="absolute top-0 right-1 text-white rounded-lg"
-              onClick={handleDeleteProfileImage}
-            >
+            <button className="absolute top-0 right-1 text-white rounded-lg" onClick={handleDeleteProfileImage}>
               <CloseIcon fontSize="small" className="bg-black/50" />
             </button>
           </div>
           <div className="w-full flex flex-col">
             <div className="w-full flex justify-center items-center gap-6">
               <div>
-                <label
-                  htmlFor="profile-img"
-                  className="block px-2 py-1 border rounded-lg cursor-pointer"
-                >
+                <label htmlFor="profile-img" className="block px-2 py-1 border rounded-lg cursor-pointer">
                   찾아보기
                 </label>
-                <input
-                  type="file"
-                  className="hidden"
-                  id="profile-img"
-                  ref={imgRef}
-                  onChange={handleChangeProfileImg}
-                />
+                <input type="file" className="hidden" id="profile-img" ref={imgRef} onChange={handleChangeProfileImg} />
               </div>
 
-              <button
-                className="px-2 py-1 border rounded-lg"
-                onClick={() => onSubmitProfileImage(isDeleting)}
-              >
+              <button className="px-2 py-1 border rounded-lg" onClick={() => onSubmitProfileImage(isDeleting)}>
                 저장하기
               </button>
             </div>
@@ -162,7 +141,7 @@ const UserInfo = ({
         </section>
       </Modal>
       <section className="flex px-6 py-4 gap-6 items-center ">
-        <div className="relative w-24 h-24 flex-shrink-0 border rounded-full overflow-hidden">
+        <div className="relative w-20 h-20 flex-shrink-0 border rounded-full overflow-hidden">
           <img src={profileImage.prev} className="w-full h-full object-cover" />
           <button
             className="absolute w-full py-1 bottom-0 bg-gray-500/50 text-white"
