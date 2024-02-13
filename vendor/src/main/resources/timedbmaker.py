@@ -1,10 +1,14 @@
 import datetime
+import random
 
 def create_full_sql_script(timetables, tickettype_info, seat_rows, seat_prices, estimated_start_id):
     filename = 'complete_timetable.sql'
     
     with open(filename, 'w') as file:
         next_timetable_id = estimated_start_id
+
+        status_options = ['예약가능', '예약중', '예약완료']
+        status_weights = [80, 10, 10]
 
         for timetable in timetables:
             artId = timetable["artId"]
@@ -20,7 +24,7 @@ def create_full_sql_script(timetables, tickettype_info, seat_rows, seat_prices, 
                 current_start_time = start_time
                 while current_start_time + datetime.timedelta(hours=show_length) <= end_time:
                     current_end_time = current_start_time + datetime.timedelta(hours=show_length)
-                    insert_values.append(f"({artId}, {categoryId}, '{start_date.strftime('%Y-%m-%d')}', '{current_start_time.strftime('%H:%M:%S')}', '{current_end_time.strftime('%H:%M:%S')}', '예약가능')")
+                    insert_values.append(f"({artId}, {categoryId}, '{start_date.strftime('%Y-%m-%d')}', '{current_start_time.strftime('%H:%M:%S')}', '{current_end_time.strftime('%H:%M:%S')}', 1)")
                     current_start_time += datetime.timedelta(hours=show_length)
                 start_date += datetime.timedelta(days=1)
 
@@ -50,7 +54,8 @@ def create_full_sql_script(timetables, tickettype_info, seat_rows, seat_prices, 
                         for num in range(1, 9):  # 1부터 8까지 좌석 번호
                             seat_number = f"{row}{num}"
                             price = seat_prices[artId][type]
-                            seat_insert_values.append(f"({next_timetable_id + i}, '{seat_number}', '예약가능', '{type}', {price})")
+                            status = random.choices(status_options, weights=status_weights, k=1)[0]
+                            seat_insert_values.append(f"({next_timetable_id + i}, '{seat_number}', '{status}', '{type}', {price})")
                 if seat_insert_values:
                     file.write("INSERT INTO seat (timetable_id, seat_number, status, type, price) VALUES\n")
                     file.write(",\n".join(seat_insert_values))
@@ -62,23 +67,28 @@ def create_full_sql_script(timetables, tickettype_info, seat_rows, seat_prices, 
 
 # 타임테이블, 티켓 타입, 좌석 정보 예제 데이터
 timetables = [
-    {"artId": 1, "categoryId": 1, "start_date": "2024-01-01", "end_date": "2024-01-05", "show_length": 3, "start_time": "10:00", "end_time": "22:00"},
-    {"artId": 2, "categoryId": 2, "start_date": "2024-02-01", "end_date": "2024-02-05", "show_length": 2, "start_time": "12:00", "end_time": "20:00"},
-    {"artId": 3, "categoryId": 2, "start_date": "2024-02-06", "end_date": "2024-02-10", "show_length": 2, "start_time": "12:00", "end_time": "20:00"}
+    {"artId": 1, "categoryId": 1, "start_date": "2024-03-01", "end_date": "2024-03-15", "show_length": 3, "start_time": "10:00", "end_time": "22:00"},
+    {"artId": 2, "categoryId": 2, "start_date": "2024-02-01", "end_date": "2024-02-15", "show_length": 2, "start_time": "12:00", "end_time": "20:00"},
+    {"artId": 3, "categoryId": 2, "start_date": "2024-02-06", "end_date": "2024-02-15", "show_length": 2, "start_time": "12:00", "end_time": "20:00"},
+    {"artId": 4, "categoryId": 1, "start_date": "2024-02-11", "end_date": "2024-02-15", "show_length": 1, "start_time": "10:00", "end_time": "22:00"},
+    {"artId": 5, "categoryId": 3, "start_date": "2024-02-11", "end_date": "2024-02-15", "show_length": 6, "start_time": "10:00", "end_time": "22:00"}
 ]
 
 tickettype_info = {
-    1: {"청소년": 5000, "성인": 10000, "유아": 0}
+    1: {"청소년": 5000, "성인": 10000, "유아": 1000},
+    4: {"일반": 10000},
 }
 
 seat_rows = {
     2: {"A": "VIP", "B": "S", "C": "R", "D": "R"},
-    3: {"A": "VIP", "B": "S", "C": "R", "D": "R"}
+    3: {"A": "VIP", "B": "S", "C": "R", "D": "R"},
+    5: {"A": "R", "B": "R", "C": "R", "D": "R"}
 }
 
 seat_prices = {
     2: {"VIP": 20000, "R": 15000, "S": 10000},
-    3: {"VIP": 20000, "R": 15000, "S": 10000}
+    3: {"VIP": 20000, "R": 15000, "S": 10000},
+    5: {"R": 15000}
 }
 
 # 함수 실행으로 SQL 파일 생성

@@ -52,10 +52,10 @@ public class BillingService {
     body.add("vat_amount", "0"); // 부가세 설정 => 전시-공연은 부가세 면제입니다.
     body.add("tax_free_amount", String.valueOf(request.getTotalAmount())); // 비과세 금액 설정
     body.add("approval_url",
-        "http://localhost:5173/billing/approve/" + request.getReservationId()); // 승인 URL 설정
-    body.add("fail_url", "http://localhost:5173/billing/fail/" + request.getReservationId()); // 실패 URL 설정
+        "http://i10a704.p.ssafy.io/billing/approve/" + request.getReservationId()); // 승인 URL 설정
+    body.add("fail_url", "http://i10a704.p.ssafy.io/billing/fail/" + request.getReservationId()); // 실패 URL 설정
     body.add("cancel_url",
-        "http://localhost:5173/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
+        "http://i10a704.p.ssafy.io/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
     // 요청 로그 남기기
     System.out.println("HTTP Headers: " + headers.toString());
     System.out.println("Request Body: " + body.toString());
@@ -98,10 +98,10 @@ public class BillingService {
     body.add("vat_amount", "0"); // 부가세 설정 - 전시,공연은 부가세 면제입니다.
     body.add("tax_free_amount", String.valueOf(request.getTotalAmount())); // 비과세 금액 설정
     body.add("approval_url",
-        "http://localhost:5173/billing/approve/" + request.getReservationId()); // 승인 URL 설정
-    body.add("fail_url", "http://localhost:5173/billing/fail/" + request.getReservationId()); // 실패 URL 설정
+        "http://i10a704.p.ssafy.io/billing/approve/" + request.getReservationId()); // 승인 URL 설정
+    body.add("fail_url", "http://i10a704.p.ssafy.io/billing/fail/" + request.getReservationId()); // 실패 URL 설정
     body.add("cancel_url",
-        "http://localhost:5173/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
+        "http://i10a704.p.ssafy.io/billing/cancel/" + request.getReservationId()); // 취소 URL 설정
     // 요청 로그 남기기
     System.out.println("HTTP Headers: " + headers.toString());
     System.out.println("Request Body: " + body.toString());
