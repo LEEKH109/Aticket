@@ -11,8 +11,11 @@ import me.articket.server.shorts.domain.Shorts;
 import me.articket.server.shorts.repository.ShortsRepository;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ShortsService {
+
+    @Value("${recommend-server-url}")
+    private String recommendServerUrl;
+
+    @Value("${recommend-shorts-path}")
+    private String recommendShortsPath;
 
     private final ShortsRepository shortsRepository;
 
@@ -57,9 +66,17 @@ public class ShortsService {
     }
 
     public List<RecommendedShortsInfoRes> recommendShorts(Long userId, @Nullable ArtCategory category) {
-//        Optional<User> optionalUser = userRepository.findById(userId);
-//        User user = optionalUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
-        List<Shorts> shorts = category == null ? shortsRepository.findAll() : shortsRepository.findAllByArt_Category(category);
+        RestClient restClient = RestClient.create(recommendServerUrl);
+        List<Long> ids = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(recommendShortsPath)
+                        .queryParam("user_id", userId)
+                        .queryParamIfPresent("category", Optional.ofNullable(category))
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<Long>>() {
+                });
+        List<Shorts> shorts = shortsRepository.findAllById(ids);
         return shorts.stream().map(RecommendedShortsInfoRes::of).toList();
     }
 }
