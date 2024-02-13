@@ -51,6 +51,8 @@ const ChatRoom = () => {
     console.log("새 채팅이 들어왔다");
     console.log("message: ");
     console.log(message);
+    console.log(message.data);
+    console.log(message.data.body);
     const newChatlog = JSON.parse(message.data.body);
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
@@ -133,7 +135,7 @@ const ChatRoom = () => {
     if (isLogin) {
         setNowLoginUser(userId);
     }
-  }, [isLogin]);
+  }, [isLogin, userId]);
 
   const sendChat = async (event) => {
     console.log(nowLoginUser);
@@ -171,7 +173,7 @@ const ChatRoom = () => {
             <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: 'calc(100vh - 170px)' }}>
                 {pins.length > 0 ? (
                 pins.map((chatlog) => (
-                <div key={chatlog.chatlogId} className={`flex ${chatlog.userId === userId ? 'justify-end' : 'justify-start'} mb-4`}>
+                <div key={chatlog.chatlogId} className={`flex ${chatlog.userId ===  Number(nowLoginUser) ? 'justify-end' : 'justify-start'} mb-4`}>
                 <div className="max-w-md">
                 {chatlog.userId !== userId && (
                 <div className="mb-1">
