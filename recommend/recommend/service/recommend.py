@@ -6,7 +6,9 @@ from pyspark.ml.recommendation import ALSModel
 from recommend.config import get_config
 from recommend.data.art import Art
 from recommend.db.connect import get_spark_session, get_mysql_connection
-from recommend.db.repository import get_art_count, get_all_arts
+from recommend.db.repository import get_art_count, get_all_arts, get_min_viewed_shorts_for_each_art
+
+MAX_RECOMMEND = 100
 
 config = get_config()
 
@@ -57,9 +59,13 @@ def get_recommendations(user_id: int, category: Optional[str] = None) -> list[in
     if als_model is not None:
         recs = als_model.recommendForUserSubset(spark.createDataFrame([[user_id]], ['user_id']), count)
     if recs is not None:
-        recs = map(lambda art: art.id, recs.select('recommendations').collect())
+        recs = list(map(lambda art: art.id, recs.select('recommendations').collect()))
     else:
         # 카테고리에서 랜덤 순서로 아트 선택
-        recs = map(lambda art: art.id, random.sample(arts[category], len(arts[category])))
-    # TODO: art_id list -> art와 사용자 별로 조회수가 가장 적은 shorts 중 임의의 1개 선택
-    return [1, 2, 3]
+        recs = list(map(lambda art: art.id, random.sample(arts[category], len(arts[category]))))
+
+    con = get_mysql_connection()
+    shorts = get_min_viewed_shorts_for_each_art(con, user_id, recs)
+    con.close()
+
+    return shorts[:MAX_RECOMMEND]
