@@ -41,22 +41,6 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
     setIsDragging(false);
   };
 
-  const handleTouchStart = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchMove = () => {
-    setIsDragging(true);
-  };
-
-  const handleTouchEnd = (artId) => {
-    if (!isDragging) {
-      setCurIndex(artId);
-      setOpenDialog(true);
-      viewDetailLog();
-    }
-  };
-
   useEffect(() => {
     ShortsAPI.getShorts(shorts.shortsId)
       .then(({ data }) => {
@@ -104,9 +88,6 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
             onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={() => handleTouchEnd(shorts.shortsId)}
           >
             <source src={shorts.mediaUrl} type="video/mp4" />
           </video>
@@ -117,9 +98,6 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
             onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={() => handleTouchEnd(shorts.shortsId)}
           />
         )}
         {art ? <ShortsInfo title={art.title} shortsId={shorts.shortsId} /> : <ShortsInfoLoading />}

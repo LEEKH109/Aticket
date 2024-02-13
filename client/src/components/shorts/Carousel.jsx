@@ -30,7 +30,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleMouseDown = (clickEvent) => {
-    // clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
 
     setIsDragging(true);
@@ -85,10 +84,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchMove = (moveEvent) => {
-    if (moveEvent.cancelable) {
-      moveEvent.preventDefault();
-    }
-
     const move = moveEvent.touches[0];
     const deltaY = positionYRef.current - move.pageY;
 
@@ -146,7 +141,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
 
   useEffect(() => {
     const carouselItems = carouselItemsRef.current;
-    alert(isTouchScreen);
 
     if (isTouchScreen) {
       carouselItems?.addEventListener("touchstart", handleTouchStart, { passive: true });
