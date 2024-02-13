@@ -71,9 +71,8 @@ const BillingPreviewPage = () => {
             <ul className="mt-2">
               {selectedSeats.map((seat, index) => (
                 <li key={index} className="mt-1">
-                  {`좌석 번호: ${seat.seatNumber}, 타입: ${
-                    seat.type
-                  }, 가격: ${seat.price.toLocaleString()}원`}
+                  좌석 번호: {seat.seatNumber}, 타입: {seat.type}, 가격:{" "}
+                  {(seat.price || 0).toLocaleString()}원
                 </li>
               ))}
             </ul>
@@ -86,14 +85,16 @@ const BillingPreviewPage = () => {
             {selectedTickets.map((ticket, index) => (
               <div key={index} className="mt-2 flex justify-between">
                 <span className="text-sm font-bold">{ticket.userType}</span>
-                <span className="text-sm">{`${ticket.price.toLocaleString()}원 x ${
-                  ticket.count
-                }매`}</span>
+                <span className="text-sm">{`${(
+                  ticket.price || 0
+                ).toLocaleString()}원 x ${ticket.count}매`}</span>
               </div>
             ))}
             <div className="mt-4 flex justify-between border-t pt-2">
               <span className="text-sm font-bold">총 금액 / 매수</span>
-              <span className="text-sm">{`${totalPrice.toLocaleString()}원 / ${selectedTickets.reduce(
+              <span className="text-sm">{`${(
+                totalPrice || 0
+              ).toLocaleString()}원 / ${selectedTickets.reduce(
                 (acc, ticket) => acc + ticket.count,
                 0
               )}매`}</span>
