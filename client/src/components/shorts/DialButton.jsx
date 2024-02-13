@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
@@ -26,20 +25,23 @@ const DialButton = ({ onClickCategory, selectedCategory }) => {
 
   return (
     <>
-      <Button variant="contained" onClick={() => setOpen(!open)}>
-        {open ? <ArrowBackIosNewIcon /> : <ArrowForwardIosIcon />}
-      </Button>
+      <button className="p-2 px-4 bg-white/20 text-white rounded-lg" variant="contained" onClick={() => setOpen(!open)}>
+        {open ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
+      </button>
       {open && (
         <ul className="flex gap-2">
           {categories.map((category) => (
             <li key={category.categoryId}>
-              <Button
+              <button
+                className={`p-2 px-4   rounded-lg ${
+                  selectedCategory == category.categoryId ? "bg-white text-black" : "bg-white/20 text-white"
+                }`}
                 variant="contained"
                 color={selectedCategory == category.categoryId ? "primary" : "error"}
                 onClick={() => onClickCategory(category.categoryId)}
               >
                 {category.name}
-              </Button>
+              </button>
             </li>
           ))}
         </ul>

@@ -3,7 +3,7 @@ import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumb
 import BookHistoryItem from "./BookHistoryItem";
 import { billingApi } from "../../util/billing-axios";
 
-const HEIGHT = `h-[calc(100vh_-_2.5rem_-_128px_-_41px_-_64px)]`;
+const HEIGHT = `h-[calc(100svh_-_1rem_-_128px_-_41px_-_64px)]`;
 
 const BookHistoryList = (userId) => {
   const [bookHistoryList, setBookHistoryList] = useState();

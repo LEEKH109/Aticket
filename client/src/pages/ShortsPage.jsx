@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
+import ShortsLoading from "../components/shorts/ShortsLoading";
 import DialButton from "../components/shorts/DialButton";
 import Carousel from "../components/shorts/Carousel";
-import { ShortsAPI } from "../util/shorts-axios";
 import { LoginContext } from "../components/LoginContext";
+import { ShortsAPI } from "../util/shorts-axios";
 
 const Shorts = () => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
   const [category, setCategory] = useState("");
-  const [shortList, setShortList] = useState([]);
+  const [shortsIdList, setShortsIdList] = useState([]);
   const { userId } = useContext(LoginContext);
 
   const handleClickCategory = (category) => {
@@ -22,13 +23,13 @@ const Shorts = () => {
     if (userId) {
       ShortsAPI.getRecommendShortsList(category)
         .then(({ data }) => {
-          setShortList(data.data);
+          setShortsIdList(data.data.map((shorts) => shorts.shortsId));
         })
         .catch((err) => console.error(err));
     } else {
       ShortsAPI.getShortsList(category)
         .then(({ data }) => {
-          setShortList(data.data);
+          setShortsIdList(data.data.map((shorts) => shorts.shortsId));
         })
         .catch((err) => console.error(err));
     }
@@ -47,10 +48,10 @@ const Shorts = () => {
       <div className="absolute z-50 top-4 left-4 flex gap-4">
         <DialButton onClickCategory={handleClickCategory} selectedCategory={category} />
       </div>
-      {shortList?.length > 0 ? (
-        <Carousel shortList={shortList} height={innerHeight} />
+      {shortsIdList?.length > 0 ? (
+        <Carousel shortsIdList={shortsIdList} height={innerHeight} />
       ) : (
-        <p>Loading...</p>
+        <ShortsLoading height={innerHeight} />
       )}
     </>
   );

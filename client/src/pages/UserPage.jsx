@@ -104,7 +104,7 @@ const MyPage = () => {
     "relative text-gray-900 after:w-full after:h-1 after:bg-black after:bottom-[-0.5rem] after:absolute after:left-0";
 
   return (
-    <main className="w-full h-[calc(100vh_-_64px)] pt-2">
+    <main className="w-full h-[calc(100svh_-_64px)] pt-4">
       <UserInfo
         nickname={nickname}
         profileImage={profileImage}
