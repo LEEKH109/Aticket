@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import BookHistoryItem from "./BookHistoryItem";
 
-const HEIGHT = `h-[calc(100svh_-_2.5rem_-_128px_-_41px_-_64px)]`;
+const HEIGHT = `h-[calc(100svh_-_1rem_-_128px_-_41px_-_64px)]`;
 const LIST = [
   {
     reservation_id: 1,

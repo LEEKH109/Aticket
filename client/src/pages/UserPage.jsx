@@ -95,7 +95,7 @@ const MyPage = () => {
     "relative text-gray-900 after:w-full after:h-1 after:bg-black after:bottom-[-0.5rem] after:absolute after:left-0";
 
   return (
-    <main className="w-full h-[calc(100vh_-_64px)] pt-4">
+    <main className="w-full h-[calc(100svh_-_64px)] pt-4">
       <UserInfo
         nickname={nickname}
         profileImage={profileImage}
@@ -107,10 +107,16 @@ const MyPage = () => {
         onSubmitProfileImage={handleSubmitProfileImage}
       />
       <div className="flex justify-around py-2 border-b-[1px] border-gray-300 text-gray-400">
-        <button className={`${nowCollectionTab ? tabBarClass : ""} `} onClick={() => setNowCollectionTab(true)}>
+        <button
+          className={`${nowCollectionTab ? tabBarClass : ""} `}
+          onClick={() => setNowCollectionTab(true)}
+        >
           컬렉션
         </button>
-        <button className={`${!nowCollectionTab ? tabBarClass : ""} `} onClick={() => setNowCollectionTab(false)}>
+        <button
+          className={`${!nowCollectionTab ? tabBarClass : ""} `}
+          onClick={() => setNowCollectionTab(false)}
+        >
           예매 내역
         </button>
       </div>
