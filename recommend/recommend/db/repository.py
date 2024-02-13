@@ -84,7 +84,7 @@ def get_all_arts(con: MySQLConnectionAbstract, category: Optional[str] = None) -
         cur.execute('''
             SELECT id, category
               FROM arts''')
-    result = cur.fetchone()
+    result = cur.fetchall()
     cur.close()
     return result
 
@@ -103,6 +103,6 @@ def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: in
                  WHERE s.art_id IN ({arts_str})
                  GROUP BY s.id) AS sub
          WHERE sub.rn = 1''')
-    result = cur.fetchone()
+    result = cur.fetchall()
     cur.close()
     return result
