@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
 import SelectDateTimePage from "./pages/book/SelectDateTimePage";
@@ -111,17 +111,13 @@ function App() {
 
   return (
     <>
-      <div className="relative mx-auto max-w-[412px] h-[100svh]">
+      <div className="relative mx-auto max-w-[412px] h-[100svh] overscroll-y-none">
         <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </IsLoginProvider>
       </div>
     </>
   );
-}
-
-if (typeof window !== "undefined" && typeof window.global === "undefined") {
-  window.global = window;
 }
 
 export default App;
