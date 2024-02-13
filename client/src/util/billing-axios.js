@@ -1,5 +1,4 @@
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 
 const BASE_URL = `http://localhost:8081`;
 
@@ -12,20 +11,23 @@ const axiosInstance = axios.create({
 
 const billingApi = {
   // 결제 승인 요청
-  approvePayment: (reservationId, pgToken) => {
-    return axiosInstance.post(`/billing/approve/${reservationId}`, null, {
-      params: { pgToken },
+  approvePayment: (reservationId, pgToken, userId) => {
+    return axiosInstance.post(`/billing/approve/${reservationId}`, {
+      pgToken,
+      userId,
     });
   },
-  submitReservationForTicket: (artId, timetableId, tickets) => {
-    const reservationId = uuidv4();
-    const bookerName = "testUser";
-    return axiosInstance.post("/billing/reservation/ticket", {
+  submitReservationForTicket: (userId, artId, timetableId, tickets) => {
+    return axiosInstance.post(`/billing/reservation/ticket/${userId}`, {
       artId,
       timetableId,
-      reservationId,
-      bookerName,
       tickets,
+    });
+  },
+  submitReservationForSeat: (userId, artId, seats) => {
+    return axiosInstance.post(`/billing/reservation/seat/${userId}`, {
+      artId,
+      seats,
     });
   },
 };
