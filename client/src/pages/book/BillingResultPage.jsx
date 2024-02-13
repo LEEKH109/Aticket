@@ -1,8 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const BillingResultPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { paymentInfo } = location.state || {};
 
   const formatDate = (dateString) => {
@@ -36,7 +37,7 @@ const BillingResultPage = () => {
             3. 결제 완료
           </div>
         </div>
-        <div className="mt-4 text-center">
+        <div className="mt-10 text-center">
           <div className="text-lg font-semibold">{paymentInfo?.message}</div>
           <div className="mt-4">
             <div className="text-xs font-bold">주문 번호:</div>
@@ -49,6 +50,22 @@ const BillingResultPage = () => {
           <div className="mt-2">
             <div className="text-xs font-bold">승인 시각:</div>
             <div className="text-sm">{formatDate(paymentInfo?.approvedAt)}</div>
+          </div>
+        </div>
+        <div>
+          <div
+            className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+            onClick={() => navigate("/")}
+            style={{ width: "fit-content", padding: "8px 16px" }}
+          >
+            숏츠로 이동
+          </div>
+          <div
+            className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+            onClick={() => navigate("/user")}
+            style={{ width: "fit-content", padding: "8px 16px" }}
+          >
+            마이페이지로 이동
           </div>
         </div>
       </div>
