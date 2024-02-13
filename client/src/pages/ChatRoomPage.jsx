@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { ChatApi } from "../util/chat-axios";
-import { UserApi } from "../util/user-axios";
 import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
@@ -47,8 +46,40 @@ const ChatRoom = () => {
   const client = useRef(null);
   const [ nowLoginUser, setNowLoginUser ] = useState("");
 
+  const categories = [
+    {
+      categoryId: 1,
+      category: "SHOW",
+      name: "전시"
+    },
+    {
+      categoryId: 2,
+      category: "MUSICAL",
+      name: "뮤지컬"
+    },
+    {
+      categoryId: 3,
+      category: "PLAY",
+      name: "공연"
+    }
+  ];
+
+  const getCategoryName = (category) => {
+    const categoryObj = categories.find((cat) => cat.category === category);
+    return categoryObj ? categoryObj.name : category;
+  };
+
+// 카테고리별 배경색을 정의하는 객체
+const categoryGradientColors = {
+    SHOW: 'from-green-400 via-green-500 to-green-600', // 전시에 해당하는 Tailwind CSS 그라데이션 클래스
+    MUSICAL: 'from-red-400 via-red-500 to-red-600', // 뮤지컬에 해당하는 Tailwind CSS 그라데이션 클래스
+    PLAY: 'from-yellow-400 via-yellow-500 to-yellow-600', // 공연에 해당하는 Tailwind CSS 그라데이션 클래스
+  };
+  const getCategoryGradient = (category) => {
+    return categoryGradientColors[category] || 'from-blue-400 to-teal-500'; // 기본값은 'from-blue-400 to-teal-500'
+  };
+
   const onChatlogReceived = (message) => {
-    console.log("새 채팅이 들어왔다"); //message.body는 문자열 상태
     const newChatlog = JSON.parse(message.body).data;
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
@@ -64,7 +95,6 @@ const ChatRoom = () => {
     try {
       const response = await ChatApi.chatScroll(category, page);
       const newPins = response.data.data.content.sort((a, b) => a.chatlogId - b.chatlogId);
-    //   setPins((prevPins) => [...prevPins, ...newPins.reverse()]);
       setPins((prevPins) => [...newPins, ...prevPins]);
       setHasMoreLogs(newPins.length === 15);
     } catch (error) {
@@ -162,9 +192,9 @@ const ChatRoom = () => {
 
   return (
     <div>
-        <div>
-            <h1 className="text-xl font-bold text-center py-3 rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-400 text-white">
-            {category} 단체 채팅방
+        <div className="pt-4">
+        <h1 className={`text-xl font-bold text-center py-3 rounded-lg shadow-md bg-gradient-to-r ${getCategoryGradient(category)} text-white`}>
+            {getCategoryName(category)} 단체 채팅방
             </h1>
             <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: 'calc(100vh - 170px)' }}>
                 {pins.length > 0 ? (
