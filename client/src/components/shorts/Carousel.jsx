@@ -31,7 +31,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleMouseDown = (clickEvent) => {
-    clickEvent.preventDefault();
+    // clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
 
     setIsDragging(true);
@@ -77,7 +77,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchStart = (touchEvent) => {
-    // alert("touch start");
+    alert("touch start");
     const carouselItems = carouselItemsRef.current;
     positionYRef.current = touchEvent.touches[0].pageY;
 
