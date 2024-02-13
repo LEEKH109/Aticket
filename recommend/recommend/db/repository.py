@@ -91,18 +91,22 @@ def get_all_arts(con: MySQLConnectionAbstract, category: Optional[str] = None) -
 
 def get_min_viewed_shorts_for_each_art(con: MySQLConnectionAbstract, user_id: int, arts: list[int]) -> list[int]:
     cur = con.cursor()
-    arts_str = ','.join(map(str, arts)) if len(arts) > 0 else -1
+    arts_str = ','.join(map('ROW({})'.format, arts)) if len(arts) > 0 else 'ROW(-1)'
     cur.execute(f'''
-        SELECT sub.short_id
-          FROM (SELECT s.art_id, s.id as short_id,
-                       ROW_NUMBER() OVER (PARTITION BY s.art_id ORDER BY COUNT(v.id), RAND()) as rn
-                  FROM shorts s
-                       LEFT JOIN viewlog v
-                       ON s.id = v.short_id
-                          AND v.user_id = {user_id}
-                 WHERE s.art_id IN ({arts_str})
-                 GROUP BY s.id) AS sub
-         WHERE sub.rn = 1''')
+        SELECT sub.id
+          FROM (SELECT s.art_id, s.id,
+                       ROW_NUMBER() OVER () as orn,
+                       ROW_NUMBER() OVER (PARTITION BY s.art_id ORDER BY COUNT(*), RAND()) as rn
+                  FROM (VALUES {arts_str}) AS input_art_ids (id)
+                        LEFT JOIN shorts s
+                             ON input_art_ids.id = s.art_id
+                        LEFT JOIN (SELECT short_id
+                                     FROM viewlog
+                                    WHERE user_id = {user_id}) AS v
+                             ON s.id = v.short_id
+                 GROUP BY s.art_id, s.id
+                 ORDER BY orn ASC) AS sub
+         WHERE rn = 1;''')
     result = cur.fetchall()
     cur.close()
     return [row[0] for row in result]
