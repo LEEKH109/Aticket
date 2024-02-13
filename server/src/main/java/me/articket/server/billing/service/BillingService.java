@@ -13,7 +13,9 @@ import me.articket.server.billing.data.BillingCategory;
 import me.articket.server.billing.data.BillingCreateSeatRequest;
 import me.articket.server.billing.data.BillingCreateTicketRequest;
 import me.articket.server.billing.data.BillingPaymentCreatedResponse;
+import me.articket.server.billing.data.ReservationMainSeatResponseDto;
 import me.articket.server.billing.data.ReservationMainTicketResponseDto;
+import me.articket.server.billing.data.ReservationVendorSeatResponseDto;
 import me.articket.server.billing.data.ReservationVendorTicketResponseDto;
 import me.articket.server.billing.domain.Billing;
 import me.articket.server.billing.repository.BillingRepository;
@@ -199,15 +201,10 @@ public class BillingService {
     String requestUrl = externalServiceUrl + "/billing/reservation/ticket/" + reservationId;
     System.out.println("Requesting Vendor server with URL: " + requestUrl);
 
-    // 예: 인증이 필요한 경우 헤더에 인증 정보 추가 (필요한 경우에만 사용)
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.set("Authorization", "Bearer " + yourAuthToken);
-    // HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-
     ResponseEntity<List<ReservationVendorTicketResponseDto>> responseEntity = restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
-        null, // new HttpEntity<>(headers)를 사용하여 인증이 필요한 경우 헤더 추가
+        null,
         new ParameterizedTypeReference<List<ReservationVendorTicketResponseDto>>() {});
 
     // ResponseEntity 및 상태 코드 로그 출력
@@ -248,6 +245,46 @@ public class BillingService {
           vendorResponse.getTicketType(),
           vendorResponse.getTotalAmount(),
           vendorResponse.getTotalCount());
-    }).collect(Collectors.toList());
+    }).toList();
+  }
+
+  // GET: /billing/seat/{reservationId}
+  public List<ReservationMainSeatResponseDto> getReservationSeatDetails(String reservationId) {
+    ResponseEntity<List<ReservationVendorSeatResponseDto>> responseEntity = restTemplate.exchange(
+        externalServiceUrl + "/billing/reservation/seat/" + reservationId,
+        HttpMethod.GET,
+        null,
+        new ParameterizedTypeReference<List<ReservationVendorSeatResponseDto>>() {});
+
+    if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vendor seat reservations not found for " + reservationId);
+    }
+
+    List<ReservationVendorSeatResponseDto> vendorResponses = responseEntity.getBody();
+
+    return vendorResponses.stream().map(vendorResponse -> {
+      var artOpt = artRepository.findById(vendorResponse.getArtId().longValue());
+      var billingOpt = billingRepository.findByReservationId(reservationId);
+
+      if (artOpt.isEmpty() || billingOpt.isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Additional information not found for Art ID " + vendorResponse.getArtId() + " or Reservation ID " + reservationId);
+      }
+
+      var art = artOpt.get();
+      var billing = billingOpt.get();
+
+      return new ReservationMainSeatResponseDto(
+          vendorResponse.getArtId(),
+          vendorResponse.getTitle(),
+          vendorResponse.getTimetableId(),
+          vendorResponse.getViewingDateTime(),
+          art.getPosterUrl(),
+          art.getLocation(),
+          billing.getReservationConfirmationDateTime() != null ? billing.getReservationConfirmationDateTime().toString() : null,
+          vendorResponse.getReservedSeats(),
+          vendorResponse.getSeatTypes(),
+          vendorResponse.getTotalAmount(),
+          vendorResponse.getTotalCount());
+    }).toList();
   }
 }

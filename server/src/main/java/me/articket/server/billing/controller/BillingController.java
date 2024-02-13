@@ -7,6 +7,7 @@ import me.articket.server.billing.data.BillingApproveResponse;
 import me.articket.server.billing.data.BillingCreateSeatRequest;
 import me.articket.server.billing.data.BillingCreateTicketRequest;
 import me.articket.server.billing.data.BillingPaymentCreatedResponse;
+import me.articket.server.billing.data.ReservationMainSeatResponseDto;
 import me.articket.server.billing.data.ReservationMainTicketResponseDto;
 import me.articket.server.billing.service.BillingService;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,16 @@ public class BillingController {
   @GetMapping("reservation/ticket/{reservationId}")
   public ResponseEntity<List<ReservationMainTicketResponseDto>> getReservationDetails(@PathVariable String reservationId) {
     List<ReservationMainTicketResponseDto> response = billingService.getReservationDetails(reservationId);
+    if (response.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(response);
+  }
+
+  @Transactional
+  @GetMapping("/reservation/seat/{reservationId}")
+  public ResponseEntity<List<ReservationMainSeatResponseDto>> getReservationSeatDetails(@PathVariable String reservationId) {
+    List<ReservationMainSeatResponseDto> response = billingService.getReservationSeatDetails(reservationId);
     if (response.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
