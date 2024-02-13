@@ -3,9 +3,7 @@ import ShortsList from "./ShortsList";
 import { useLoginState } from "../LoginContext";
 import { ShortsAPI } from "../../util/shorts-axios";
 
-const ITEM_WIDTH = 412;
-
-const Carousel = ({ shortList, height, index = 0 }) => {
+const Carousel = ({ shortsIdList, height, index = 0 }) => {
   const isLogin = useLoginState();
   const [currentIndex, setCurrentIndex] = useState(Number(index));
   const [isDragging, setIsDragging] = useState(false);
@@ -122,8 +120,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const handleViewLog = (curIdx, nextIdx, viewDetail) => {
     if (curIdx !== nextIdx && isLogin.isLogin) {
       let viewTime = (new Date() - startTime) / 1000;
-      console.log(curIdx, "번 쇼츠 ", viewTime, "초 봤음");
-      ShortsAPI.viewLog(shortList[curIdx].shortsId, {
+      ShortsAPI.viewLog(shortsIdList[curIdx].shortsId, {
         viewDetail: viewDetail,
         viewTime: viewTime,
       });
@@ -132,8 +129,8 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   useEffect(() => {
-    maxLen.current = shortList.length;
-  }, [shortList.length]);
+    maxLen.current = shortsIdList.length;
+  }, [shortsIdList.length]);
 
   useEffect(() => {
     setStartTime(new Date());
@@ -174,9 +171,9 @@ const Carousel = ({ shortList, height, index = 0 }) => {
           closeDetail={() => {
             setStartTime(new Date());
           }}
-          shortsList={shortList}
-          itemWidth={ITEM_WIDTH}
+          shortsIdList={shortsIdList}
           itemHeight={height}
+          currentIndex={currentIndex}
         />
       </div>
     </div>

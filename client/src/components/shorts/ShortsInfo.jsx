@@ -47,7 +47,7 @@ const ShortsInfo = ({ title, shortsId }) => {
 
   return (
     <div className="absolute z-10 w-full flex items-center justify-between pt-8 pb-2 px-2 bottom-0 bg-gradient-to-t from-black">
-      <p className="ms-4 text-white text-xl">{title}</p>
+      <p className="ms-4 text-white text-xl font-bold">{title}</p>
       <Button onClick={handleClickCollectionButton}>
         {collected ? (
           <StarRoundedIcon fontSize="large" className=" text-white" />
