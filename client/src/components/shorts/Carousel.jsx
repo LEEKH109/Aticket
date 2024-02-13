@@ -87,6 +87,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchMove = (moveEvent) => {
+    moveEvent.preventDefault();
     // alert("touch move");
     const move = moveEvent.touches[0];
     const deltaY = positionYRef.current - move.pageY;
@@ -102,6 +103,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchEnd = (moveEvent) => {
+    alert("touch end");
     const move = moveEvent.changedTouches[0];
     const deltaY = positionYRef.current - move.pageY;
     let nextIndex = currentIndex;

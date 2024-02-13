@@ -111,7 +111,7 @@ function App() {
 
   return (
     <>
-      <div className="relative mx-auto max-w-[412px] h-[100svh] overscroll-y-none">
+      <div className="relative mx-auto max-w-[412px] h-[100svh] overscroll-y-none touch-none">
         <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </IsLoginProvider>
