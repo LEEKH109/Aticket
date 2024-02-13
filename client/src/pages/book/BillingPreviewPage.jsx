@@ -26,88 +26,96 @@ const BillingPreviewPage = () => {
   const showTickets = selectedTickets !== undefined && totalPrice !== undefined;
   const showSelectedSeats = selectedSeats !== undefined;
 
+  const totalSeatsPrice =
+    selectedSeats?.reduce((acc, seat) => acc + seat.price, 0) || 0;
+
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
-      <div className="w-full">
-        <div className="flex gap-0 px-5">
-          <ArrowBackIosIcon />
-          <div>Aːticket</div>
-        </div>
-        <div className="flex gap-0 px-5 text-xs font-bold text-center text-white mb-4">
-          <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
-            1.
+    <div className="flex flex-col items-center px-5 text-black max-w-[310px] mt-5">
+      {showInfo && (
+        <>
+          <img
+            src={shortInfo?.posterUrl}
+            alt="Event Poster"
+            className="w-32 h-auto mx-auto" // 포스터 이미지 사이즈 조정 및 중앙 정렬
+          />
+          <div className="w-full text-xl font-black text-center mt-4">
+            결제 정보
           </div>
-          <div className="grow justify-center px-12 py-2 bg-black rounded-md border border-white border-solid">
-            2. 결제 상세
-          </div>
-          <div className="justify-center px-6 py-2 whitespace-nowrap bg-black rounded-md border border-white border-solid ">
-            3.
-          </div>
-        </div>
-        {showInfo && (
-          <div className="flex flex-col items-center px-5 text-black max-w-[310px] mt-5">
-            {shortInfo.posterUrl && (
-              <img
-                src={shortInfo.posterUrl}
-                alt="Event Poster"
-                className="mx-auto max-w-[150px] max-h-[200px] object-cover"
-              />
-            )}
-            <div className="mt-4 text-xl font-black text-center">
-              {shortInfo.title || "제목 정보 없음"}
+          <div className="flex flex-col w-full mt-2.5">
+            <div className="border-t border-b border-black">
+              <div className="flex justify-between items-center py-3">
+                <div className="text-xs font-black">공연명</div>
+                <div className="text-sm font-black text-right">
+                  {shortInfo?.title || "-"}
+                </div>
+              </div>
+              <div className="flex justify-between items-center py-3">
+                <div className="text-xs font-black">관람일시</div>
+                <div className="text-sm font-semibold text-right">
+                  {shortInfo?.date || "-"}
+                </div>
+              </div>
+              <div className="flex justify-between items-center py-3">
+                <div className="text-xs font-black">장소</div>
+                <div className="text-sm font-semibold text-right">
+                  {shortInfo?.location || "-"}
+                </div>
+              </div>
             </div>
-            <div className="mt-2 text-sm">{`관람일시: ${
-              shortInfo.date || "-"
-            }`}</div>
-            <div className="text-sm">{`장소: ${
-              shortInfo.location || "-"
-            }`}</div>
           </div>
-        )}
+        </>
+      )}
 
-        {showSelectedSeats && (
-          <div className="mt-5 px-5">
-            <h2 className="text-xl font-bold">Selected Seats</h2>
-            <ul className="mt-2">
-              {selectedSeats.map((seat, index) => (
-                <li key={index} className="mt-1">
-                  좌석 번호: {seat.seatNumber}, 타입: {seat.type}, 가격:{" "}
-                  {(seat.price || 0).toLocaleString()}원
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {showSelectedSeats && (
+        <div className="w-full mt-4">
+          <div className="text-xl font-black">선택된 좌석</div>
+          {selectedSeats.map((seat, index) => (
+            <div key={index} className="mt-2">
+              <span className="text-xs font-bold">좌석 번호:</span>{" "}
+              {seat.seatNumber},
+              <span className="text-xs font-bold"> 타입:</span> {seat.type},
+              <span className="text-xs font-bold"> 가격:</span>{" "}
+              {(seat.price || 0).toLocaleString()}원
+            </div>
+          ))}
+        </div>
+      )}
 
-        {showTickets && (
-          <div className="mt-5 px-5">
-            <h2 className="text-xl font-bold">Selected Tickets</h2>
+      {showTickets && (
+        <>
+          <div className="w-full mt-4">
+            <div className="text-xl font-black">티켓 선택</div>
             {selectedTickets.map((ticket, index) => (
               <div key={index} className="mt-2 flex justify-between">
-                <span className="text-sm font-bold">{ticket.userType}</span>
-                <span className="text-sm">{`${(
-                  ticket.price || 0
-                ).toLocaleString()}원 x ${ticket.count}매`}</span>
+                <span className="text-xs font-bold">{ticket.userType}:</span>
+                <span>
+                  {(ticket.price || 0).toLocaleString()}원 x {ticket.count}매
+                </span>
               </div>
             ))}
-            <div className="mt-4 flex justify-between border-t pt-2">
-              <span className="text-sm font-bold">총 금액 / 매수</span>
-              <span className="text-sm">{`${(
-                totalPrice || 0
-              ).toLocaleString()}원 / ${selectedTickets.reduce(
-                (acc, ticket) => acc + ticket.count,
-                0
-              )}매`}</span>
+            <div className="mt-2 font-semibold">
+              선택된 좌석의 총 가격: {totalSeatsPrice.toLocaleString()}원
             </div>
           </div>
-        )}
-        <button
-          onClick={handlePaymentRedirect}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          결제하기
-        </button>
-      </div>
+          <div className="w-full mt-4 border-t pt-2">
+            <div className="flex justify-between">
+              <span className="text-xs font-bold">총 금액 / 매수:</span>
+              <span>
+                {(totalPrice || 0).toLocaleString()}원 /{" "}
+                {selectedTickets.reduce((acc, ticket) => acc + ticket.count, 0)}
+                매
+              </span>
+            </div>
+          </div>
+        </>
+      )}
+
+      <button
+        onClick={handlePaymentRedirect}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+      >
+        결제하기
+      </button>
     </div>
   );
 };
