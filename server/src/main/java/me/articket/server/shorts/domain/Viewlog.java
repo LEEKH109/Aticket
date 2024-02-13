@@ -1,13 +1,8 @@
 package me.articket.server.shorts.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import me.articket.server.art.domain.Art;
+import lombok.*;
 import me.articket.server.common.entity.BaseEntity;
-import me.articket.server.shorts.data.ShortsType;
 import me.articket.server.user.domain.User;
 import org.apache.logging.log4j.util.Strings;
 
@@ -20,6 +15,7 @@ public class Viewlog extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "short_id", nullable = false)
+    @Setter
     private Shorts shorts;
 
     @ManyToOne
@@ -27,9 +23,21 @@ public class Viewlog extends BaseEntity {
     private User user;
 
     @Column(nullable = false)
-    private Long viewDetail;
+    @Setter
+    private Integer viewDetail;
 
     @Column(nullable = false)
-    private Long viewTime;
+    @Setter
+    private float viewTime;
+
+
+    @Builder
+    public Viewlog(Long id, Shorts shorts, User user, Integer viewDetail, float viewTime) {
+        this.id = id;
+        this.shorts = shorts;
+        this.user = user;
+        this.viewDetail = viewDetail;
+        this.viewTime = viewTime;
+    }
 
 }
