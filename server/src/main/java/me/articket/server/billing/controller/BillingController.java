@@ -9,6 +9,7 @@ import me.articket.server.billing.data.BillingCreateTicketRequest;
 import me.articket.server.billing.data.BillingPaymentCreatedResponse;
 import me.articket.server.billing.data.ReservationMainSeatResponseDto;
 import me.articket.server.billing.data.ReservationMainTicketResponseDto;
+import me.articket.server.billing.data.UserReservationResponseDto;
 import me.articket.server.billing.service.BillingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +69,15 @@ public class BillingController {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/history/{userId}")
+  public ResponseEntity<List<UserReservationResponseDto>> getUserReservations(@PathVariable Long userId) {
+    List<UserReservationResponseDto> reservations = billingService.getUserReservations(userId);
+    if (reservations.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(reservations);
   }
 
 

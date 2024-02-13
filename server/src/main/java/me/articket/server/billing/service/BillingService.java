@@ -17,6 +17,7 @@ import me.articket.server.billing.data.ReservationMainSeatResponseDto;
 import me.articket.server.billing.data.ReservationMainTicketResponseDto;
 import me.articket.server.billing.data.ReservationVendorSeatResponseDto;
 import me.articket.server.billing.data.ReservationVendorTicketResponseDto;
+import me.articket.server.billing.data.UserReservationResponseDto;
 import me.articket.server.billing.domain.Billing;
 import me.articket.server.billing.repository.BillingRepository;
 import me.articket.server.user.domain.User;
@@ -285,6 +286,26 @@ public class BillingService {
           vendorResponse.getSeatTypes(),
           vendorResponse.getTotalAmount(),
           vendorResponse.getTotalCount());
+    }).toList();
+  }
+
+  public List<UserReservationResponseDto> getUserReservations(Long userId) {
+    // 유저 ID를 기반으로 예약 내역 조회
+    List<Billing> billings = billingRepository.findByUserIdAndStatus(userId, BillingCategory.PAYMENT_COMPLETED);
+
+    return billings.stream().map(billing -> {
+      Art art = artRepository.findById(billing.getArt().getId()).orElse(null);
+      if (art == null) return null;
+
+      return new UserReservationResponseDto(
+          art.getId(),
+          billing.getReservationId(),
+          art.getTitle(),
+          art.getPosterUrl(),
+          billing.getViewingDateTime(),
+          billing.getReservationConfirmationDateTime(),
+          art.getLocation()
+      );
     }).toList();
   }
 }
