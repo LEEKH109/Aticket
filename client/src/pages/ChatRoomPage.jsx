@@ -51,7 +51,7 @@ const ChatRoom = () => {
     console.log("새 채팅이 들어왔다");
     console.log("message: ");
     console.log(message);
-    const newChatlog = JSON.parse(message.body);
+    const newChatlog = JSON.parse(message.data.body);
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
     if (chatAreaRef.current) {
@@ -85,21 +85,22 @@ const ChatRoom = () => {
   }, [pins, page]);
 
   useEffect(() => {
+    const target = chatAreaRef.current?.lastChild;//firstChild;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMoreLogs) {
           loadMore();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 1.0 }
     );
-
-    if (chatAreaRef.current?.firstChild && hasMoreLogs) {
-      observer.observe(chatAreaRef.current.firstChild);
+    
+    if (target) {
+      observer.observe(target);
     }
 
     return () => observer.disconnect();
-  }, [loading, hasMoreLogs]);
+  }, [loading, hasMoreLogs,pins]);
 
   useEffect(() => {
     const connect = () => {
@@ -123,7 +124,9 @@ const ChatRoom = () => {
   }, [category]);
 
   const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (!loading && hasMoreLogs) {
+        setPage((prevPage) => prevPage + 1);
+    }
   };
 
   useEffect(()=>{
@@ -148,7 +151,7 @@ const ChatRoom = () => {
             };
             console.log("전송할 채팅: ");
             console.log(chatlog);
-            client.current.send(`/send/${category}`, {} , JSON.stringify(chatlog));
+            client.current.send(`/send/${category}`, {} , JSON.stringify(chatlog)).then((response)=>{console.log(response); onChatlogReceived(response);});
             setChatContent("");
         } catch (error) {
             console.error("유저정보 가져오기 실패", error);
