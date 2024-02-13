@@ -133,9 +133,9 @@ const BillingPreviewPage = () => {
         )}
 
         <div
-          className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+          className="mt-10 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
           onClick={handlePaymentRedirect}
-          style={{ width: "fit-content", padding: "8px 16px" }}
+          style={{ width: "fit-content", padding: "4px 16px" }}
         >
           <img
             loading="lazy"
