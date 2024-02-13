@@ -3,7 +3,21 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const BillingResultPage = () => {
   const location = useLocation();
-  const { paymentInfo } = location.state || {}; // state가 없는 경우를 대비한 기본값 설정
+  const { paymentInfo } = location.state || {};
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return new Date(dateString).toLocaleDateString("ko-KR", options);
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
       <div className="w-full">
