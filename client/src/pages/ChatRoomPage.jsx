@@ -52,8 +52,8 @@ const ChatRoom = () => {
     console.log("message: ");
     console.log(message);
     console.log(message.data);
-    console.log(message.data.body);
-    const newChatlog = JSON.parse(message.data.body);
+    console.log(message.body);
+    const newChatlog = JSON.parse(message.body);
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
     if (chatAreaRef.current) {
