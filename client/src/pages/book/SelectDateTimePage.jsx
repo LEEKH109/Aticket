@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { timetableApi } from "../../util/timetable-axios";
 import dayjs from "dayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
@@ -11,12 +11,14 @@ import TimeTable from "../../components/TimeTable";
 import { LoginContext } from "../../components/LoginContext";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-const SelectDateTimePage = ({ shortInfo }) => {
+const SelectDateTimePage = ({}) => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [availableDates, setAvailableDates] = useState([]);
   const [timetable, setTimetable] = useState([]);
   const { userId } = useContext(LoginContext);
+  const { state } = useLocation();
   const navigate = useNavigate();
+  const { shortInfo } = state || {};
 
   const themePicker = createTheme({
     palette: {
