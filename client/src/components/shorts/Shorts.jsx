@@ -26,7 +26,6 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   };
 
   const handleMouseUp = (artId) => {
-    // alert("move to detail");
     if (!isDragging) {
       setCurIndex(artId);
       setOpenDialog(true);
@@ -47,12 +46,10 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   };
 
   const handleTouchMove = () => {
-    alert("touch move");
     setIsDragging(true);
   };
 
   const handleTouchEnd = (artId) => {
-    alert("tocuh: move to detail");
     if (!isDragging) {
       setCurIndex(artId);
       setOpenDialog(true);

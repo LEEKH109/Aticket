@@ -15,8 +15,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const positionYRef = useRef(0);
   const maxLen = useRef(0);
 
-  const isTouchScreen =
-    typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const isTouchScreen = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const inRange = (value, min, max) => {
     if (value < min) {
@@ -77,8 +76,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchStart = (touchEvent) => {
-    // touchEvent.preventDefault();
-    // alert("touch start");
     const carouselItems = carouselItemsRef.current;
     positionYRef.current = touchEvent.touches[0].pageY;
 
@@ -91,7 +88,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     if (moveEvent.cancelable) {
       moveEvent.preventDefault();
     }
-    // alert("touch move");
+
     const move = moveEvent.touches[0];
     const deltaY = positionYRef.current - move.pageY;
 
@@ -106,7 +103,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchEnd = (moveEvent) => {
-    alert("touch end");
     const move = moveEvent.changedTouches[0];
     const deltaY = positionYRef.current - move.pageY;
     let nextIndex = currentIndex;
