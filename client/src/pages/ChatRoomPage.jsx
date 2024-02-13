@@ -141,7 +141,7 @@ const ChatRoom = () => {
             // const user = response.data.data;
             // console.log(user);
             const chatlog = {
-                userId: nowLoginUser,
+                userId: Number(nowLoginUser),
                 category: category,
                 content: chatContent,
                 regDate: new Date().toISOString(),
