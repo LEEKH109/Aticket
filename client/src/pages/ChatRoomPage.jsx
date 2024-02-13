@@ -133,7 +133,7 @@ const ChatRoom = () => {
   }, [isLogin]);
 
   const sendChat = async (event) => {
-    console.log(userId);
+    console.log(nowLoginUser);
     event.preventDefault();
     if (client.current && chatContent.trim()) {
         try {
