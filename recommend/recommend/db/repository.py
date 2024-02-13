@@ -79,7 +79,7 @@ def get_all_arts(con: MySQLConnectionAbstract, category: Optional[str] = None) -
             SELECT id, category
               FROM arts
              WHERE category = %s''',
-                    category)
+                    (category,))
     else:
         cur.execute('''
             SELECT id, category
