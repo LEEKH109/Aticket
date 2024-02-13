@@ -204,7 +204,7 @@ const DetailPage = ({ artId, backIconClick }) => {
 
       <div className="h-13 w-full absolute bottom-[0]">
         {isLogin.isLogin ? (
-          new Date(shortInfo.endDate) < new Date() || new Date(shortInfo.startDate) > new Date() ? (
+          new Date(shortInfo.endDate) < new Date() ? (
             <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
               예매하기
             </div>
