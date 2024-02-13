@@ -48,10 +48,8 @@ const ChatRoom = () => {
   const [ nowLoginUser, setNowLoginUser ] = useState("");
 
   const onChatlogReceived = (message) => {
-    console.log("새 채팅이 들어왔다");
-    console.log(message.body);
-    console.log(typeof message.body);
-    const newChatlog = message.body.data;
+    console.log("새 채팅이 들어왔다"); //message.body는 문자열 상태
+    const newChatlog = JSON.parse(message.body).data;
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
     if (chatAreaRef.current) {
@@ -171,7 +169,7 @@ const ChatRoom = () => {
             <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: 'calc(100vh - 170px)' }}>
                 {pins.length > 0 ? (
                 pins.map((chatlog) => (
-                <div key={chatlog.chatlogId} className={`flex ${chatlog.userId ===  Number(nowLoginUser) ? 'justify-end' : 'justify-start'} mb-4`}>
+                <div key={chatlog.chatlogId} className={`flex ${chatlog.userId ===  Number(userId) ? 'justify-end' : 'justify-start'} mb-4`}>
                 <div className="max-w-md">
                 {chatlog.userId !== userId && (
                 <div className="mb-1">
