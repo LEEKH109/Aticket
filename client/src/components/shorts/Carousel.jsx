@@ -77,17 +77,20 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleTouchStart = (touchEvent) => {
-    alert("touch start");
+    // touchEvent.preventDefault();
+    // alert("touch start");
     const carouselItems = carouselItemsRef.current;
     positionYRef.current = touchEvent.touches[0].pageY;
 
     setIsDragging(true);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     carouselItems?.addEventListener("touchend", handleTouchEnd, { once: true });
   };
 
   const handleTouchMove = (moveEvent) => {
-    moveEvent.preventDefault();
+    if (moveEvent.cancelable) {
+      moveEvent.preventDefault();
+    }
     // alert("touch move");
     const move = moveEvent.touches[0];
     const deltaY = positionYRef.current - move.pageY;
