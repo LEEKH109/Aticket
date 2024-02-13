@@ -2,6 +2,10 @@ package me.articket.vendor.billing.repository;
 
 import java.util.List;
 import java.util.Optional;
+import me.articket.vendor.billing.data.BookHistoryDto;
+import me.articket.vendor.billing.data.ReservationSeatDetailDto;
+import me.articket.vendor.billing.data.ReservationTicketDetailDto;
+import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.BillingDetail;
 import org.apache.ibatis.annotations.Insert;
@@ -48,4 +52,58 @@ public interface BillingRepository {
   @Select("SELECT * FROM billing WHERE reservation_id = #{reservationId}")
   Optional<Billing> selectByReservationId(@Param("reservationId") String reservationId);
   // 조회시 null이 반환될 수 있어 optional 처리
+
+  @Select("""
+            SELECT a.art_id, a.title, t.timetable_id, CONCAT(t.date, ' ', t.start_time) AS viewingDateTime,
+                   tt.user_type AS ticketType, SUM(tt.price) AS totalAmount, COUNT(tt.ticket_type_id) AS totalCount
+            FROM billing b
+            JOIN billing_detail bd ON b.billing_id = bd.billing_id
+            JOIN timetable t ON bd.timetable_id = t.timetable_id
+            JOIN art a ON t.art_id = a.art_id
+            JOIN ticket_type tt ON bd.ticket_type_id = tt.ticket_type_id
+            WHERE b.reservation_id = #{reservationId}
+            GROUP BY a.art_id, a.title, t.timetable_id, t.date, t.start_time, tt.user_type
+            """)
+  List<ReservationTicketDetailDto> findTicketReservationByReservationId(@Param("reservationId") String reservationId);
+
+  @Select("SELECT " +
+      "b.art_id AS artId, " +
+      "a.title AS title, " +
+      "bd.timetable_id AS timetableId, " +
+      "CONCAT(t.date, ' ', t.start_time) AS viewingDateTime, " +
+      "GROUP_CONCAT(s.seat_number ORDER BY s.seat_number ASC) AS reservedSeats, " +
+      "s.type AS seatType, " +
+      "COUNT(s.seat_number) AS reservationCount, " +
+      "b.total_amount AS totalAmount, " +
+      "COUNT(s.seat_number) AS totalCount " +
+      "FROM billing b " +
+      "JOIN billing_detail bd ON b.billing_id = bd.billing_id " +
+      "JOIN art a ON b.art_id = a.art_id " +
+      "JOIN timetable t ON bd.timetable_id = t.timetable_id " +
+      "JOIN seat s ON bd.seat_timetable_id = s.timetable_id AND bd.seat_number = s.seat_number " +
+      "WHERE b.reservation_id = #{reservationId} " +
+      "GROUP BY bd.timetable_id, s.type")
+  List<ReservationSeatDetailDto> findReservationDetailsByReservationId(@Param("reservationId") String reservationId);
+
+  @Select("""
+            SELECT 
+              a.art_id AS artId, 
+              b.reservation_id AS reservationId, 
+              a.title AS title, 
+              CONCAT(t.date, ' ', t.start_time) AS viewingDateTime, 
+              b.total_amount AS price 
+            FROM 
+              billing b 
+            JOIN 
+              billing_detail bd ON b.billing_id = bd.billing_id 
+            JOIN 
+              art a ON b.art_id = a.art_id 
+            JOIN 
+              timetable t ON bd.timetable_id = t.timetable_id 
+            WHERE 
+              b.status = 'PAYMENT_COMPLETED' 
+            AND 
+              b.booker_name = #{bookerName}
+            """)
+  List<BookHistoryDto> findCompletedBookingsByBookerName(@Param("bookerName") String bookerName);
 }
