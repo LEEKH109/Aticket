@@ -1,5 +1,6 @@
 package me.articket.server.shorts.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.art.data.ArtCategory;
 import me.articket.server.art.domain.Art;
