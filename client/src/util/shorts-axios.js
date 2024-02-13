@@ -27,7 +27,7 @@ const ShortsAPI = {
   },
 
   viewLog: (shortsId, data) => {
-    return shortsInstance.put(`shorts/${shortsId}/viewlog`, data);
+    return instance.put(`shorts/${shortsId}/viewlog`, data);
   },
 };
 
