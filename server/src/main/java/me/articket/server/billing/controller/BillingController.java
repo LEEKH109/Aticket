@@ -52,7 +52,7 @@ public class BillingController {
   }
 
   @Transactional
-  @GetMapping("reservation/ticket/{reservationId}")
+  @GetMapping("history/ticket/{reservationId}")
   public ResponseEntity<List<ReservationMainTicketResponseDto>> getReservationDetails(@PathVariable String reservationId) {
     List<ReservationMainTicketResponseDto> response = billingService.getReservationDetails(reservationId);
     if (response.isEmpty()) {
@@ -62,7 +62,7 @@ public class BillingController {
   }
 
   @Transactional
-  @GetMapping("/reservation/seat/{reservationId}")
+  @GetMapping("/hisotry/seat/{reservationId}")
   public ResponseEntity<List<ReservationMainSeatResponseDto>> getReservationSeatDetails(@PathVariable String reservationId) {
     List<ReservationMainSeatResponseDto> response = billingService.getReservationSeatDetails(reservationId);
     if (response.isEmpty()) {
