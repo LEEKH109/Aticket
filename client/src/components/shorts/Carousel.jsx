@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import ShortsList from "./ShortsList";
+import { useLoginState } from "../LoginContext";
 import { ShortsAPI } from "../../util/shorts-axios";
 
 const ITEM_WIDTH = 412;
 
 const Carousel = ({ shortList, height, index = 0 }) => {
+  const isLogin = useLoginState();
   const [currentIndex, setCurrentIndex] = useState(Number(index));
   const [isDragging, setIsDragging] = useState(false);
   const [transY, setTransY] = useState(0);
@@ -12,30 +14,30 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const carouselItemsRef = useRef(null);
   const positionYRef = useRef(0);
   const maxLen = useRef(0);
-
+  
   const isTouchScreen =
-    typeof window !== "undefined" &&
-    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-
+  typeof window !== "undefined" &&
+  window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  
   const inRange = (value, min, max) => {
     if (value < min) {
       return min;
     }
-
+    
     if (value > max) {
       return max;
     }
-
+    
     return value;
   };
-
+  
   const handleMouseDown = (clickEvent) => {
     clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
-
+    
     setIsDragging(true);
     positionYRef.current = clickEvent.pageY;
-
+    
     window.addEventListener("mousemove", handleMouseMove);
     carouselItems?.addEventListener("mouseup", handleMouseUp, { once: true });
   };
@@ -121,7 +123,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleViewLog = (curIdx, nextIdx, viewDetail) => {
-    if (curIdx !== nextIdx) {
+    if (curIdx !== nextIdx && isLogin.isLogin) {
       let viewTime = (new Date() - startTime) / 1000;
       console.log(curIdx, "번 쇼츠 ", viewTime, "초 봤음");
       ShortsAPI.viewLog(shortList[curIdx].shortsId,
