@@ -153,7 +153,7 @@ const ChatRoom = () => {
             };
             console.log("전송할 채팅: ");
             console.log(chatlog);
-            client.current.send(`/send/${category}`, {} , JSON.stringify(chatlog)).then((response)=>{console.log(response); onChatlogReceived(response);});
+            client.current.send(`/app/send/${category}`, {} , JSON.stringify(chatlog));
             setChatContent("");
         } catch (error) {
             console.error("유저정보 가져오기 실패", error);
