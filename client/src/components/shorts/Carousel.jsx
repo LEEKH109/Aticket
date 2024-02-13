@@ -120,7 +120,7 @@ const Carousel = ({ shortsIdList, height, index = 0 }) => {
   const handleViewLog = (curIdx, nextIdx, viewDetail) => {
     if (curIdx !== nextIdx && isLogin.isLogin) {
       let viewTime = (new Date() - startTime) / 1000;
-      ShortsAPI.viewLog(shortsIdList[curIdx].shortsId, {
+      ShortsAPI.viewLog(shortsIdList[curIdx], {
         viewDetail: viewDetail,
         viewTime: viewTime,
       });
