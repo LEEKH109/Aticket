@@ -12,13 +12,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        System.out.println("registerStompEndpoints입니다");
         registry.addEndpoint("/ws").setAllowedOrigins("http://i10a704.p.ssafy.io","http://i10a704.p.ssafy.io:8081","http://i10a704.p.ssafy.io:8082","http://i10a704.p.ssafy.io:80","http://localhost:5173","http://localhost:4173","https://articket.me").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/send");//채팅 보낼 때 앞에 chat을 붙이면 메시지브로커에게 도착
+        registry.setApplicationDestinationPrefixes("/send");//채팅 보낼 때 앞에 send 붙이면 메시지브로커에게 도착
         registry.enableSimpleBroker("/room");//room이 붙은 경로에 대해 브로커 발동, sendTo에서 /room/어쩌구로 활용
     }
 
