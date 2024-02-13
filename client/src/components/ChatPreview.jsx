@@ -31,7 +31,7 @@ const ChatPreview = ({ category }) => {
             ) : chatPreviews.length > 0 ? (
                 <ul className="mt-2">
                     {chatPreviews.map((preview) => (
-                        <li key={preview.chatlogId} className="text-sm text-gray-600 hover:bg-gray-100 rounded-md transition duration-150 ease-in-out p-2">
+                        <li key={preview.chatlogId} className="text-sm text-gray-600 rounded-md transition duration-150 ease-in-out p-2">
                             <span className="font-medium text-gray-800">{preview.content}</span>&nbsp;&nbsp;-&nbsp;
                             <span className="text-gray-500">{preview.nickname}</span>
                         </li>

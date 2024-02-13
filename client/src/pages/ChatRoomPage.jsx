@@ -65,7 +65,8 @@ const ChatRoom = () => {
     try {
       const response = await ChatApi.chatScroll(category, page);
       const newPins = response.data.data.content.sort((a, b) => a.chatlogId - b.chatlogId);
-      setPins((prevPins) => [...prevPins, ...newPins.reverse()]);
+    //   setPins((prevPins) => [...prevPins, ...newPins.reverse()]);
+      setPins((prevPins) => [...newPins, ...prevPins]);
       setHasMoreLogs(newPins.length === 15);
     } catch (error) {
       console.error(error);
@@ -102,7 +103,6 @@ const ChatRoom = () => {
   useEffect(() => {
     const connect = () => {
       const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
-    //   let headers = {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`};
       stompClient.connect({}, () => {
         stompClient.subscribe(`/room/${category}`, onChatlogReceived);
         console.log("구독");
@@ -133,7 +133,7 @@ const ChatRoom = () => {
             const user = response.data.data;
             console.log(user);
             const chatlog = {
-                user: user,
+                user: userId,
                 category: category,
                 content: chatContent,
                 regDate: new Date().toISOString(),
@@ -142,7 +142,6 @@ const ChatRoom = () => {
             console.log(chatlog);
             client.current.send(`/send/${category}`, {} , JSON.stringify(chatlog));
             setChatContent("");
-            console.log("채팅 보내짐");
         } catch (error) {
             console.error("유저정보 가져오기 실패", error);
         }

@@ -154,9 +154,12 @@ const DetailPage = ({shortsId, backIconClick}) => {
         <h1 className="font-bold text-lg pb-4">상세설명</h1>
         {shortInfo.infoUrls.map((infoUrl, index) => (<img key={index} src={infoUrl} className="w-full justify-center"/>))}
         <p className="h-[4vh]"></p>
-        <div className="text-center bg-slate-400 w-full h-[20vh]">
-            <ChatPreview category={shortInfo.category}/>
-            <Link to={`/chat/room/${shortInfo.category}?page=${0}`}>채팅방 바로가기</Link>
+        <div className="p-4 bg-white shadow-md mb-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-gray-800">{shortInfo.category} 채팅방</h2>
+            <Link to={`/chat/room/${shortInfo.category}?page=${0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">바로가기</Link>
+          </div>
+          <ChatPreview category={shortInfo.category}/>
         </div>
         </div>
       </div>
