@@ -160,7 +160,7 @@ const SeatBookingPage = () => {
     billingApi
       .submitReservationForSeat(userId, artId, seats)
       .then((response) => {
-        navigate("/billing/preview/seat", {
+        navigate("/billing/preview", {
           state: { ...response.data, selectedSeats, shortInfo },
         });
         console.log("결제 준비 응답:", response.data);
