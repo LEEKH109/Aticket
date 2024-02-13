@@ -11,7 +11,7 @@ import TimeTable from "../../components/TimeTable";
 import { LoginContext } from "../../components/LoginContext";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-const SelectDateTimePage = ({}) => {
+const SelectDateTimePage = ({ shortInfo }) => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [availableDates, setAvailableDates] = useState([]);
   const [timetable, setTimetable] = useState([]);
@@ -27,24 +27,6 @@ const SelectDateTimePage = ({}) => {
       },
     },
   });
-
-  const shortInfo = {
-    artId: 2,
-    category: "PLAY",
-    title: "［서울 대학로］연극 라면",
-    startDate: "2023-03-20T00:00:00Z",
-    endDate: "2024-02-25T00:00:00Z",
-    location: "해피씨어터",
-    actors: ["-"],
-    rate: 12,
-    posterUrl:
-      "https://cdnticket.melon.co.kr/resource/image/upload/product/2023/03/202303171047117fdc060a-8274-4ab8-ab99-990489e4f652.jpg/melon/resize/180x254/strip/true/quality/90/optimize",
-    infoUrls: [
-      "https://cdnticket.melon.co.kr/resource/image/upload/product/2023/12/202312110910592027af30-1a56-47ab-b5b2-8d4e2f808c89.jpg/melon/quality/90/optimize",
-      " https://cdnticket.melon.co.kr/resource/image/upload/product/2024/01/202401021424523977b6bf-0971-4de2-94ea-5289318e0d7d.jpg/melon/quality/90/optimize",
-      " https://cdnticket.melon.co.kr/resource/image/upload/product/2023/10/202310100905085286b3fb-45d5-4981-b859-4f65218dbf36.jpg/melon/quality/90/optimize",
-    ],
-  };
 
   useEffect(() => {
     timetableApi
