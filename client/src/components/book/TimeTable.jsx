@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import TicketModal from "./TicketModal";
-import theme from "../util/theme";
-import { timetableApi } from "../util/timetable-axios";
+import theme from "../../util/theme";
+import { timetableApi } from "../../util/timetable-axios";
 import { useNavigate } from "react-router-dom";
 
 const TimeTable = ({ timeList, userId, shortInfo }) => {
