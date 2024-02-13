@@ -60,7 +60,7 @@ const BillingPreviewPage = () => {
                 >
                   <div className="text-xs font-black">{ticket.userType}</div>
                   <div className="flex gap-5 justify-between text-sm font-semibold text-right">
-                    <div>{ticket.price.toLocaleString()} 원</div>
+                    <div>{(ticket.price || 0).toLocaleString()} 원</div>
                     <div>{ticket.count} 매</div>
                   </div>
                 </div>
