@@ -1,8 +1,11 @@
 package me.articket.server.billing.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import me.articket.server.art.domain.Art;
 import me.articket.server.art.repository.ArtRepository;
 import me.articket.server.billing.data.BillingApproveRequest;
 import me.articket.server.billing.data.BillingApproveResponse;
@@ -10,12 +13,16 @@ import me.articket.server.billing.data.BillingCategory;
 import me.articket.server.billing.data.BillingCreateSeatRequest;
 import me.articket.server.billing.data.BillingCreateTicketRequest;
 import me.articket.server.billing.data.BillingPaymentCreatedResponse;
+import me.articket.server.billing.data.ReservationMainTicketResponseDto;
+import me.articket.server.billing.data.ReservationVendorTicketResponseDto;
 import me.articket.server.billing.domain.Billing;
 import me.articket.server.billing.repository.BillingRepository;
 import me.articket.server.user.domain.User;
 import me.articket.server.user.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -71,12 +78,14 @@ public class BillingService {
     requestVendor.setTimetableId(request.getTimetableId());
     requestVendor.setBookerName(user.getName());
     requestVendor.setTickets(request.getTickets());
+    System.out.println(requestVendor);
     // 5단계) Billing 객체 DB 등록
     billing = billingRepository.save(billing);
     // 6단계) 벤더 서버에 결제 사전 준비 요청
     String url = externalServiceUrl + "/billing/reservation/ticket";
     ResponseEntity<BillingPaymentCreatedResponse> response = restTemplate.postForEntity(url,
         requestVendor, BillingPaymentCreatedResponse.class);
+    System.out.println(response);
     // 8단계) 외부 서버의 응답 반환
     if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
       // 7단계 - 요청 성공) Billing status  PAYMENT_PENDING  으로 변경
@@ -182,4 +191,63 @@ public class BillingService {
 
   // POST: /billing/cancel/{reservationId}
 
+
+
+  // GET: /billing/ticket/{reservationId}
+  public List<ReservationMainTicketResponseDto> getReservationDetails(String reservationId) {
+    // 요청 URL 로그 출력
+    String requestUrl = externalServiceUrl + "/billing/reservation/ticket/" + reservationId;
+    System.out.println("Requesting Vendor server with URL: " + requestUrl);
+
+    // 예: 인증이 필요한 경우 헤더에 인증 정보 추가 (필요한 경우에만 사용)
+    // HttpHeaders headers = new HttpHeaders();
+    // headers.set("Authorization", "Bearer " + yourAuthToken);
+    // HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+    ResponseEntity<List<ReservationVendorTicketResponseDto>> responseEntity = restTemplate.exchange(
+        requestUrl,
+        HttpMethod.GET,
+        null, // new HttpEntity<>(headers)를 사용하여 인증이 필요한 경우 헤더 추가
+        new ParameterizedTypeReference<List<ReservationVendorTicketResponseDto>>() {});
+
+    // ResponseEntity 및 상태 코드 로그 출력
+    System.out.println("Received response status code: " + responseEntity.getStatusCode());
+
+    if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
+      System.err.println("Error: Vendor server responded with status code: " + responseEntity.getStatusCode());
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vendor reservations not found for " + reservationId);
+    }
+
+    List<ReservationVendorTicketResponseDto> vendorResponses = responseEntity.getBody();
+
+    return vendorResponses.stream().map(vendorResponse -> {
+      // Art 및 Billing 정보 조회 로그
+      System.out.println("Fetching Art information for Art ID: " + vendorResponse.getArtId());
+      var artOpt = artRepository.findById(vendorResponse.getArtId());
+
+      System.out.println("Fetching Billing information for Reservation ID: " + reservationId);
+      var billingOpt = billingRepository.findByReservationId(reservationId);
+
+      if (artOpt.isEmpty() || billingOpt.isEmpty()) {
+        System.err.println("Additional information not found for Art ID " + vendorResponse.getArtId() + " or Reservation ID " + reservationId);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Additional information not found for Art ID " + vendorResponse.getArtId() + " or Reservation ID " + reservationId);
+      }
+
+      var art = artOpt.get();
+      var billing = billingOpt.get();
+
+      return new ReservationMainTicketResponseDto(
+          vendorResponse.getArtId(),
+          reservationId,
+          vendorResponse.getTitle(),
+          vendorResponse.getTimetableId(),
+          vendorResponse.getViewingDateTime(),
+          art.getPosterUrl(),
+          art.getLocation(),
+          billing.getReservationConfirmationDateTime() != null ? billing.getReservationConfirmationDateTime().toString() : null,
+          vendorResponse.getTicketType(),
+          vendorResponse.getTotalAmount(),
+          vendorResponse.getTotalCount());
+    }).collect(Collectors.toList());
+  }
 }

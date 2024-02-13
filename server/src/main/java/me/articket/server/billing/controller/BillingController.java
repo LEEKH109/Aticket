@@ -1,14 +1,17 @@
 package me.articket.server.billing.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.articket.server.billing.data.BillingApproveRequest;
 import me.articket.server.billing.data.BillingApproveResponse;
 import me.articket.server.billing.data.BillingCreateSeatRequest;
 import me.articket.server.billing.data.BillingCreateTicketRequest;
 import me.articket.server.billing.data.BillingPaymentCreatedResponse;
+import me.articket.server.billing.data.ReservationMainTicketResponseDto;
 import me.articket.server.billing.service.BillingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +48,16 @@ public class BillingController {
       @RequestBody BillingApproveRequest request) {
     return billingService.requestApprovePayment(reservationId, request);
   }
+
+  @Transactional
+  @GetMapping("reservation/ticket/{reservationId}")
+  public ResponseEntity<List<ReservationMainTicketResponseDto>> getReservationDetails(@PathVariable String reservationId) {
+    List<ReservationMainTicketResponseDto> response = billingService.getReservationDetails(reservationId);
+    if (response.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(response);
+  }
+
 
 }
