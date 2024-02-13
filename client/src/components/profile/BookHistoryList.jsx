@@ -6,7 +6,7 @@ import { billingApi } from "../../util/billing-axios";
 const HEIGHT = `h-[calc(100svh_-_1rem_-_128px_-_41px_-_64px)]`;
 
 const BookHistoryList = (userId) => {
-  const [bookHistoryList, setBookHistoryList] = useState();
+  const [bookHistoryList, setBookHistoryList] = useState([]);
 
   useEffect(() => {
     billingApi
