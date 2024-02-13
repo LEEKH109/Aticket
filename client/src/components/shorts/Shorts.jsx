@@ -12,10 +12,9 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
-  const [artId, setArtId] = useState();
+const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering }) => {
+  const [shorts, setShorts] = useState();
   const [art, setArt] = useState();
-  const [curIndex, setCurIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -25,9 +24,8 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
     closeDetail();
   };
 
-  const handleMouseUp = (artId) => {
+  const handleMouseUp = () => {
     if (!isDragging) {
-      setCurIndex(artId);
       setOpenDialog(true);
       viewDetailLog();
     }
@@ -42,22 +40,24 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   };
 
   useEffect(() => {
-    ShortsAPI.getShorts(shorts.shortsId)
-      .then(({ data }) => {
-        setArtId(data.data.artId);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if (isRendering) {
+      ShortsAPI.getShorts(shortsId)
+        .then(({ data }) => {
+          setShorts(data.data);
+        })
+        .catch((err) => console.err(err));
+    }
+  }, [isRendering]);
 
   useEffect(() => {
-    if (artId != undefined) {
-      DetailApi.getDetail(artId)
+    if (shorts != undefined) {
+      DetailApi.getDetail(shorts.artId)
         .then(({ data }) => {
           setArt(data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.err(err));
     }
-  }, [artId]);
+  }, [shorts]);
 
   return (
     <>
@@ -75,31 +75,35 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
           },
         }}
       >
-        <DetailPage shortsId={curIndex} backIconClick={handleCloseDialog} />
+        {shorts && <DetailPage artId={shorts.artId} backIconClick={handleCloseDialog} />}
       </Dialog>
-      <div className="relative w-full  flex-shrink-0 bg-black " style={{ height: `${itemHeight}px` }}>
-        {shorts.type == "VIDEO" ? (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
-            onMouseUp={() => handleMouseUp(shorts.shortsId)}
-            onMouseMove={handleMouseMove}
-            onMouseDown={handleMouseDown}
-          >
-            <source src={shorts.mediaUrl} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={shorts.mediaUrl}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
-            onMouseUp={() => handleMouseUp(shorts.shortsId)}
-            onMouseMove={handleMouseMove}
-            onMouseDown={handleMouseDown}
-          />
-        )}
+      <div
+        className="relative w-full  flex-shrink-0 bg-black "
+        style={{ height: `${itemHeight}px` }}
+      >
+        {shorts &&
+          (shorts.type == "VIDEO" ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              onMouseUp={() => handleMouseUp()}
+              onMouseMove={handleMouseMove}
+              onMouseDown={handleMouseDown}
+            >
+              <source src={shorts.mediaUrl} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={shorts.mediaUrl}
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              onMouseUp={() => handleMouseUp()}
+              onMouseMove={handleMouseMove}
+              onMouseDown={handleMouseDown}
+            />
+          ))}
         {art ? <ShortsInfo title={art.title} shortsId={shorts.shortsId} /> : <ShortsInfoLoading />}
       </div>
     </>

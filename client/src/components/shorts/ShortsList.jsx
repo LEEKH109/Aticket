@@ -1,20 +1,22 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShortsInfo from "./ShortsInfo";
 import Shorts from "./Shorts";
 
 // const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
 
-const ShortsList = ({ viewDetailLog, closeDetail, shortsList, itemWidth, itemHeight }) => {
+const ShortsList = ({ viewDetailLog, closeDetail, shortsIdList, itemHeight, currentIndex }) => {
+  console.log("shorts list", currentIndex);
   return (
     <>
-      {shortsList.map((shorts) => (
+      {shortsIdList.map((shortsId, index) => (
         <Shorts
-          key={shorts.shortsId}
-          shorts={shorts}
+          key={shortsId}
+          shortsId={shortsId}
           itemHeight={itemHeight}
           viewDetailLog={viewDetailLog}
           closeDetail={closeDetail}
+          isRendering={index == currentIndex - 1 || index == currentIndex + 1}
         />
       ))}
     </>
