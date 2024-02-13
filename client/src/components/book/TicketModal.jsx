@@ -77,6 +77,7 @@ const TicketSelectionModal = ({
             ...response.data,
             shortInfo,
             selectedTickets: order.tickets,
+            ticketTypes,
             totalPrice,
           },
         });
