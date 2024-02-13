@@ -152,6 +152,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     const carouselItems = carouselItemsRef.current;
 
     if (isTouchScreen) {
+      alert(carouselItems);
       carouselItems?.addEventListener("touchstart", handleTouchStart, { passive: true });
 
       return () => {

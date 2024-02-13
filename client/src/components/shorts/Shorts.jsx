@@ -35,7 +35,6 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
   };
 
   const handleMouseMove = () => {
-    alert("touch move");
     setIsDragging(true);
   };
 
