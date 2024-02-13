@@ -49,9 +49,11 @@ const ChatRoom = () => {
 
   const onChatlogReceived = (message) => {
     console.log("새 채팅이 들어왔다");
-    const newChatlog = JSON.parse(message.body);
-    console.log(newChatlog.data);
-    setPins((prevPins) => [...prevPins, newChatlog.data]);
+    console.log(message.body);
+    console.log(typeof message.body);
+    const newChatlog = message.body.data;
+    console.log(newChatlog);
+    setPins((prevPins) => [...prevPins, newChatlog]);
     if (chatAreaRef.current) {
         const chatArea = chatAreaRef.current;
         chatArea.scrollTop = chatArea.scrollHeight;
@@ -208,9 +210,7 @@ const ChatRoom = () => {
             </button>
         </div>
             ) : (
-                <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
-                로그인이 필요한 서비스입니다.
-              </div>
+                <p className="text-center text-gray-500">로그인이 필요한 서비스입니다.</p>
             )}
             </div>
         </div>
