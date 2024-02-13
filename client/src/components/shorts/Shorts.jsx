@@ -89,9 +89,9 @@ const Shorts = ({ shorts, itemHeight, viewDetailLog, closeDetail }) => {
             onMouseUp={() => handleMouseUp(shorts.shortsId)}
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
-            onTouchStart={() => handleMouseUp(shorts.shortsId)}
+            onTouchStart={handleMouseDown}
             onTouchMove={handleMouseMove}
-            onTouchEnd={handleMouseDown}
+            onTouchEnd={() => handleMouseUp(shorts.shortsId)}
           >
             <source src={shorts.mediaUrl} type="video/mp4" />
           </video>
