@@ -38,6 +38,7 @@ const TimeTable = ({ timeList, userId, shortInfo }) => {
           timetableId: timeInfo.timetableId,
           userId: userId,
           artId: shortInfo.artId,
+          shortInfo: shortInfo,
         },
       });
     }
