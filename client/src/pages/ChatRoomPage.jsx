@@ -171,21 +171,15 @@ const getCategoryGradient = (category) => {
   }, [isLogin, userId]);
 
   const sendChat = async (event) => {
-    console.log(nowLoginUser);
     event.preventDefault();
     if (client.current && chatContent.trim()) {
         try {
-            // const response = await UserApi.getUserInfo(userId);
-            // const user = response.data.data;
-            // console.log(user);
             const chatlog = {
                 userId: Number(nowLoginUser),
                 category: category,
                 content: chatContent,
                 regDate: new Date().toISOString(),
             };
-            console.log("전송할 채팅: ");
-            console.log(chatlog);
             client.current.send(`/app/send/${category}`, {} , JSON.stringify(chatlog));
             setChatContent("");
         } catch (error) {
@@ -193,10 +187,11 @@ const getCategoryGradient = (category) => {
         }
     }
   };
+
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       event.preventDefault(); 
-      handleSubmit();        
+      sendChat();   
     }
 };
 
