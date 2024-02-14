@@ -3,7 +3,6 @@ const dateFormmatterWithTime = (dateString) => {
   const [year, month, day] = datePart.split("-");
   const [hour, minute] = timePart.split(":");
 
-  // "date" 대신 "parsedDate" 또는 다른 유니크한 이름을 사용
   const parsedDate = new Date(
     `${year}-${month}-${day}T${hour}:${minute}:00+09:00`
   );
@@ -12,5 +11,3 @@ const dateFormmatterWithTime = (dateString) => {
 
   return `${year}.${month}.${day}(${dayLabel}) ${hour}:${minute}`;
 };
-
-export { dateFormmatterWithTime };
