@@ -187,7 +187,7 @@ const SeatBookingPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
+    <div className="flex flex-col h-[calc(100svh-64px)] overflow-auto">
       <div className="w-full">
         <div className="flex gap-0 px-5">
           <ArrowBackIosIcon />
