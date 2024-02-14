@@ -11,6 +11,16 @@ const useGlobalStyles = () => {
     const style = document.createElement("style");
     style.type = "text/css";
     style.innerHTML = `
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
         ::-webkit-scrollbar {
           display: none; /* Hide scrollbar for Chrome, Safari and Opera */
         }
@@ -61,7 +71,7 @@ const ChatRoom = () => {
     {
       categoryId: 3,
       category: "PLAY",
-      name: "공연",
+      name: "연극",
     },
   ];
 
@@ -84,8 +94,9 @@ const ChatRoom = () => {
     navigate("/chat");
   };
 
+  const fadeInClass = "animate-fadeIn";
+
   const onChatlogReceived = (message) => {
-    console.log("새 채팅이 들어왔다"); //message.body는 문자열 상태
     const newChatlog = JSON.parse(message.body).data;
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
@@ -100,7 +111,9 @@ const ChatRoom = () => {
     setLoading(true);
     try {
       const response = await ChatApi.chatScroll(category, page);
-      const newPins = response.data.data.content.sort((a, b) => a.chatlogId - b.chatlogId);
+      const newPins = response.data.data.content.sort(
+        (a, b) => a.chatlogId - b.chatlogId
+      );
       setPins((prevPins) => [...newPins, ...prevPins]);
       setHasMoreLogs(newPins.length === 15);
     } catch (error) {
@@ -138,7 +151,9 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const connect = () => {
-      const stompClient = Stomp.over(() => new SockJS("http://i10a704.p.ssafy.io:8081/ws"));
+      const stompClient = Stomp.over(
+        () => new SockJS("http://i10a704.p.ssafy.io:8081/ws")
+      );
       stompClient.connect(
         {},
         () => {
@@ -182,7 +197,11 @@ const ChatRoom = () => {
           content: chatContent,
           regDate: new Date().toISOString(),
         };
-        client.current.send(`/app/send/${category}`, {}, JSON.stringify(chatlog));
+        client.current.send(
+          `/app/send/${category}`,
+          {},
+          JSON.stringify(chatlog)
+        );
         setChatContent("");
       } catch (error) {
         console.error("유저정보 가져오기 실패", error);
@@ -228,8 +247,10 @@ const ChatRoom = () => {
               <div
                 key={chatlog.chatlogId}
                 className={`flex ${
-                  chatlog.userId === Number(nowLoginUser) ? "justify-end" : "justify-start"
-                } mb-4`}
+                  chatlog.userId === Number(nowLoginUser)
+                    ? "justify-end"
+                    : "justify-start"
+                } mb-4 ${fadeInClass}`}
               >
                 <div className="max-w-md">
                   {chatlog.userId !== Number(nowLoginUser) && (
@@ -242,7 +263,7 @@ const ChatRoom = () => {
                   <div
                     className={`p-4 rounded-lg ${
                       chatlog.userId === Number(nowLoginUser)
-                        ? "bg-blue-500 text-white"
+                        ? "bg-indigo-500 text-white"
                         : "bg-gray-200 text-gray-800"
                     } w-80`}
                   >
@@ -257,7 +278,9 @@ const ChatRoom = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">채팅이 존재하지 않습니다.</p>
+            <p className="text-center text-gray-500">
+              채팅이 존재하지 않습니다.
+            </p>
           )}
         </div>
         {isLogin ? (
