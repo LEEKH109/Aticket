@@ -77,7 +77,7 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
       >
         {shorts && <DetailPage artId={shorts.artId} backIconClick={handleCloseDialog} />}
       </Dialog>
-      <div className="relative w-full  flex-shrink-0 bg-black" style={{ height: `${itemHeight}px` }}>
+      <div className="relative w-full overflow-hidden flex-shrink-0 bg-black" style={{ height: `${itemHeight}px` }}>
         {isRendering && shorts ? (
           shorts.type == "VIDEO" ? (
             <video
