@@ -29,7 +29,7 @@ function Footer() {
           value="home"
           label="홈"
           icon={<HomeIcon fontSize="large" />}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/short")}
         />
         <BottomNavigationAction
           value="chat"

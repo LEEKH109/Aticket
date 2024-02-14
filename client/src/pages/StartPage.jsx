@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import MobileStepper from "@mui/material/MobileStepper";
 import Button from "@mui/material/Button";
@@ -8,16 +9,10 @@ import KakaoOAuth from "../util/oauth";
 import KakaoIcon from "../components/KakaoIcon";
 
 const StartPage = () => {
-  const [logoOpacity, setLogoOpacity] = useState(0);
+  const navigate = useNavigate();
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
-  const [images, setImages] = useState([
-    "https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1600716051809-e997e11a5d52?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ]);
-
+ 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -26,52 +21,70 @@ const StartPage = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  useEffect(() => {
-    setLogoOpacity(100);
-  });
 
   return (
     <>
-      <div className="h-[calc(100%_-_64px)] flex flex-col align-middle justify-items-center justify-center text-center">
+      <div className="h-[calc(100%_-_64px)] flex flex-col align-middle justify-items-center justify-center text-center bg-center bg-[url('/img/startbg.jpg')] bg-cover">
         <div
-          className={`m-auto mt-0 mb-0 transition-opacity ease-in-out duration-1000 opacity-${logoOpacity}`}
+          className={`m-auto pt-20 mb-0 animate-logoFade`}
         >
           <img className="w-64" src="/img/logo.png" />
         </div>
-        <p className="mt-10" />
-        <h1 className="text-4xl leading-10 mb-8 font-extrabold p-10">
+        <h1 className="text-4xl leading-10 font-extrabold p-10 opacity-0 animate-textFade" style={{animationDelay:'0.9s'}}>
           지금 바로 아티켓과 함께하세요.
         </h1>
-        <div className="w-full h-screen bg-slate-700 flex flex-col">
-          <div className="flex-grow overflow-hidden relative bg-yellow-500">
+        <div className="w-full h-screen flex flex-col opacity-0 animate-bgFade" style={{animationDelay:'1.6s'}}>
+          <div className="flex-grow overflow-hidden relative">
             <div
-              className="flex transition-transform duration-1000 w-full h-full"
+              className="flex transition-transform duration-500 ease w-full h-full"
               style={{ transform: `translateX(-${activeStep * 100}%)` }}
             >
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className="min-w-full h-full bg-cover"
-                  style={{ backgroundImage: `url(${image})` }}
-                />
-              ))}
+              <div className="min-w-full h-full bg-cover flex flex-col items-center">
+              <img src="/img/one.png" className="w-[5vh] self-start ml-5" />
+              <img src="/img/icon-scroll.gif" className="w-[10vh] pb-6" />
+                <p className="text-xl mb-10 font-semibold">간단하게 위 아래로 넘겨서<br/>전시와 공연을 찾아보세요.</p>
+              </div>
+              <div className="min-w-full h-full bg-cover flex flex-col items-center">
+              <img src="/img/two.png" className="w-[5vh] self-start ml-5" />
+              <img src="/img/icon-favorite.gif" className="w-[10vh] pb-6" />
+              <p className="text-xl mb-10 font-semibold">마음에 드는 전시나 공연을<br/>컬렉션에 저장하고, 예매하세요!</p>
+              </div>
+              <div className="min-w-full h-full bg-cover flex flex-col items-center">
+              <img src="/img/three.png" className="w-[5vh] self-start ml-5" />
+              <img src="/img/icon-bubble.gif" className="w-[10vh] pb-6" />
+              <p className="text-xl mb-10 font-semibold">채팅을 통해 다른 이용자들과 <br/>전시 및 공연 정보를 공유해보세요.</p>
+              </div>
+              <div className="min-w-full h-full bg-cover flex flex-col items-center">
+              <img src="/img/four.png" className="w-[5vh] self-start ml-5" />
+              <img src="/img/icon-start.gif" className="w-[10vh] pb-6" />
+              <p className="text-xl mb-10 font-semibold">끝입니다! <br/>이제 아티켓으로 간편하게 시작해보세요!</p>
+              </div>
             </div>
           </div>
-          <div className="w-full">
+          <div className="w-full bg-transparent">
             <MobileStepper
               variant="dots"
               steps={4}
               position="static"
               activeStep={activeStep}
               className="w-full"
+              sx={{backgroundColor:'#222222',
+              height:"7vh",
+              opacity:'0.8',
+              '& .MuiMobileStepper-dot': {
+                backgroundColor: '#cccccc',
+              },
+              '& .MuiMobileStepper-dotActive': {
+                backgroundColor: '#ffffff',
+              },}}
               nextButton={
-                <Button size="small" onClick={handleNext} disabled={activeStep === 3}>
+                <Button size="small" onClick={handleNext} disabled={activeStep === 3} sx={{color:"#ffffff"}}>
                   다음
                   {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                 </Button>
               }
               backButton={
-                <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                <Button size="small" onClick={handleBack} disabled={activeStep === 0}  sx={{color:"#ffffff"}} >
                   {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                   이전
                 </Button>
@@ -79,44 +92,37 @@ const StartPage = () => {
             />
           </div>
         </div>
-        <div className="flex justify-center">
-          <hr></hr>
+        <div className="bg-[#222222] animate-bgFade opacity-0" style={{animationDelay:'2.2s'}}>
+        <hr className="border-white w-full border-1 opacity-50"></hr>
+        <div className="flex flex-col justify-center items-center">
           <div className="w-[30vh] h-[20vh]">
             <Button
-              variant="contained"
+              onClick={()=>{navigate("/")}}
+              variant="outlined"
               sx={{
+                marginTop: "6vh",
                 width: "100%",
-                height: "4.8vh",
+                height: "6vh",
                 position: "relative",
-                marginTop: "3vh",
-                backgroundColor: "#397D54",
-                ":hover": {
-                  backgroundColor: "#235D3A",
-                },
+                borderColor: "#397d54",
+                borderWidth:"2px",
+                color:"#ffffff",
+                backgroundColor:"#397d54",
+                fontSize:"2.3vh",
+                fontWeight:"bold",
+                ":hover" : {
+                  borderColor: "#83bf93",
+                  backgroundColor: "#83bf93",
+                  color:"#ffffff"
+                }
               }}
             >
               시작하기
             </Button>
-            <Button
-              onClick={() => {}}
-              variant="contained"
-              sx={{
-                width: "100%",
-                height: "4.8vh",
-                position: "relative",
-                marginTop: "3vh",
-                backgroundColor: "#FEE500",
-                ":hover": {
-                  backgroundColor: "#FDD835",
-                },
-                color: "#000",
-              }}
-              startIcon={<KakaoIcon />}
-            >
-              카카오로 로그인하기
-            </Button>
           </div>
         </div>
+        </div>
+        
       </div>
     </>
   );
