@@ -156,7 +156,7 @@ const DetailPage = ({shortsId, backIconClick}) => {
         <p className="h-[4vh]"></p>
         <div className="p-4 bg-white shadow-md mb-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">{shortInfo.category} 채팅방</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{shortInfo.category} 단체 채팅방</h2>
             <Link to={`/chat/room/${shortInfo.category}?page=${0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">바로가기</Link>
           </div>
           <ChatPreview category={shortInfo.category}/>
