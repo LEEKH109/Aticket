@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Button from "@mui/material/Button";
-import KakaoIcon from "../components/KakaoIcon";
+import KakaoIcon from "../../components/KakaoIcon";
 
 const BillingPreviewPage = () => {
   const { state } = useLocation();
