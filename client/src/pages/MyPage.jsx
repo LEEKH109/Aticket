@@ -15,7 +15,7 @@ const MyPage = () => {
         <>
             <div className="h-[calc(100%_-_64px)] flex-col align-middle content-center justify-center items-center bg-slate-100 text-center">
                 <p>{userName}님 반갑습니다.</p>
-                <button onClick={logout}>로그아웃</button>
+                <button onClick={logout} className="bg-red-500 text-white p-1 rounded-md">로그아웃</button>
             </div>
         </>
     )
