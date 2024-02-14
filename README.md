@@ -55,14 +55,14 @@ SSAFY 10기 공통 프로젝트 A704
 - WebSocket
 - Jwt
 
-### Backend - 벤더
-- Spring Boot 3.2.1
-- MyBatis
-- MySQL
-
 ### Backend - 추천
 - Flask
 - PySpark
+- MySQL
+
+### Backend - 벤더
+- Spring Boot 3.2.1
+- MyBatis
 - MySQL
 
 ### Frontend
@@ -83,6 +83,70 @@ SSAFY 10기 공통 프로젝트 A704
 - Nginx
 - Jenkins
 - Docker
+
+## 프로젝트 파일 구조
+### Backend - 메인
+```
+server
+  ├─art
+  │  ├─controller
+  │  ├─data
+  │  ├─domain
+  │  ├─repository
+  │  └─service
+  ├─billing
+  │  └─...
+  ├─chat
+  │  └─...
+  ├─common
+  │  ├─config
+  │  ├─entity
+  │  ├─exception
+  │  ├─jwt
+  │  ├─response
+  │  └─util
+  ├─like
+  │  └─...
+  ├─login
+  │  └─...
+  ├─shorts
+  │  └─...
+  ├─timetable
+  │  └─...
+  └─user
+     └─...
+```
+
+### Backend - 추천
+```
+recommend
+  ├─data
+  ├─db
+  └─service
+```
+
+
+## Backend - 벤더
+```
+vendor
+  ├─art
+  │  ├─domain
+  │  └─repository
+  ├─billing
+  │  ├─controller
+  │  ├─data
+  │  ├─domain
+  │  ├─repository
+  │  └─service
+  ├─common
+  ├─seat
+  │  └─...
+  ├─tickettype
+  │  └─...
+  └─timetable
+     └─...
+
+```
 
 ## 문서 (Documentation)
 - [프로젝트 노션](https://instinctive-talk-7a7.notion.site/Aticket-637a6f1875244119a8c89f14ed540b44?pvs=4)
