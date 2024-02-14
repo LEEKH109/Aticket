@@ -67,7 +67,7 @@ const BillingResultPage = () => {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
+    <div className="flex flex-col h-[calc(100svh-64px)] overflow-auto">
       <div className="w-full">
         <div
           className="flex items-center gap-2 px-5 cursor-pointer"
