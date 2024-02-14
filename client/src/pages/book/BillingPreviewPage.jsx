@@ -66,12 +66,6 @@ const BillingPreviewPage = () => {
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-3">
-                  <div className="text-xs font-black">관람일시</div>
-                  <div className="text-xs font-semibold text-right">
-                    {shortInfo?.date || "-"}
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-3">
                   <div className="text-xs font-black">장소</div>
                   <div className="text-xs font-semibold text-right">
                     {shortInfo?.location || "-"}
@@ -107,17 +101,6 @@ const BillingPreviewPage = () => {
 
         {showTickets && (
           <>
-            <div className="w-full mt-4 flex-grow">
-              <div className="text-xl font-black">티켓 선택</div>
-              {selectedTickets.map((ticket, index) => (
-                <div key={index} className="mt-2 flex justify-between">
-                  <span className="text-xs font-bold">{ticket.userType}:</span>
-                  <span className="text-xs ">
-                    {(ticket.price || 0).toLocaleString()}원 x {ticket.count}매
-                  </span>
-                </div>
-              ))}
-            </div>
             <div className="w-full mt-4 border-t pt-2">
               <div className="flex justify-between">
                 <span className="text-xs font-bold">총 금액 / 매수:</span>
