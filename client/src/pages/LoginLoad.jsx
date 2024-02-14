@@ -38,7 +38,7 @@ const LoginLoad = () => {
           setLogin(true);
           setUserId(res.data.data.userId);
           setProfileImg(data.profileUrl);
-          navigate("/");
+          navigate("/short");
         })
         .catch((err) => setOpenAlert(true));
       })
