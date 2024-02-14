@@ -238,14 +238,7 @@ const getCategoryGradient = (category) => {
                 value={chatContent}
                 onChange={(e) => setChatContent(e.target.value)}
                 onkeydown="javascript:if(event.keyCode==13) {sendChat};" maxLength="100" required rows="1"></textarea>
-           <button
-              type="submit"
-              onClick={sendChat}
-              className={`ml-3 w-10 h-10 flex items-center justify-center rounded-full ${
-                chatContent.trim() ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'
-              } text-white transition duration-150 ease-in-out`}
-              disabled={!chatContent.trim()}
-            >
+                <button type="submit" onClick={sendChat} className="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
                     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
