@@ -14,6 +14,8 @@ import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
 import CollectionPage from "./pages/CollectionPage";
 import BillingApprovePage from "./pages/book/BillingApprovePage";
+import BillingCanclePage from "./pages/book/BillingCanclePage";
+import BillingFailPage from "./pages/book/BillingFailPage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
 import StartPage from "./pages/StartPage";
@@ -93,6 +95,16 @@ function App() {
             {
               path: "billing/approve/:reservationId",
               element: <BillingApprovePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "billing/cancle/:reservationId",
+              element: <BillingCanclePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "billing/fail/:reservationId",
+              element: <BillingFailPage />,
               errorElement: <ErrorPage />,
             },
             {
