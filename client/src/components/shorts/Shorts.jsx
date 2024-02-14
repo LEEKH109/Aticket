@@ -77,12 +77,9 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
       >
         {shorts && <DetailPage artId={shorts.artId} backIconClick={handleCloseDialog} />}
       </Dialog>
-      <div
-        className={`relative w-full  flex-shrink-0 bg-black ${isRendering ? "" : "hidden"} `}
-        style={{ height: `${itemHeight}px` }}
-      >
-        {shorts &&
-          (shorts.type == "VIDEO" ? (
+      <div className="relative w-full  flex-shrink-0 bg-black" style={{ height: `${itemHeight}px` }}>
+        {isRendering && shorts ? (
+          shorts.type == "VIDEO" ? (
             <video
               autoPlay
               loop
@@ -103,7 +100,10 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
               onMouseMove={handleMouseMove}
               onMouseDown={handleMouseDown}
             />
-          ))}
+          )
+        ) : (
+          <p>loading</p>
+        )}
         {art ? <ShortsInfo title={art.title} shortsId={shorts.shortsId} /> : <ShortsInfoLoading />}
       </div>
     </>
