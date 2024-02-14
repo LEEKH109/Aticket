@@ -202,7 +202,7 @@ const DetailPage = ({ artId, backIconClick }) => {
         </div>
       </div>
 
-      <div className="h-13 w-full absolute bottom-[0]">
+      <div className="h-13 w-[412px] fixed bottom-16">
         {isLogin.isLogin ? (
           new Date(shortInfo.endDate) < new Date() ? (
             <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
