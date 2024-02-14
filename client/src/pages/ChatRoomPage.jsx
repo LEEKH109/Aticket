@@ -5,8 +5,6 @@ import SockJS from "sockjs-client";
 import { Stomp } from '@stomp/stompjs';
 import { LoginContext } from "../components/LoginContext";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import KakaoOAuth from "../util/oauth";
 
 const useGlobalStyles = () => {
     useEffect(() => {
@@ -49,7 +47,6 @@ const ChatRoom = () => {
   const chatAreaRef = useRef(null);
   const client = useRef(null);
   const [ nowLoginUser, setNowLoginUser ] = useState("");
-
   const categories = [
     {
       categoryId: 1,
@@ -66,28 +63,29 @@ const ChatRoom = () => {
       category: "PLAY",
       name: "공연"
     }
-  ];
+    ];
 
   const getCategoryName = (category) => {
     const categoryObj = categories.find((cat) => cat.category === category);
     return categoryObj ? categoryObj.name : category;
   };
 
-const categoryGradientColors = {
+  const categoryGradientColors = {
     SHOW: 'from-blue-500 to-purple-500',
     MUSICAL: 'from-blue-500 to-teal-400',
     PLAY: 'from-purple-500 to-pink-500',
-};
+    };
     
-const getCategoryGradient = (category) => {
-    return categoryGradientColors[category];
-};
+    const getCategoryGradient = (category) => {
+        return categoryGradientColors[category];
+    };
 
-  const handleBackClick = () => {
-    navigate('/chat');
-  };
+    const handleBackClick = () => {
+        navigate('/chat');
+    };
 
   const onChatlogReceived = (message) => {
+    console.log("새 채팅이 들어왔다"); //message.body는 문자열 상태
     const newChatlog = JSON.parse(message.body).data;
     console.log(newChatlog);
     setPins((prevPins) => [...prevPins, newChatlog]);
@@ -121,7 +119,7 @@ const getCategoryGradient = (category) => {
   }, [pins, page]);
 
   useEffect(() => {
-    const target = chatAreaRef.current?.lastChild;//firstChild;
+    const target = chatAreaRef.current?.lastChild;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMoreLogs) {
@@ -136,7 +134,7 @@ const getCategoryGradient = (category) => {
     }
 
     return () => observer.disconnect();
-  }, [loading, hasMoreLogs, pins]);
+  }, [loading, hasMoreLogs,pins]);
 
   useEffect(() => {
     const connect = () => {
@@ -188,26 +186,17 @@ const getCategoryGradient = (category) => {
     }
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault(); 
-      sendChat();   
-    }
-};
-
   return (
     <div>
         <div>
-        <div className={`flex items-center py-3 rounded-lg shadow-md bg-gradient-to-r ${getCategoryGradient(category)}`}>
-        <IconButton onClick={handleBackClick} className="text-white">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-  </svg>
-</IconButton>
-  <h1 className="text-xl font-bold text-center text-white">
-  &nbsp;&nbsp;{getCategoryName(category)} 단체 채팅방
-  </h1>
-</div>
+            <div className={`flex items-center py-3 rounded-lg shadow-md bg-gradient-to-r ${getCategoryGradient(category)}`}>
+                <IconButton onClick={handleBackClick} className="text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </IconButton>
+                <h1 className="text-xl font-bold text-center text-white">&nbsp;&nbsp;{getCategoryName(category)} 단체 채팅방</h1>
+            </div>
             <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: 'calc(100vh - 170px)' }}>
                 {pins.length > 0 ? (
                 pins.map((chatlog) => (
@@ -218,7 +207,7 @@ const getCategoryGradient = (category) => {
                     <span className="text-sm font-semibold text-gray-800">{chatlog.nickname}</span>
                 </div>
                 )}
-                    <div className={`p-4 rounded-lg ${chatlog.userId === userId ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} w-80`}>
+                    <div className={`p-4 rounded-lg ${chatlog.userId === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} w-80`}>
                         <p className="break-words">{chatlog.content}</p>
                     </div>
                     <div className="text-right">
@@ -237,17 +226,17 @@ const getCategoryGradient = (category) => {
                 placeholder="채팅을 입력해주세요"
                 value={chatContent}
                 onChange={(e) => setChatContent(e.target.value)}
-                onkeydown="javascript:if(event.keyCode==13) {sendChat};" maxLength="100" required rows="1"></textarea>
+                maxLength="100" required rows="1"></textarea>
                 <button type="submit" onClick={sendChat} className="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-                </svg>
-            </button>
-        </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
             ) : (
                 <div className="bg-gray-200 h-[5.25vh] w-full rounded-lg text-gray-500 text-center flex justify-center items-center">
                 로그인이 필요한 서비스입니다.
-              </div>
+                </div>
             )}
             </div>
         </div>
