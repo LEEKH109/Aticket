@@ -1,5 +1,4 @@
 const dateFormmatterWithTime = (date) => {
-  const week = ["일", "월", "화", "수", "목", "금", "토"];
   const [datePart, timePart] = dateString.split(" ");
   const [year, month, day] = datePart
     .split("-")
@@ -9,6 +8,8 @@ const dateFormmatterWithTime = (date) => {
     .map((num) => parseInt(num, 10));
 
   const date = new Date(year, month - 1, day, hour, minute, second);
+
+  const week = ["일", "월", "화", "수", "목", "금", "토"];
 
   const formattedDate = [
     date.getFullYear(),
