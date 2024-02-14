@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import KakaoIcon from "../../components/KakaoIcon";
+import kakaopayImage from "./assets/kakaopay.png";
 
 const BillingPreviewPage = () => {
   const { state } = useLocation();
@@ -140,7 +140,7 @@ const BillingPreviewPage = () => {
         >
           <img
             loading="lazy"
-            src="./src/assets/kakaopay.png"
+            src={kakaopayImage}
             className="max-w-full aspect-[3.03] w-[150px]"
             alt="결제 이미지"
           />
