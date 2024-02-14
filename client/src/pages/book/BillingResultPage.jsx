@@ -87,7 +87,7 @@ const BillingResultPage = () => {
             3. 결제 완료
           </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex flex-col items-center">
           <CheckCircleOutlineIcon />
           <div>정상 결제 되었습니다.</div>
           {reservationInfo &&
