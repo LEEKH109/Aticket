@@ -50,7 +50,7 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
   }, [isRendering]);
 
   useEffect(() => {
-    if (shorts != undefined) {
+    if (shorts) {
       DetailApi.getDetail(shorts.artId)
         .then(({ data }) => {
           setArt(data);
@@ -77,18 +77,15 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
       >
         {shorts && <DetailPage artId={shorts.artId} backIconClick={handleCloseDialog} />}
       </Dialog>
-      <div
-        className="relative w-full  flex-shrink-0 bg-black "
-        style={{ height: `${itemHeight}px` }}
-      >
-        {shorts &&
-          (shorts.type == "VIDEO" ? (
+      <div className="relative w-full overflow-hidden flex-shrink-0 bg-black" style={{ height: `${itemHeight}px` }}>
+        {isRendering && shorts ? (
+          shorts.type == "VIDEO" ? (
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
               onMouseUp={() => handleMouseUp()}
               onMouseMove={handleMouseMove}
               onMouseDown={handleMouseDown}
@@ -98,12 +95,15 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
           ) : (
             <img
               src={shorts.mediaUrl}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
               onMouseUp={() => handleMouseUp()}
               onMouseMove={handleMouseMove}
               onMouseDown={handleMouseDown}
             />
-          ))}
+          )
+        ) : (
+          <p>loading</p>
+        )}
         {art ? <ShortsInfo title={art.title} shortsId={shorts.shortsId} /> : <ShortsInfoLoading />}
       </div>
     </>
