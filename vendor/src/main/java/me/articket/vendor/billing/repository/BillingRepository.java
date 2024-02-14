@@ -57,15 +57,28 @@ public interface BillingRepository {
   // 조회시 null이 반환될 수 있어 optional 처리
 
   @Select("""
-            SELECT a.art_id, a.title, t.timetable_id, CONCAT(t.date, ' ', t.start_time) AS viewingDateTime,
-                   tt.user_type AS ticketType, SUM(tt.price) AS totalAmount, COUNT(tt.ticket_type_id) AS totalCount
-            FROM billing b
-            JOIN billing_detail bd ON b.billing_id = bd.billing_id
-            JOIN timetable t ON bd.timetable_id = t.timetable_id
-            JOIN art a ON t.art_id = a.art_id
-            JOIN ticket_type tt ON bd.ticket_type_id = tt.ticket_type_id
-            WHERE b.reservation_id = #{reservationId}
-            GROUP BY a.art_id, a.title, t.timetable_id, t.date, t.start_time, tt.user_type
+            SELECT
+                a.art_id AS artId,
+                a.title AS title,
+                bd.timetable_id AS timetableId,
+                CONCAT(t.date, ' ', t.start_time) AS viewingDateTime,
+                tt.user_type AS ticketType,
+                (tt.price * bd.count) AS totalAmount,
+                bd.count AS totalCount
+            FROM
+                billing b
+            JOIN
+                billing_detail bd ON b.billing_id = bd.billing_id
+            JOIN
+                timetable t ON bd.timetable_id = t.timetable_id
+            JOIN
+                art a ON a.art_id = b.art_id
+            JOIN
+                ticket_type tt ON bd.ticket_type_id = tt.ticket_type_id
+            WHERE
+                b.reservation_id = #{reservationId}
+            GROUP BY
+                a.art_id, a.title, bd.timetable_id, t.date, t.start_time, tt.user_type, tt.price, bd.count
             """)
   List<ReservationTicketDetailDto> findTicketReservationByReservationId(@Param("reservationId") String reservationId);
 
