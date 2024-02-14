@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import kakaopayImage from "./assets/kakaopay.png";
+import kakaopayImage from "../../assets/kakaopay.png";
 
 const BillingPreviewPage = () => {
   const { state } = useLocation();
