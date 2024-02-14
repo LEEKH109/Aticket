@@ -15,7 +15,7 @@ const BookHistoryItem = ({ id, title, poster, viewing_date_time, reservation_con
         </IconButton>
       </div>
       <div className="flex gap-4">
-        <div className="w-32 flex-shrink-0">
+        <div className="w-20 flex-shrink-0">
           <img src={poster} />
         </div>
         <div className="text-sm">
