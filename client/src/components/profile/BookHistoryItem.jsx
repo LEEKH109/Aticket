@@ -32,8 +32,8 @@ const BookHistoryItem = ({
         </div>
         <div>
           <p>예매 번호: {id}</p>
-          <p>예매일: {formattedViewingtTime}</p>
-          <p>관림일: {formattedReservationTime}</p>
+          <p>예매일: {formattedReservationTime}</p>
+          <p>관람일: {formattedViewingtTime}</p>
           <p>관람 장소: {location}</p>
         </div>
       </div>
