@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8081/art";
+const BASE_URL = "http://i10a704.p.ssafy.io:8081/art";
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -15,17 +15,6 @@ const DetailApi = {
       console.error(error);
     }
   },
-
-// === 상세정보 조회 시 조회수 증가 ===
-//   updateHits: async (id) => {
-//     try {
-//       const response = await apiClient.get("/춭머ㅏ우너ㅏㅁㄴㅇㅁ", id);
-//       return response.data;
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   },
-
 };
 
 export { DetailApi };

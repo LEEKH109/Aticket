@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import ShortsList from "./ShortsList";
+import { useLoginState } from "../LoginContext";
+import { ShortsAPI } from "../../util/shorts-axios";
 
-const ITEM_WIDTH = 412;
-
-const Carousel = ({ shortList, height, index = 0 }) => {
+const Carousel = ({ shortsIdList, height, index = 0 }) => {
+  const isLogin = useLoginState();
   const [currentIndex, setCurrentIndex] = useState(Number(index));
   const [isDragging, setIsDragging] = useState(false);
   const [transY, setTransY] = useState(0);
@@ -12,9 +13,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const positionYRef = useRef(0);
   const maxLen = useRef(0);
 
-  const isTouchScreen =
-    typeof window !== "undefined" &&
-    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const isTouchScreen = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const inRange = (value, min, max) => {
     if (value < min) {
@@ -29,7 +28,6 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   };
 
   const handleMouseDown = (clickEvent) => {
-    clickEvent.preventDefault();
     const carouselItems = carouselItemsRef.current;
 
     setIsDragging(true);
@@ -56,11 +54,11 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     const deltaY = positionYRef.current - moveEvent.pageY;
     let nextIndex = currentIndex;
 
-    if (deltaY < -150) {
+    if (deltaY < -100) {
       nextIndex = inRange(currentIndex - 1, 0, maxLen.current - 1);
       setCurrentIndex(nextIndex);
     }
-    if (deltaY > 150) {
+    if (deltaY > 100) {
       nextIndex = inRange(currentIndex + 1, 0, maxLen.current - 1);
       setCurrentIndex(inRange(nextIndex));
     }
@@ -69,10 +67,8 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     setIsDragging(false);
 
     if (currentIndex !== nextIndex) {
-      console.log(currentIndex, "번 쇼츠 ", (new Date() - startTime) / 1000, "초 봤음");
-      setStartTime(new Date());
+      handleViewLog(currentIndex, nextIndex, 0);
     }
-
     window.removeEventListener("mousemove", handleMouseMove);
   };
 
@@ -81,7 +77,7 @@ const Carousel = ({ shortList, height, index = 0 }) => {
     positionYRef.current = touchEvent.touches[0].pageY;
 
     setIsDragging(true);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     carouselItems?.addEventListener("touchend", handleTouchEnd, { once: true });
   };
 
@@ -102,23 +98,39 @@ const Carousel = ({ shortList, height, index = 0 }) => {
   const handleTouchEnd = (moveEvent) => {
     const move = moveEvent.changedTouches[0];
     const deltaY = positionYRef.current - move.pageY;
+    let nextIndex = currentIndex;
 
-    if (deltaY < -150) {
-      setCurrentIndex(inRange(currentIndex - 1, 0, maxLen.current - 1));
+    if (deltaY < -100) {
+      nextIndex = inRange(currentIndex - 1, 0, maxLen.current - 1);
+      setCurrentIndex(nextIndex);
     }
-    if (deltaY > 150) {
-      setCurrentIndex(inRange(currentIndex + 1, 0, maxLen.current - 1));
+    if (deltaY > 100) {
+      nextIndex = inRange(currentIndex + 1, 0, maxLen.current - 1);
+      setCurrentIndex(inRange(nextIndex));
     }
 
     setTransY(0);
     setIsDragging(false);
 
+    handleViewLog(currentIndex, nextIndex, 0);
+
     window.removeEventListener("touchmove", handleTouchMove);
   };
 
+  const handleViewLog = (curIdx, nextIdx, viewDetail) => {
+    if (curIdx !== nextIdx && isLogin.isLogin) {
+      let viewTime = (new Date() - startTime) / 1000;
+      ShortsAPI.viewLog(shortsIdList[curIdx], {
+        viewDetail: viewDetail,
+        viewTime: viewTime,
+      });
+      setStartTime(new Date());
+    }
+  };
+
   useEffect(() => {
-    maxLen.current = shortList.length;
-  }, [shortList.length]);
+    maxLen.current = shortsIdList.length;
+  }, [shortsIdList.length]);
 
   useEffect(() => {
     setStartTime(new Date());
@@ -152,10 +164,19 @@ const Carousel = ({ shortList, height, index = 0 }) => {
         className="flex flex-col"
         style={{ transition: `transform ${transY ? 0 : 300}ms ease-in-out 0s` }}
       >
-        <ShortsList shortsList={shortList} itemWidth={ITEM_WIDTH} itemHeight={height} />
+        <ShortsList
+          viewDetailLog={() => {
+            handleViewLog(currentIndex, -1, 1);
+          }}
+          closeDetail={() => {
+            setStartTime(new Date());
+          }}
+          shortsIdList={shortsIdList}
+          itemHeight={height}
+          currentIndex={currentIndex}
+        />
       </div>
     </div>
   );
 };
-
 export default Carousel;

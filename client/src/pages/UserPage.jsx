@@ -51,7 +51,10 @@ const MyPage = () => {
     if (isDeleting) {
       UserApi.deleteProfileImgae(userId)
         .then(({ data }) => {
-          setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+          setProfileImage({
+            prev: data.data.profileUrl,
+            new: data.data.profileUrl,
+          });
           setProfileImg(data.data.profileUrl);
           setUpdateSuccess(true);
         })
@@ -68,7 +71,10 @@ const MyPage = () => {
     fd.append("file", profileImage.new);
     UserApi.updateProfileImage(userId, fd)
       .then(({ data }) => {
-        setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+        setProfileImage({
+          prev: data.data.profileUrl,
+          new: data.data.profileUrl,
+        });
         setProfileImg(data.data.profileUrl);
         setUpdateSuccess(true);
       })
@@ -85,7 +91,10 @@ const MyPage = () => {
     UserApi.getUserInfo(userId)
       .then(({ data }) => {
         setNickname({ prev: data.data.nickname, new: data.data.nickname });
-        setProfileImage({ prev: data.data.profileUrl, new: data.data.profileUrl });
+        setProfileImage({
+          prev: data.data.profileUrl,
+          new: data.data.profileUrl,
+        });
         setEmail(data.data.email);
       })
       .catch((err) => console.error(err));
@@ -95,7 +104,7 @@ const MyPage = () => {
     "relative text-gray-900 after:w-full after:h-1 after:bg-black after:bottom-[-0.5rem] after:absolute after:left-0";
 
   return (
-    <main className="w-full h-[calc(100vh_-_64px)] pt-2">
+    <main className="w-full h-[calc(100svh_-_64px)] pt-4">
       <UserInfo
         nickname={nickname}
         profileImage={profileImage}
@@ -121,7 +130,7 @@ const MyPage = () => {
         </button>
       </div>
       {nowCollectionTab && <CollectionList />}
-      {!nowCollectionTab && <BookHistoryList />}
+      {!nowCollectionTab && <BookHistoryList userId={userId} />}
     </main>
   );
 };

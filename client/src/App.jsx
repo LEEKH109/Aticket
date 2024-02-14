@@ -1,10 +1,8 @@
-import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { IsLoginProvider } from "./components/LoginContext";
 import "./App.css";
 import SelectDateTimePage from "./pages/book/SelectDateTimePage";
-import TicketBookingPage from "./pages/book/TicketBookingPage";
 import SeatBookingPage from "./pages/book/SeatBookingPage";
-import BookLayout from "./pages/book/BookLayout";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import ShortsPage from "./pages/ShortsPage";
@@ -71,11 +69,6 @@ function App() {
               errorElement: <ErrorPage />,
             },
             {
-              path: "ticket",
-              element: <TicketBookingPage />,
-              errorElement: <ErrorPage />,
-            },
-            {
               path: "seat",
               element: <SeatBookingPage />,
               errorElement: <ErrorPage />,
@@ -118,17 +111,13 @@ function App() {
 
   return (
     <>
-      <div className="relative mx-auto max-w-[412px] h-[100svh]">
+      <div className="relative mx-auto max-w-[412px] h-[100svh] overscroll-y-none touch-none">
         <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </IsLoginProvider>
       </div>
     </>
   );
-}
-
-if (typeof window !== "undefined" && typeof window.global === "undefined") {
-  window.global = window;
 }
 
 export default App;

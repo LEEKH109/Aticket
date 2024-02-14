@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import Carousel from "../components/shorts/Carousel";
 import { useLocation } from "react-router-dom";
+import Carousel from "../components/shorts/Carousel";
+import ShortsLoading from "../components/shorts/ShortsLoading";
 import { UserApi } from "../util/user-axios";
 
 const Shorts = () => {
   const location = useLocation();
 
   const [innerHeight, setInnerHeight] = useState(window.innerHeight - 64);
-  const [shortList, setShortList] = useState([]);
+  const [shortsIdList, setShortsIdList] = useState([]);
   const index = useRef(location.search.split("=")[1]);
 
   const handleHeightResize = () => {
@@ -17,7 +18,7 @@ const Shorts = () => {
   useEffect(() => {
     UserApi.getCollections()
       .then(({ data }) => {
-        setShortList(data.data);
+        setShortsIdList(data.data.map((shorts) => shorts.shortsId));
       })
       .catch((err) => console.error(err));
   }, []);
@@ -32,7 +33,11 @@ const Shorts = () => {
 
   return (
     <>
-      <Carousel shortList={shortList} height={innerHeight} index={index.current} />
+      {shortsIdList?.length > 0 ? (
+        <Carousel shortsIdList={shortsIdList} height={innerHeight} index={index.current} />
+      ) : (
+        <ShortsLoading />
+      )}
     </>
   );
 };

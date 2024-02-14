@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `http://localhost:8081`;
+const BASE_URL = `http://i10a704.p.ssafy.io:8081`;
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -20,6 +20,9 @@ const timetableApi = {
   },
   getTicketTypes: (timetableId) => {
     return axiosInstance.get(`/time/${timetableId}/tickets`);
+  },
+  getSeats: (timetableId) => {
+    return axiosInstance.get(`/time/${timetableId}/seats`);
   },
 };
 
