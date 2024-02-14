@@ -213,7 +213,7 @@ const ChatRoom = () => {
     <div>
       <div className="mb-2.5">
         <div
-          className={`flex items-center py-3 rounded-lg shadow-md bg-gradient-to-r ${getCategoryGradient(
+          className={`flex items-center py-3 shadow-md bg-gradient-to-r ${getCategoryGradient(
             category
           )}`}
         >
@@ -239,7 +239,7 @@ const ChatRoom = () => {
         </div>
         <div
           ref={chatAreaRef}
-          className="overflow-auto mb-4"
+          className="overflow-auto mb-4 mx-4"
           style={{ height: "calc(100svh - 196px)" }}
         >
           {pins.length > 0 ? (

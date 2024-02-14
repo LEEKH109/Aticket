@@ -45,7 +45,7 @@ const Shorts = () => {
 
   return (
     <>
-      <div className="absolute z-50 top-4 left-4 flex gap-4">
+      <div className="absolute z-50 top-4 left-4 flex gap-4 text-small">
         <DialButton onClickCategory={handleClickCategory} selectedCategory={category} />
       </div>
       {shortsIdList?.length > 0 ? (
