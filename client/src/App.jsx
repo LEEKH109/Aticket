@@ -17,6 +17,7 @@ import BillingApprovePage from "./pages/book/BillingApprovePage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
 import BookHistoryList from "./components/profile/BookHistoryList";
+import StartPage from "./pages/StartPage";
 
 function App() {
   if (typeof window !== "undefined" && typeof window.global === "undefined") {
@@ -31,6 +32,11 @@ function App() {
       children: [
         {
           path: "/",
+          element: <StartPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/short",
           element: <ShortsPage />,
           errorElement: <ErrorPage />,
         },
