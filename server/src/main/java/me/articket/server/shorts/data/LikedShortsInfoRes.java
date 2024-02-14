@@ -8,18 +8,16 @@ import me.articket.server.shorts.domain.Shorts;
 @Data
 @AllArgsConstructor
 @Builder
-public class ShortsInfoRes {
+public class LikedShortsInfoRes {
 
     private Long shortsId;
-    private Long artId;
-    private String type;
+    private ShortsType type;
     private String mediaUrl;
 
-    public static ShortsInfoRes of(Shorts shorts) {
-        return ShortsInfoRes.builder()
+    public static LikedShortsInfoRes of(Shorts shorts) {
+        return LikedShortsInfoRes.builder()
                 .shortsId(shorts.getId())
-                .artId(shorts.getArt().getId())
-                .type(shorts.getType().name())
+                .type(shorts.getType())
                 .mediaUrl(shorts.getMediaUrl())
                 .build();
     }

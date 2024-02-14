@@ -1,23 +1,23 @@
 package me.articket.server.chat.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.articket.server.chat.data.ChatlogRes;
-import me.articket.server.chat.domain.Chatlog;
-import me.articket.server.chat.service.ChatService;
-import me.articket.server.common.response.SuccessResponse;
-
-import org.springframework.data.domain.Pageable;
+import me.articket.server.art.data.ArtCategory;
+import me.articket.server.chat.domain.ChatlogDTO;
+import me.articket.server.user.domain.User;
+import me.articket.server.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
+import java.util.Optional;
+
+import me.articket.server.chat.data.ChatlogRes;
+import me.articket.server.chat.domain.Chatlog;
+import me.articket.server.chat.service.ChatService;
+import me.articket.server.common.response.SuccessResponse;
 
 @RestController
 @RequestMapping("/chat")
@@ -25,37 +25,34 @@ import java.util.List;
 public class ChatlogController {
 
     private final ChatService chatService;
+    private final UserRepository userRepository;
 
-    @MessageMapping("/{categoryId}/send")
-    @SendTo("/{categoryId}/paging")
-    public SuccessResponse<Chatlog>  handleWebSocketChat(@DestinationVariable int categoryId, @Payload Chatlog chatlog) {
-        chatService.saveChatlog(chatlog); // DB에 저장
-        return new SuccessResponse<>(chatlog); // WebSocket을 통해 다른 클라이언트에 전송
-    } //ChatRoomPage에 있는 ChatInputFrom component에서 요청을 하면 받는 곳
+    @MessageMapping("/send/{category}") //프론트에서 채팅 보낼때는 setApplicationDestinationPrefixes에 따라 /chat/send/{category}로 보냄
+    @SendTo("/room/{category}") //enableSimpleBroker 때문에 /room/{category}를 구독한 사람은 해당 채팅을 받는다
+    public SuccessResponse<ChatlogRes>  handleWebSocketChat(@DestinationVariable ArtCategory category, @Payload ChatlogDTO chatlogDTO) {
+        System.out.println("category:"+category+", chatlog: "+chatlogDTO.getUserId()+"가 "+chatlogDTO.getContent()+"라고 보냄");
+        Optional<User> optionalUser = userRepository.findById(chatlogDTO.getUserId());
+        User user = optionalUser.get();
+        Chatlog chatlog = new Chatlog();
+        chatlog.setUser(user);
+        chatlog.setCategory(category);
+        chatlog.setContent(chatlogDTO.getContent());
+        chatlog.setRegDate(chatlogDTO.getRegDate());
+        chatService.saveChatlog(chatlog);
 
-    @GetMapping("/{categoryId}/latest")
-    public SuccessResponse<ChatlogRes> getLatestChatlogByCategory(@PathVariable int categoryId) {
-        return new SuccessResponse<>(chatService.getLatestChatlogByCategory(categoryId));
-    } //ChatRoomListPage에서 요청을 보내면 받는 곳.
+        ChatlogRes chatlogRes = ChatlogRes.of(chatlog);
+        return new SuccessResponse<>(chatlogRes);
+    }
 
-    @GetMapping("/{categoryId}/preview")
-    public SuccessResponse<List<ChatlogRes>> getRecentChatlogsForPreview(@PathVariable int categoryId) {
-        return new SuccessResponse<>(chatService.getRecentChatlogsForPreview(categoryId, 5));
-    } //DetailPage에 있는 chatpreview component에서 요청을 보내면 받는 곳.
+    @GetMapping("/preview/{category}")
+    public SuccessResponse<List<ChatlogRes>> getRecentChatlogsForPreview(@PathVariable ArtCategory category) {
+        return new SuccessResponse<>(chatService.findTop5ByCategory(category));
+    }
 
-    @GetMapping("/{categoryId}/paging")
-    public SuccessResponse<List<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable int categoryId, Pageable pageable) {
-        return new SuccessResponse<>(chatService.getChatlogsByCategoryWithPaging(categoryId, pageable));
-    } //ChatRoomPage에서 요청을 보내면 받는 곳
-
-    @GetMapping("")
-    public SuccessResponse<List<List<ChatlogRes>>> getChatlogsByCategoryWithPaging() {
-        List<List<ChatlogRes>> res = null;
-        for (int i = 0; i < 3; i++) {
-            List<ChatlogRes> room = chatService.getRecentChatlogsForPreview(i, 10);
-            res.add(room);
-        }
-        return new SuccessResponse<>(res);
-    } //ChatListPage에서 요청을 보내면 받는 곳
-
+    @GetMapping("/room/{category}")
+    public SuccessResponse<Page<ChatlogRes>> getChatlogsByCategoryWithPaging(@PathVariable ArtCategory category, @RequestParam int page) {
+        Page<ChatlogRes> chatlogs = chatService.getChatlogs(category, page, 15);
+        System.out.println(page+" "+chatlogs.getContent());
+        return new SuccessResponse<>(chatlogs);
+    }
 }
