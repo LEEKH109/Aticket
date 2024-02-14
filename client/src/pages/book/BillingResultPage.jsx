@@ -1,23 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 const BillingResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { paymentInfo } = location.state || {};
-
-  const formatDate = (dateString) => {
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    };
-    return new Date(dateString).toLocaleDateString("ko-KR", options);
-  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
@@ -38,6 +26,7 @@ const BillingResultPage = () => {
           </div>
         </div>
         <div className="mt-10 text-center">
+          <CheckCircleOutlineIcon style={{ fontSize: 40 }} />
           <div className="text-lg font-semibold">{paymentInfo?.message}</div>
           <div className="mt-4">
             <div className="text-xs font-bold">주문 번호:</div>
@@ -46,10 +35,6 @@ const BillingResultPage = () => {
           <div className="mt-2">
             <div className="text-xs font-bold">상품명:</div>
             <div className="text-sm">{paymentInfo?.itemName}</div>
-          </div>
-          <div className="mt-2">
-            <div className="text-xs font-bold">승인 시각:</div>
-            <div className="text-sm">{formatDate(paymentInfo?.approvedAt)}</div>
           </div>
         </div>
         <div>
