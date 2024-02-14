@@ -453,4 +453,4 @@ server {
 > 4. 초기 데이터베이스 생성(DB를 하나 생성해두는 것이 편하다)
 > 5. 새로운 파라미터 보안 그룹 설정(IPv4와 IPv6 모두 접근가능하게 변경) <- 최종 배포 후 변경
 > 6. DB 앤드포인트 복사 후 인텔리제이에 DB 연동(Test Connection으로 Success가 나오는지 꼭 확인) 
-> 7. application.secret.yaml에 DB정보 추가해주기
+> 7. application-secret.yaml에 DB정보 추가해주기

@@ -32,14 +32,14 @@
 
 ## 4. 외부 서비스
 
-> Kakao Oauth2 : application.secret.yaml에 해당 내용 있음 <br/>
+> Kakao Oauth2 : application-secret.yaml에 해당 내용 있음 <br/>
 > Kakao Pay API <br/>
 > RDS(DB) <br/>
 > S3(Cloud Storage) <br/>
 
 ## 5. GITIGNORE 처리한 핵심 키들
 
-> Spring : application.secret.yaml (/src/main/resources에 위치)<br/>
+> Spring : application-secret.yaml (/src/main/resources에 위치)<br/>
 
 <br/><br/>
 
