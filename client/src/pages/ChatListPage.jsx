@@ -20,7 +20,7 @@ const ChatList = () => {
     {
       categoryId: 3,
       category: "PLAY",
-      name: "공연",
+      name: "연극",
     },
   ];
 
@@ -35,7 +35,8 @@ const ChatList = () => {
             >
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-gray-800">
-                  {art.name} 단체 채팅방&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  {art.name} 단체
+                  채팅방&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </h2>
                 <Link
                   to={`/chat/room/${art.category}?page=${0}`}
