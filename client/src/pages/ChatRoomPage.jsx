@@ -237,8 +237,7 @@ const getCategoryGradient = (category) => {
                 placeholder="채팅을 입력해주세요"
                 value={chatContent}
                 onChange={(e) => setChatContent(e.target.value)}
-                onKeyDown={handleKeyPress}
-            maxLength="100" required rows="1"></textarea>
+                onkeydown="javascript:if(event.keyCode==13) {sendChat};" maxLength="100" required rows="1"></textarea>
            <button
               type="submit"
               onClick={sendChat}
