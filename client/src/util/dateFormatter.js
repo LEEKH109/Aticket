@@ -15,3 +15,5 @@ const dateFormmatterWithTime = (dateTimeString) => {
 
   return `${year}.${month}.${day}(${dayLabel}) ${hour}:${minute}`;
 };
+
+export { dateFormmatterWithTime };
