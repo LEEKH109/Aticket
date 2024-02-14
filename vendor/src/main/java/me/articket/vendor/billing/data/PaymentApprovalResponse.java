@@ -18,6 +18,7 @@ public class PaymentApprovalResponse {
   private Amount amount;
   private String createdAt;
   private String approvedAt;
+  private String viewingDateTime;
 
   @Getter
   @Setter
