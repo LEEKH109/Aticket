@@ -63,7 +63,7 @@ public interface BillingRepository {
                 bd.timetable_id AS timetableId,
                 CONCAT(t.date, ' ', t.start_time) AS viewingDateTime,
                 tt.user_type AS ticketType,
-                (tt.price * bd.count) AS totalAmount,
+                tt.price AS totalAmount,
                 bd.count AS totalCount
             FROM
                 billing b
