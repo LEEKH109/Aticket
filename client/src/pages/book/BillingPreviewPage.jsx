@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import KakaoIcon from "../../components/KakaoIcon";
 
 const BillingPreviewPage = () => {
   const { state } = useLocation();
@@ -137,12 +138,7 @@ const BillingPreviewPage = () => {
           onClick={handlePaymentRedirect}
           style={{ width: "fit-content", padding: "4px 16px" }}
         >
-          <img
-            loading="lazy"
-            src="https://newsimg.sedaily.com/2018/10/01/1S5QSELHHE_1.jpg"
-            className="max-w-full aspect-[3.03] w-[150px]"
-            alt="결제 이미지"
-          />
+          <KakaoIcon />
           <div className="grow self-center ml-4">로 결제하기</div>
         </div>
       </div>
