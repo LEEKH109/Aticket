@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/billing")
@@ -78,6 +79,15 @@ public class BillingController {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(reservations);
+  }
+
+  @GetMapping("/history/reservation/{reservationId}")
+  public ResponseEntity<?> getReservationDetailsUnified(@PathVariable String reservationId) {
+    try {
+      return ResponseEntity.ok(billingService.getUnifiedReservationDetails(reservationId));
+    } catch (ResponseStatusException e) {
+      return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+    }
   }
 
 

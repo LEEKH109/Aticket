@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import me.articket.server.art.data.ArtCategory;
 import me.articket.server.art.domain.Art;
 import me.articket.server.art.repository.ArtRepository;
 import me.articket.server.billing.data.BillingApproveRequest;
@@ -312,4 +313,26 @@ public class BillingService {
       );
     }).toList();
   }
+
+  public Object getUnifiedReservationDetails(String reservationId) {
+    var billingOpt = billingRepository.findByReservationId(reservationId);
+    if (billingOpt.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Billing 정보를 Reservation ID " + reservationId + "로 찾을 수 없습니다.");
+    }
+    var artOpt = artRepository.findById(billingOpt.get().getArt().getId());
+    if (artOpt.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Art 정보를 Reservation ID " + reservationId + "로 찾을 수 없습니다.");
+    }
+    var art = artOpt.get();
+
+    // Art category를 기반으로 예약 유형 결정
+    if (art.getCategory() == ArtCategory.SHOW) {
+      return getReservationDetails(reservationId);
+    } else if (art.getCategory() == ArtCategory.MUSICAL || art.getCategory() == ArtCategory.PLAY) {
+      return getReservationSeatDetails(reservationId);
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reservation ID " + reservationId + "에 대한 잘못된 Art category입니다.");
+    }
+  }
+
 }
