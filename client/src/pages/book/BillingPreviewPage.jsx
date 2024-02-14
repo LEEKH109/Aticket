@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import kakaopayImage from "../../assets/kakaopay.png";
+import Button from "@mui/material/Button";
+import KakaoIcon from "../components/KakaoIcon";
 
 const BillingPreviewPage = () => {
   const { state } = useLocation();
@@ -133,19 +134,24 @@ const BillingPreviewPage = () => {
           </>
         )}
 
-        <div
-          className="mb-10 mx-auto flex gap-0 px-4 py-2 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+        <Button
           onClick={handlePaymentRedirect}
-          style={{ width: "fit-content" }}
+          variant="contained"
+          sx={{
+            width: "100%",
+            height: "4.8vh",
+            position: "relative",
+            marginTop: "3vh",
+            backgroundColor: "#FEE500",
+            ":hover": {
+              backgroundColor: "#FDD835",
+            },
+            color: "#000",
+          }}
+          startIcon={<KakaoIcon />}
         >
-          <img
-            loading="lazy"
-            src={kakaopayImage}
-            className="max-w-full aspect-[3.03] w-[150px]"
-            alt="결제 이미지"
-          />
-          <div className="grow self-center ml-4">로 결제하기</div>
-        </div>
+          카카오페이로 결제하기
+        </Button>
       </div>
     </div>
   );
