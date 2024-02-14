@@ -84,7 +84,7 @@ const DetailPage = ({ artId, backIconClick }) => {
   }, []);
 
   return (
-    <main className="relative h-[calc(100vh_-_64px)] mx-auto bg-slate-300">
+    <main className="relative w-full h-[calc(100vh_-_64px)] mx-auto bg-slate-300">
       <Dialog open={openAlert}>
         <DialogTitle>{"오류"}</DialogTitle>
         <DialogContent>
