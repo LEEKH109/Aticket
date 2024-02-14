@@ -8,10 +8,13 @@ import me.articket.vendor.billing.data.ReservationTicketDetailDto;
 import me.articket.vendor.billing.data.ReservationTicketDetailResponseDto;
 import me.articket.vendor.billing.domain.Billing;
 import me.articket.vendor.billing.domain.BillingDetail;
+import me.articket.vendor.timetable.domain.Timetable;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
@@ -106,4 +109,20 @@ public interface BillingRepository {
               b.booker_name = #{bookerName}
             """)
   List<BookHistoryDto> findCompletedBookingsByBookerName(@Param("bookerName") String bookerName);
+
+  @Select("SELECT t.timetable_id, t.art_id, t.category_id, t.date, t.start_time, t.end_time, t.status " +
+      "FROM billing b " +
+      "JOIN billing_detail bd ON b.billing_id = bd.billing_id " +
+      "JOIN timetable t ON bd.timetable_id = t.timetable_id " +
+      "WHERE b.reservation_id = #{reservationId}")
+  @Results({
+      @Result(property = "timetableId", column = "timetable_id"),
+      @Result(property = "artId", column = "art_id"),
+      @Result(property = "categoryId", column = "category_id"),
+      @Result(property = "date", column = "date"),
+      @Result(property = "startTime", column = "start_time"),
+      @Result(property = "endTime", column = "end_time"),
+      @Result(property = "status", column = "status")
+  })
+  List<Timetable> findTimetablesByReservationId(@Param("reservationId") String reservationId);
 }

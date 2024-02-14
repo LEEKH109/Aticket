@@ -1,5 +1,10 @@
 package me.articket.vendor.billing.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +26,7 @@ import me.articket.vendor.billing.repository.BillingRepository;
 import me.articket.vendor.billing.data.PaymentApprovalResponse;
 import me.articket.vendor.seat.data.SeatReservationInfoDto;
 import me.articket.vendor.tickettype.data.TicketReservationInfoDto;
+import me.articket.vendor.timetable.domain.Timetable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -261,7 +267,7 @@ public class BillingService {
       // 성공 응답 처리 로직
       billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_COMPLETED));
       // jsonResponse 변환해서 바로 PaymentApprovalResponse 응답 값 반환
-      return parsePaymentApprovalResponse(response.getBody());
+      return parsePaymentApprovalResponse(response.getBody(),findViewingDateTimeByReservationId(reservationId));
     } else {
       // 실패 응답 처리 로직
       billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_FAILED));
@@ -283,7 +289,8 @@ public class BillingService {
     billingRepository.updateBillingStatus(reservationId, String.valueOf(BillingStatus.PAYMENT_CANCELLED));
   }
 
-  public PaymentApprovalResponse parsePaymentApprovalResponse(String jsonResponse) {
+  public PaymentApprovalResponse parsePaymentApprovalResponse(String jsonResponse,
+      String viewingDateTimeByReservationId) {
     JSONObject json = new JSONObject(jsonResponse);
     PaymentApprovalResponse response = new PaymentApprovalResponse();
 
@@ -306,6 +313,7 @@ public class BillingService {
 
     response.setCreatedAt(json.getString("created_at"));
     response.setApprovedAt(json.getString("approved_at"));
+    response.setViewingDateTime(viewingDateTimeByReservationId);
 
     return response;
   }
@@ -378,5 +386,26 @@ public class BillingService {
 
   public List<BookHistoryDto> getCompletedBookingsByBookerName(String bookerName) {
     return billingRepository.findCompletedBookingsByBookerName(bookerName);
+  }
+
+  public String findViewingDateTimeByReservationId(String reservationId) {
+    List<Timetable> timetables = billingRepository.findTimetablesByReservationId(reservationId);
+    if (timetables.isEmpty()) {
+      return "No timetable found for this reservation ID.";
+    }
+    Timetable timetable = timetables.get(0);
+    try {
+      LocalDate date = LocalDate.parse(timetable.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      LocalTime startTime = timetable.getStartTime().toLocalTime(); // Assuming getStartTime() returns a java.sql.Time object
+
+      LocalDateTime viewingDateTime = LocalDateTime.of(date, startTime);
+
+      // Format the LocalDateTime to a string as per requirements
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+      return viewingDateTime.format(formatter);
+    } catch (DateTimeParseException e) {
+      // Handle the case where parsing fails
+      return "Error parsing date or time.";
+    }
   }
 }
