@@ -20,8 +20,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +81,12 @@ public class ShortsService {
                 .body(new ParameterizedTypeReference<List<Long>>() {
                 });
         List<Shorts> shorts = shortsRepository.findAllById(ids);
+        // 원래 순서대로 정렬
+        Map<Long, Integer> idToIndex = new HashMap<>();
+        for (int i = 0; i < ids.size(); i++) {
+            idToIndex.put(ids.get(i), i);
+        }
+        shorts.sort(Comparator.comparingInt(sh -> idToIndex.get(sh.getId())));
         return shorts.stream().map(RecommendedShortsInfoRes::of).toList();
     }
 
