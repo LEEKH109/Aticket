@@ -18,7 +18,7 @@ public class ShortsInfoRes {
     public static ShortsInfoRes of(Shorts shorts) {
         return ShortsInfoRes.builder()
                 .shortsId(shorts.getId())
-                .artId(shorts.getId())
+                .artId(shorts.getArt().getId())
                 .type(shorts.getType().name())
                 .mediaUrl(shorts.getMediaUrl())
                 .build();
