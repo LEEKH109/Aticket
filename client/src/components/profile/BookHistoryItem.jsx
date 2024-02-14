@@ -13,7 +13,9 @@ const BookHistoryItem = ({
   reservation_confirmation_date_time,
   location,
 }) => {
-  const formattedViewingtTime = dateFormatter(new Date(viewing_date_time));
+  const formattedViewingtTime = dateFormmatterWithTime(
+    new Date(viewing_date_time)
+  );
   const formattedReservationTime = dateFormmatterWithTime(
     new Date(reservation_confirmation_date_time)
   );
