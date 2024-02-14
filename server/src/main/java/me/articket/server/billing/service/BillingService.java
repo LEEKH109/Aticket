@@ -1,6 +1,7 @@
 package me.articket.server.billing.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -176,8 +177,9 @@ public class BillingService {
           BillingApproveResponse.class);
       if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
         billing.setStatus(BillingCategory.PAYMENT_COMPLETED);
-        billing.setViewingDateTime(
-            LocalDateTime.parse(response.getBody().getViewingDateTime()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime viewingDateTime = LocalDateTime.parse(response.getBody().getViewingDateTime(), formatter);
+        billing.setViewingDateTime(viewingDateTime);
         billing.setReservationConfirmationDateTime(
             LocalDateTime.parse(response.getBody().getApprovedAt()));
         billingRepository.save(billing);
