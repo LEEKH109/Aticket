@@ -1,4 +1,4 @@
-const dateFormmatterWithTime = (date) => {
+const dateFormmatterWithTime = (dateString) => {
   const [datePart, timePart] = dateString.split(" ");
   const [year, month, day] = datePart.split("-");
   const [hour, minute] = timePart.split(":");
