@@ -194,39 +194,64 @@ const ChatRoom = () => {
     <div>
       <div className="mb-2.5">
         <div
-          className={`flex items-center py-3 rounded-lg shadow-md bg-gradient-to-r ${getCategoryGradient(category)}`}
+          className={`flex items-center py-3 shadow-md bg-gradient-to-r ${getCategoryGradient(
+            category
+          )}`}
         >
           <IconButton onClick={handleBackClick} className="text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </IconButton>
           <h1 className="text-xl font-bold text-center text-white">
             &nbsp;&nbsp;{getCategoryName(category)} 단체 채팅방
           </h1>
         </div>
-        <div ref={chatAreaRef} className="overflow-auto mb-4" style={{ height: "calc(100svh - 196px)" }}>
+        <div
+          ref={chatAreaRef}
+          className="overflow-auto mb-4 mx-4"
+          style={{ height: "calc(100svh - 196px)" }}
+        >
           {pins.length > 0 ? (
             pins.map((chatlog) => (
               <div
                 key={chatlog.chatlogId}
-                className={`flex ${chatlog.userId === Number(nowLoginUser) ? "justify-end" : "justify-start"} mb-4`}
+                className={`flex ${
+                  chatlog.userId === Number(nowLoginUser) ? "justify-end" : "justify-start"
+                } mb-4`}
               >
                 <div className="max-w-md">
                   {chatlog.userId !== Number(nowLoginUser) && (
                     <div className="mb-1">
-                      <span className="text-sm font-semibold text-gray-800">{chatlog.nickname}</span>
+                      <span className="text-sm font-semibold text-gray-800">
+                        {chatlog.nickname}
+                      </span>
                     </div>
                   )}
                   <div
                     className={`p-4 rounded-lg ${
-                      chatlog.userId === Number(nowLoginUser) ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                      chatlog.userId === Number(nowLoginUser)
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
                     } w-80`}
                   >
                     <p className="break-words">{chatlog.content}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs text-gray-500">{new Date(chatlog.regDate).toLocaleString()}</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(chatlog.regDate).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -251,7 +276,12 @@ const ChatRoom = () => {
               onClick={sendChat}
               className="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
               </svg>
             </button>
