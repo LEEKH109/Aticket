@@ -1,10 +1,21 @@
-import { dateFormatter, dateFormmatterWithTime } from "../../util/dateFormatter";
+import { dateFormmatterWithTime } from "../../util/dateFormatter";
 import { IconButton } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const BookHistoryItem = ({ id, title, poster, viewing_date_time, reservation_confirmation_date_time, location }) => {
-  const formattedViewingtTime = dateFormmatterWithTime(new Date(viewing_date_time));
-  const formattedReservationTime = dateFormmatterWithTime(new Date(reservation_confirmation_date_time));
+const BookHistoryItem = ({
+  id,
+  title,
+  poster,
+  viewing_date_time,
+  reservation_confirmation_date_time,
+  location,
+}) => {
+  const formattedViewingTime = dateFormmatterWithTime(
+    new Date(`${viewing_date_time}+09:00`)
+  );
+  const formattedReservationTime = dateFormmatterWithTime(
+    new Date(`${reservation_confirmation_date_time}+09:00`)
+  );
 
   return (
     <>
@@ -21,7 +32,7 @@ const BookHistoryItem = ({ id, title, poster, viewing_date_time, reservation_con
         <div className="text-sm">
           <p>예매 번호: {id}</p>
           <p>예매일: {formattedReservationTime}</p>
-          <p>관람일: {formattedViewingtTime}</p>
+          <p>관람일: {formattedViewingTime}</p>
           <p>관람 장소: {location}</p>
         </div>
       </div>
