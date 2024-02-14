@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { billingApi } from "../../util/billing-axios";
 import ticketsample from "../../assets/ticketsample.png";
 
@@ -33,7 +34,7 @@ const BillingResultPage = () => {
         src={ticketsample}
         className="object-cover absolute inset-0 w-full h-full"
       />
-      <div className="relative z-10 p-4 text-white">
+      <div className="relative z-10 p-4 text-black">
         <div className="text-xl font-black text-center">예매 내역</div>
         <div className="mt-4">공연명: {ticket.title}</div>
         <div className="mt-2">관람일시: {ticket.viewingDateTime}</div>
@@ -53,7 +54,7 @@ const BillingResultPage = () => {
         src={ticketsample}
         className="object-cover absolute inset-0 w-full h-full"
       />
-      <div className="relative z-10 p-4 text-white">
+      <div className="relative z-10 p-4 text-black">
         <div className="text-xl font-black text-center">예매 내역</div>
         <div className="mt-4">공연명: {seat.title}</div>
         <div className="mt-2">관람일시: {seat.viewingDateTime}</div>
@@ -86,12 +87,16 @@ const BillingResultPage = () => {
             3. 결제 완료
           </div>
         </div>
-        {reservationInfo &&
-          (reservationInfo.hasOwnProperty("ticketType") ? (
-            <TicketInfoComponent ticket={reservationInfo} />
-          ) : (
-            <SeatInfoComponent seat={reservationInfo} />
-          ))}
+        <div className="flex items-center">
+          <CheckCircleOutlineIcon />
+          <div>정상 결제 되었습니다.</div>
+          {reservationInfo &&
+            (reservationInfo.hasOwnProperty("ticketType") ? (
+              <TicketInfoComponent ticket={reservationInfo} />
+            ) : (
+              <SeatInfoComponent seat={reservationInfo} />
+            ))}
+        </div>
       </div>
     </div>
   );
