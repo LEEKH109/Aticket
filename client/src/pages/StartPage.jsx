@@ -24,7 +24,7 @@ const StartPage = () => {
 
   return (
     <>
-      <div className="h-[calc(100%_-_64px)] flex flex-col align-middle justify-items-center justify-center text-center bg-center bg-[url('/img/startbg.jpg')] bg-cover">
+      <div className="h-[calc(100%_-_64px)] flex flex-col align-middle justify-items-center justify-center text-center overflow-hidden bg-center bg-[url('/img/startbg.jpg')] bg-cover">
         <div
           className={`m-auto pt-20 mb-0 animate-logoFade`}
         >
@@ -95,12 +95,11 @@ const StartPage = () => {
         <div className="bg-[#222222] animate-bgFade opacity-0" style={{animationDelay:'2.2s'}}>
         <hr className="border-white w-full border-1 opacity-50"></hr>
         <div className="flex flex-col justify-center items-center">
-          <div className="w-[30vh] h-[20vh]">
+          <div className="w-[30vh] h-[16vh] flex items-center">
             <Button
-              onClick={()=>{navigate("/")}}
+              onClick={()=>{navigate("/short")}}
               variant="outlined"
               sx={{
-                marginTop: "6vh",
                 width: "100%",
                 height: "6vh",
                 position: "relative",
