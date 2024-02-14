@@ -23,7 +23,7 @@ const StartPage = () => {
 
   return (
     <>
-      <div className="h-[calc(100%_-_64px)] flex flex-col text-center items-center bg-center bg-[url('/img/startbg.jpg')] bg-cover">
+      <div className="h-[calc(100%_-_64px)] flex flex-col text-center items-center bg-center bg-[url('/img/startbg.jpg')] bg-cover overflow-hidden">
         <div className={`mx-auto pt-[20vh] pb-[8vh] mb-0 flex-grow-0`}>
           <img className="w-64" src="/img/logo.png" />
         </div>
@@ -32,8 +32,7 @@ const StartPage = () => {
         >
           지금 바로 아티켓과 함께하세요.
         </h1>
-        <div className="flex-1"/>
-        <div className="w-[80%] flex-1">
+        <div className="w-[80%]">
         <Button
           onClick={() => {
             window.location.href = KakaoOAuth;
@@ -41,7 +40,7 @@ const StartPage = () => {
           variant="contained"
           sx={{
             width: "100%",
-            height: "4.8vh",
+            height: "45px",
             position: "relative",
             marginTop: "8vh",
             backgroundColor: "#FEE500",
