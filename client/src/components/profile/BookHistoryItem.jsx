@@ -10,11 +10,9 @@ const BookHistoryItem = ({
   reservation_confirmation_date_time,
   location,
 }) => {
-  const formattedViewingTime = dateFormmatterWithTime(
-    new Date(`${viewing_date_time}+09:00`)
-  );
+  const formattedViewingTime = dateFormmatterWithTime(viewing_date_time);
   const formattedReservationTime = dateFormmatterWithTime(
-    new Date(`${reservation_confirmation_date_time}+09:00`)
+    reservation_confirmation_date_time
   );
 
   return (
