@@ -39,16 +39,16 @@ const BillingResultPage = () => {
         </div>
         <div>
           <div
-            className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+            className="mt-5 mx-auto flex gap-0 px-6 py-3 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
             onClick={() => navigate("/")}
-            style={{ width: "fit-content", padding: "8px 16px" }}
+            style={{ width: "fit-content" }}
           >
             숏츠로 이동
           </div>
           <div
-            className="mt-5 mx-auto flex gap-0 px-4 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
+            className="mt-5 mx-auto flex gap-0 px-6 py-3 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
             onClick={() => navigate("/user")}
-            style={{ width: "fit-content", padding: "8px 16px" }}
+            style={{ width: "fit-content" }}
           >
             마이페이지로 이동
           </div>
