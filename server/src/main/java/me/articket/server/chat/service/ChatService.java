@@ -24,10 +24,10 @@ public class ChatService {
         chatlogRepository.save(chatlog);
     }
 
-    public List<ChatlogRes> findTop5ByCategory(ArtCategory category) {
+    public List<ChatlogRes> findTop4ByCategory(ArtCategory category) {
         List<Chatlog> chatlogs = chatlogRepository.findByCategoryOrderByRegDateDesc(category);
         return chatlogs.stream()
-                .limit(5)
+                .limit(4)
                 .map(ChatlogRes::of)
                 .toList();
     }
