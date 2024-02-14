@@ -165,7 +165,7 @@ public class BillingService {
       if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
         billing.setStatus(BillingCategory.PAYMENT_COMPLETED);
         billing.setViewingDateTime(
-            LocalDateTime.parse(response.getBody().getApprovedAt()));
+            LocalDateTime.parse(response.getBody().getViewingDateTime()));
         billing.setReservationConfirmationDateTime(
             LocalDateTime.parse(response.getBody().getApprovedAt()));
         billingRepository.save(billing);

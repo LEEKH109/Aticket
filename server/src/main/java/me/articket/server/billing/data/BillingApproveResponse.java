@@ -15,6 +15,7 @@ public class BillingApproveResponse {
   private Amount amount;
   private String createdAt;
   private String approvedAt;
+  private String viewingDateTime;
 
     @Data
     public static class Amount {
