@@ -16,8 +16,8 @@ import CollectionPage from "./pages/CollectionPage";
 import BillingApprovePage from "./pages/book/BillingApprovePage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
-import BookHistoryList from "./components/profile/BookHistoryList";
 import StartPage from "./pages/StartPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   if (typeof window !== "undefined" && typeof window.global === "undefined") {
@@ -51,37 +51,6 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "/user",
-          element: <UserPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/collection",
-          element: <CollectionPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "bookhistory",
-          element: <BookHistoryList />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/book",
-          errorElement: <ErrorPage />,
-          children: [
-            {
-              path: "",
-              element: <SelectDateTimePage />,
-              errorElement: <ErrorPage />,
-            },
-            {
-              path: "seat",
-              element: <SeatBookingPage />,
-              errorElement: <ErrorPage />,
-            },
-          ],
-        },
-        {
           path: "/loginpage",
           element: <LoginPage />,
           errorElement: <ErrorPage />,
@@ -97,19 +66,51 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "billing/approve/:reservationId",
-          element: <BillingApprovePage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/billing/preview",
-          element: <BillingPreviewPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/billing/result",
-          element: <BillingResultPage />,
-          errorElement: <ErrorPage />,
+          path: "",
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: "/user",
+              element: <UserPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/book",
+              errorElement: <ErrorPage />,
+              children: [
+                {
+                  path: "",
+                  element: <SelectDateTimePage />,
+                  errorElement: <ErrorPage />,
+                },
+                {
+                  path: "seat",
+                  element: <SeatBookingPage />,
+                  errorElement: <ErrorPage />,
+                },
+              ],
+            },
+            {
+              path: "billing/approve/:reservationId",
+              element: <BillingApprovePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/billing/preview",
+              element: <BillingPreviewPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/billing/result",
+              element: <BillingResultPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/collection",
+              element: <CollectionPage />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
       ],
     },
