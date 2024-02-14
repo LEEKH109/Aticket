@@ -85,7 +85,7 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
               loop
               muted
               playsInline
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
               onMouseUp={() => handleMouseUp()}
               onMouseMove={handleMouseMove}
               onMouseDown={handleMouseDown}
@@ -95,7 +95,7 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
           ) : (
             <img
               src={shorts.mediaUrl}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
               onMouseUp={() => handleMouseUp()}
               onMouseMove={handleMouseMove}
               onMouseDown={handleMouseDown}
