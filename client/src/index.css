@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.centerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 모달 배경 색 조정 */
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
