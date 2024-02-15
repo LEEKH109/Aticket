@@ -25,7 +25,11 @@ const DialButton = ({ onClickCategory, selectedCategory }) => {
 
   return (
     <>
-      <button className="p-2 px-4 bg-white/20 text-white rounded-lg" variant="contained" onClick={() => setOpen(!open)}>
+      <button
+        className="p-2 px-3 bg-neutral-700 text-white rounded-lg"
+        variant="contained"
+        onClick={() => setOpen(!open)}
+      >
         {open ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
       </button>
       {open && (
@@ -33,8 +37,10 @@ const DialButton = ({ onClickCategory, selectedCategory }) => {
           {categories.map((category) => (
             <li key={category.categoryId}>
               <button
-                className={`p-2 px-4   rounded-lg ${
-                  selectedCategory == category.categoryId ? "bg-white text-black" : "bg-white/20 text-white"
+                className={`p-2 px-3 rounded-lg ${
+                  selectedCategory == category.categoryId
+                    ? "bg-white text-black"
+                    : "bg-neutral-700 text-white"
                 }`}
                 variant="contained"
                 color={selectedCategory == category.categoryId ? "primary" : "error"}

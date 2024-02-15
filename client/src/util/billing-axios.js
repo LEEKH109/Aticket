@@ -32,13 +32,9 @@ const billingApi = {
       userId,
     });
   },
-  // 전시 결제 내역 조회(결제 번호로)
+  // 제 내역 조회(결제 번호로)
   retrieveTicketReservationInfo: (reservationId) => {
-    return axiosInstance.get(`/billing/history/ticket/${reservationId}`);
-  },
-  // 뮤지컬, 연극 결제 내역 조회(결제 번호로)
-  retrieveSeatReservationInfo: (reservationId) => {
-    return axiosInstance.get(`/billing/history/seat/${reservationId}`);
+    return axiosInstance.get(`/billing/history/reservation/${reservationId}`);
   },
   // 결제완료 내역 조회(유저 아이디로)
   retrieveReservationHistory: (userId) => {

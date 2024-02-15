@@ -1,16 +1,78 @@
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { billingApi } from "../../util/billing-axios";
+import ticketsample from "../../assets/ticketsample.png";
 
 const BillingResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { paymentInfo } = location.state || {};
+  const [reservationInfo, setReservationInfo] = useState(null);
+
+  useEffect(() => {
+    if (paymentInfo?.partnerOrderId) {
+      billingApi
+        .retrieveTicketReservationInfo(paymentInfo.partnerOrderId)
+        .then((response) => {
+          setReservationInfo(response.data[0]);
+        })
+        .catch((error) => {
+          console.error("예매 정보 조회 실패:", error);
+        });
+    }
+  }, [paymentInfo]);
+
+  const handleBackClick = () => navigate(-1);
+
+  // 티켓 정보 컴포넌트
+  const TicketInfoComponent = ({ ticket }) => (
+    <div className="flex overflow-hidden relative flex-col pt-6 pb-12 text-black aspect-[0.65] max-w-[300px]">
+      <img
+        loading="lazy"
+        src={ticketsample}
+        className="object-cover absolute inset-0 w-full h-full"
+      />
+      <div className="relative z-10 p-4 text-black">
+        <div className="text-xl font-black text-center">예매 내역</div>
+        <div className="mt-4">공연명: {ticket.title}</div>
+        <div className="mt-2">관람일시: {ticket.viewingDateTime}</div>
+        <div className="mt-2">장소: {ticket.location}</div>
+        <div className="mt-2">결제번호: {ticket.reservationId}</div>
+        <div className="mt-2">총 금액: {ticket.totalAmount} 원</div>
+        <div className="mt-2">매수: {ticket.totalCount} 매</div>
+      </div>
+    </div>
+  );
+
+  // 좌석 정보 컴포넌트
+  const SeatInfoComponent = ({ seat }) => (
+    <div className="flex overflow-hidden relative flex-col pt-6 pb-12 text-black aspect-[0.65] max-w-[300px]">
+      <img
+        loading="lazy"
+        src={ticketsample}
+        className="object-cover absolute inset-0 w-full h-full"
+      />
+      <div className="relative z-10 p-4 text-black">
+        <div className="text-xl font-black text-center">예매 내역</div>
+        <div className="mt-4">공연명: {seat.title}</div>
+        <div className="mt-2">관람일시: {seat.viewingDateTime}</div>
+        <div className="mt-2">장소: {seat.location}</div>
+        <div className="mt-2">좌석: {seat.reservedSeats}</div>
+        <div className="mt-2">총 금액: {seat.totalAmount} 원</div>
+        <div className="mt-2">매수: {seat.totalCount} 매</div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
+    <div className="flex flex-col h-[calc(100svh-64px)] overflow-auto">
       <div className="w-full">
-        <div className="flex gap-0 px-5">
+        <div
+          className="flex items-center gap-2 px-5 cursor-pointer"
+          onClick={handleBackClick}
+        >
           <ArrowBackIosIcon />
           <div>Aːticket</div>
         </div>
@@ -25,33 +87,15 @@ const BillingResultPage = () => {
             3. 결제 완료
           </div>
         </div>
-        <div className="mt-10 text-center">
-          <CheckCircleOutlineIcon style={{ fontSize: 40 }} />
-          <div className="text-lg font-semibold">{paymentInfo?.message}</div>
-          <div className="mt-4">
-            <div className="text-xs font-bold">주문 번호:</div>
-            <div className="text-sm">{paymentInfo?.partnerOrderId}</div>
-          </div>
-          <div className="mt-2">
-            <div className="text-xs font-bold">상품명:</div>
-            <div className="text-sm">{paymentInfo?.itemName}</div>
-          </div>
-        </div>
-        <div>
-          <div
-            className="mt-5 mx-auto flex gap-0 px-6 py-3 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
-            onClick={() => navigate("/")}
-            style={{ width: "fit-content" }}
-          >
-            숏츠로 이동
-          </div>
-          <div
-            className="mt-5 mx-auto flex gap-0 px-6 py-3 text-2xl font-black text-center text-black whitespace-nowrap bg-white rounded-xl border-2 border-black border-solid cursor-pointer"
-            onClick={() => navigate("/user")}
-            style={{ width: "fit-content" }}
-          >
-            마이페이지로 이동
-          </div>
+        <div className="flex flex-col items-center">
+          <CheckCircleOutlineIcon />
+          <div>정상 결제 되었습니다.</div>
+          {reservationInfo &&
+            (reservationInfo.hasOwnProperty("ticketType") ? (
+              <TicketInfoComponent ticket={reservationInfo} />
+            ) : (
+              <SeatInfoComponent seat={reservationInfo} />
+            ))}
         </div>
       </div>
     </div>

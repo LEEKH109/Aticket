@@ -2,26 +2,14 @@ import { dateFormmatterWithTime } from "../../util/dateFormatter";
 import { IconButton } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const BookHistoryItem = ({
-  id,
-  title,
-  poster,
-  viewing_date_time,
-  reservation_confirmation_date_time,
-  location,
-}) => {
+const BookHistoryItem = ({ id, title, poster, viewing_date_time, reservation_confirmation_date_time, location }) => {
   const formattedViewingTime = dateFormmatterWithTime(viewing_date_time);
-  const formattedReservationTime = dateFormmatterWithTime(
-    reservation_confirmation_date_time
-  );
+  const formattedReservationTime = dateFormmatterWithTime(reservation_confirmation_date_time);
 
   return (
     <>
       <div className="flex justify-between items-start">
         <h3 className="mb-2 text-lg font-bold">{title}</h3>
-        <IconButton size="small">
-          <ArrowForwardIosIcon fontSize="small" />
-        </IconButton>
       </div>
       <div className="flex gap-4">
         <div className="w-20 flex-shrink-0">

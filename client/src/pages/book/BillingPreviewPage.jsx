@@ -32,7 +32,7 @@ const BillingPreviewPage = () => {
     selectedSeats?.reduce((acc, seat) => acc + seat.price, 0) || 0;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-auto">
+    <div className="flex flex-col h-[calc(100svh-64px)] overflow-auto">
       <div className="flex flex-col w-full h-full">
         <div className="flex gap-0 px-5">
           <ArrowBackIosIcon />
@@ -63,12 +63,6 @@ const BillingPreviewPage = () => {
                   <div className="text-xs font-black">공연명</div>
                   <div className="text-xs font-black text-right">
                     {shortInfo?.title || "-"}
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-3">
-                  <div className="text-xs font-black">관람일시</div>
-                  <div className="text-xs font-semibold text-right">
-                    {shortInfo?.date || "-"}
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-3">
@@ -107,17 +101,6 @@ const BillingPreviewPage = () => {
 
         {showTickets && (
           <>
-            <div className="w-full mt-4 flex-grow">
-              <div className="text-xl font-black">티켓 선택</div>
-              {selectedTickets.map((ticket, index) => (
-                <div key={index} className="mt-2 flex justify-between">
-                  <span className="text-xs font-bold">{ticket.userType}:</span>
-                  <span className="text-xs ">
-                    {(ticket.price || 0).toLocaleString()}원 x {ticket.count}매
-                  </span>
-                </div>
-              ))}
-            </div>
             <div className="w-full mt-4 border-t pt-2">
               <div className="flex justify-between">
                 <span className="text-xs font-bold">총 금액 / 매수:</span>

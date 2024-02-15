@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { useLoginState } from "../components/LoginContext";
 import ChatPreview from "../components/ChatPreview";
 import { DetailApi } from "../util/details-axios";
-import { dateFormmatterWithTime } from "../util/dateFormatter";
+import { dateFormatter, dateFormmatterWithTime } from "../util/dateFormatter";
 import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -52,7 +52,7 @@ const DetailPage = ({ artId, backIconClick }) => {
         } else if (res.data.category === "SHOW") {
           setCategory("전시");
         } else if (res.data.category === "PLAY") {
-          setCategory("공연");
+          setCategory("연극");
         }
         setShortInfo(res.data);
         if (res.data.actors[0] === "") {
@@ -88,7 +88,9 @@ const DetailPage = ({ artId, backIconClick }) => {
       <Dialog open={openAlert}>
         <DialogTitle>{"오류"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>불러오는 도중 오류가 발생하였습니다.</DialogContentText>
+          <DialogContentText>
+            불러오는 도중 오류가 발생하였습니다.
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -146,18 +148,27 @@ const DetailPage = ({ artId, backIconClick }) => {
       <div
         className={`fixed w-full max-w-[412px] container h-[6vh] bg-[#397D54] flex items-center justify-between drop-shadow-lg
       transition-opacity ease-in-out duration-300 ${
-        scorllPos ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        scorllPos
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
       >
         <IconButton
-          sx={{ width: "5vh", height: "5vh", marginLeft: "0.6vh", marginTop: "0.2vh" }}
+          sx={{
+            width: "5vh",
+            height: "5vh",
+            marginLeft: "0.6vh",
+            marginTop: "0.2vh",
+          }}
           onClick={() => {
             backIconClick();
           }}
         >
           <CloseIcon sx={{ color: "white" }} />
         </IconButton>
-        <div className="text-white text-xl flex-1 mx-4 truncate text-center">{shortInfo.title}</div>
+        <div className="text-white text-xl flex-1 mx-4 truncate text-center">
+          {shortInfo.title}
+        </div>
         <div className="w-12"></div>
       </div>
 
@@ -175,8 +186,8 @@ const DetailPage = ({ artId, backIconClick }) => {
           {shortInfo.location}
           <p className="my-3" />
           <h2 className="font-bold text-lg">기간</h2>
-          {dateFormmatterWithTime(new Date(shortInfo.startDate))} ~{" "}
-          {dateFormmatterWithTime(new Date(shortInfo.endDate))}
+          {dateFormatter(new Date(shortInfo.startDate))} ~{" "}
+          {dateFormatter(new Date(shortInfo.endDate))}
           <p className="my-3" />
           <h2 className="font-bold text-lg">주연</h2>
           <h3 className="text-base">{shortInfo.actors}</h3>
@@ -189,8 +200,15 @@ const DetailPage = ({ artId, backIconClick }) => {
           <p className="h-[4vh]"></p>
           <div className="p-4 bg-white shadow-md mb-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-800">{shortInfo.category} 단체 채팅방</h2>
-              <Link to={`/chat/room/${shortInfo.category}?page=${0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">바로가기</Link>
+              <h2 className="text-lg font-semibold text-gray-800">
+                {category} 단체 채팅방
+              </h2>
+              <Link
+                to={`/chat/room/${shortInfo.category}?page=${0}`}
+                className="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out"
+              >
+                바로가기
+              </Link>
             </div>
             <ChatPreview category={shortInfo.category} />
           </div>

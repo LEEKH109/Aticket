@@ -14,9 +14,12 @@ import Layout from "./pages/Layout";
 import DetailPage from "./pages/DetailPage";
 import CollectionPage from "./pages/CollectionPage";
 import BillingApprovePage from "./pages/book/BillingApprovePage";
+import BillingCancelPage from "./pages/book/BillingCancelPage";
+import BillingFailPage from "./pages/book/BillingFailPage";
 import BillingResultPage from "./pages/book/BillingResultPage";
 import BillingPreviewPage from "./pages/book/BillingPreviewPage";
-import BookHistoryList from "./components/profile/BookHistoryList";
+import StartPage from "./pages/StartPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   if (typeof window !== "undefined" && typeof window.global === "undefined") {
@@ -31,6 +34,11 @@ function App() {
       children: [
         {
           path: "/",
+          element: <StartPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/short",
           element: <ShortsPage />,
           errorElement: <ErrorPage />,
         },
@@ -43,37 +51,6 @@ function App() {
           path: "/chat/room/:category",
           element: <ChatRoomPage />,
           errorElement: <ErrorPage />,
-        },
-        {
-          path: "/user",
-          element: <UserPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/collection",
-          element: <CollectionPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "bookhistory",
-          element: <BookHistoryList />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/book",
-          errorElement: <ErrorPage />,
-          children: [
-            {
-              path: "",
-              element: <SelectDateTimePage />,
-              errorElement: <ErrorPage />,
-            },
-            {
-              path: "seat",
-              element: <SeatBookingPage />,
-              errorElement: <ErrorPage />,
-            },
-          ],
         },
         {
           path: "/loginpage",
@@ -91,19 +68,61 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: "billing/approve/:reservationId",
-          element: <BillingApprovePage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/billing/preview",
-          element: <BillingPreviewPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/billing/result",
-          element: <BillingResultPage />,
-          errorElement: <ErrorPage />,
+          path: "",
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: "/user",
+              element: <UserPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/book",
+              errorElement: <ErrorPage />,
+              children: [
+                {
+                  path: "",
+                  element: <SelectDateTimePage />,
+                  errorElement: <ErrorPage />,
+                },
+                {
+                  path: "seat",
+                  element: <SeatBookingPage />,
+                  errorElement: <ErrorPage />,
+                },
+              ],
+            },
+            {
+              path: "billing/approve/:reservationId",
+              element: <BillingApprovePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "billing/cancel/:reservationId",
+              element: <BillingCancelPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "billing/fail/:reservationId",
+              element: <BillingFailPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/billing/preview",
+              element: <BillingPreviewPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/billing/result",
+              element: <BillingResultPage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "/collection",
+              element: <CollectionPage />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
       ],
     },
