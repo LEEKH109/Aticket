@@ -55,7 +55,7 @@ const StartPage = () => {
                 <div className="flex flex-col items-center w-[80%] h-[30vh] bg-white px-10 shadow-lg rounded-xl">
                   <img src="/img/two.png" className="w-[5vh] self-start" />
                   <img src="/img/icon-favorite.gif" className="w-[10vh] pb-6" />
-                  <p className="text-xl mb-10 font-semibold break-normal">
+                  <p className="text-l mb-10 font-semibold break-normal">
                     마음에 드는 전시나 공연을 컬렉션에 저장하고, 예매하세요!
                   </p>
                 </div>
@@ -67,7 +67,7 @@ const StartPage = () => {
                     className="w-[5vh] self-start"
                   />
                   <img src="/img/icon-bubble.gif" className="w-[10vh] pb-6" />
-                  <p className="text-xl mb-10 font-semibold break-normal">
+                  <p className="text-l mb-10 font-semibold break-normal">
                     채팅을 통해 다른 이용자들과 전시 및 공연 정보를 공유해보세요.
                   </p>
                 </div>
