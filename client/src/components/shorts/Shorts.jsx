@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react";
+import { useState, useEffect, forwardRef, useRef } from "react";
 import ShortsInfo from "./ShortsInfo";
 import ShortsInfoLoading from "./ShortsInfoLoading";
 import DetailPage from "../../pages/DetailPage";
@@ -7,27 +7,29 @@ import { DetailApi } from "../../util/details-axios";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 
-// const ITEM_HEIGHT = Math.round(window.innerHeight) - 64;
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering }) => {
+const Shorts = ({ shortsId, nowPlaying, itemHeight, viewDetailLog, closeDetail }) => {
   const [shorts, setShorts] = useState();
   const [art, setArt] = useState();
   const [isDragging, setIsDragging] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const videoRef = useRef();
 
   const handleCloseDialog = () => {
     setIsDragging(false);
     setOpenDialog(false);
     closeDetail();
+    videoRef.current?.play();
   };
 
   const handleMouseUp = () => {
     if (!isDragging) {
       setOpenDialog(true);
       viewDetailLog();
+      videoRef?.current?.pause();
     }
   };
 
@@ -40,14 +42,14 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
   };
 
   useEffect(() => {
-    if (isRendering) {
+    if (nowPlaying) {
       ShortsAPI.getShorts(shortsId)
         .then(({ data }) => {
           setShorts(data.data);
         })
         .catch((err) => console.err(err));
     }
-  }, [isRendering]);
+  }, [nowPlaying]);
 
   useEffect(() => {
     if (shorts) {
@@ -78,13 +80,13 @@ const Shorts = ({ shortsId, itemHeight, viewDetailLog, closeDetail, isRendering 
         {shorts && <DetailPage artId={shorts.artId} backIconClick={handleCloseDialog} />}
       </Dialog>
       <div className="relative w-full overflow-hidden flex-shrink-0 bg-black" style={{ height: `${itemHeight}px` }}>
-        {isRendering && shorts ? (
+        {nowPlaying && shorts ? (
           shorts.type == "VIDEO" ? (
             <video
               autoPlay
               loop
-              muted
               playsInline
+              ref={videoRef}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full object-cover"
               onMouseUp={() => handleMouseUp()}
               onMouseMove={handleMouseMove}
