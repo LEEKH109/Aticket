@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { timetableApi } from "../../util/timetable-axios";
 import { billingApi } from "../../util/billing-axios";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import InfoIcon from "@mui/icons-material/Info";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import IconButton from "@mui/material/IconButton";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
@@ -253,17 +253,9 @@ const SeatBookingPage = () => {
           </div>
           <div className="flex flex-col items-start px-5 text-[14px] font-black text-black">
             <div className="w-full mb-2 bg-black min-h-[1px]" />
-            <div className="flex items-center gap-2">
-              <InfoIcon />
-              <div>
-                <span className="mr-1">한</span>
-                개의 ID로 회당 최대 4인까지 예매 가능합니다.
-                <br />
-                관람하실 인원을 모두 선택해주세요.
-              </div>
-            </div>
           </div>
-          <div className="mb-4 flex justify-end items-center ml-auto pr-4">
+          <div className="flex items-center ml-auto px-4">
+            <div className="ml-2 mr-auto font-semibold">인원</div>
             <IconButton onClick={() => adjustSeatLimit(-1)}>
               <RemoveIcon />
             </IconButton>
@@ -272,16 +264,19 @@ const SeatBookingPage = () => {
               <AddIcon />
             </IconButton>
           </div>
-          <div
-            className="flex flex-col items-start px-5 text-base font-black
-          text-black"
-          >
-            <div className="w-full mb-2 bg-black min-h-[1px]" />
-            <div>
-              Selected seats:{" "}
-              {selectedSeats.map((seat) => seat.seatNumber).join(", ")}
+
+          <div className="flex px-6 pb-2 text-[14px]">
+            <div className="flex items-center gap-2">
+              <InfoOutlined />
+              <div>1회에 최대 4인까지 예매 가능합니다.</div>
             </div>
-            <div>Total price: {totalPrice}원</div>
+          </div>
+          <div className="flex flex-col items-start px-5 text-base text-black">
+            <div className="w-full mb-3 bg-black min-h-[1px]" />
+            <div className="mb-2">
+              선택된 좌석:{" "}
+              {selectedSeats.map((seat) => seat.seatNumber).join(", ") || "-"}
+            </div>
             <button
               onClick={openModal}
               className={`text-xs font-bold text-white bg-black border border-black rounded-lg px-2 py-1 ${
@@ -291,7 +286,7 @@ const SeatBookingPage = () => {
               }`}
               disabled={selectedSeats.length === 0 || isModalOpen}
             >
-              선택 좌석 상세 보기
+              상세 보기
             </button>
 
             <Modal
@@ -300,15 +295,20 @@ const SeatBookingPage = () => {
               selectedSeats={selectedSeats}
             />
           </div>
+          <div className="px-5 text-2xl font-semibold text-right">
+            <div>{Intl.NumberFormat("ko-KR").format(totalPrice)}원</div>
+          </div>
         </div>
-        <div className="w-full flex items-center justify-center mt-2">
+        <div className="w-full flex items-center justify-center">
           <button
             onClick={preparePayment}
-            className={`text-lg font-bold text-white bg-black border border-black rounded-lg py-2 ${
-              selectedSeats.length === 0 ? "cursor-not-allowed opacity-50" : ""
+            className={`text-lg font-bold text-white bg-black border border-black rounded-t-lg py-2 ${
+              selectedSeats.length < seatLimit
+                ? "cursor-not-allowed opacity-50"
+                : ""
             }`}
             style={{ width: "320px" }}
-            disabled={selectedSeats.length === 0}
+            disabled={selectedSeats.length < seatLimit}
           >
             예매하기
           </button>
