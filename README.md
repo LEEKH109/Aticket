@@ -23,28 +23,28 @@ SSAFY 10기 공통 프로젝트 A704
 
 ## 주요 기능
 ### 숏폼 (Short Form)
-![shorts.gif](./shorts.gif)
+![shorts.gif](./img/shorts.gif)
 - 전시/공연 숏폼 시청
 - 숏품을 위아래로 슬라이드하여 이동
 - CF 알고리즘을 적용하여 사용자 맞춤 추천
 
 ### 채팅 (Chat)
-![chat category.gif](./chat category.gif)
+![chat category.gif](./img/chat category.gif)
 
-![chat.gif](./chat.gif)
+![chat.gif](./img/chat.gif)
 - 전시, 연극, 뮤지컬 카테고리 별 채팅방
 - 다른 이용자와 실시간 소통
 
 ### 예약 (Book)
-![book.gif](./book.gif)
+![book.gif](./img/book.gif)
 
-![book history.gif](./book history.gif)
+![book history.gif](./img/book history.gif)
 - 날짜, 좌석 등 예매 정보 선택
 - 카카오페이 결제
 - 자신의 예매 내역 확인
 
 ### 컬랙션 (Collection)
-![mypage.gif](./mypage.gif)
+![mypage.gif](./img/mypage.gif)
 - 마음에 드는 숏폼을 저장할 수 있음
 - 마이페이지에서 자신만의 컬렉션 확인 가능
 
