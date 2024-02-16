@@ -1,0 +1,18 @@
+{"rbc":{
+	"prefix": "rbc",
+	"body": [
+	  "import { useState, useEffect } from 'react';",
+	  "",
+	  "const ${TM_FILENAME_BASE} = () => {",
+	  "    return(",
+	  "        <>",
+	  "",
+	  "        </>",
+	  "    );",
+	  "}",
+	  "",
+	  "export default ${TM_FILENAME_BASE};"
+	],
+	"description": ""
+  }
+}
